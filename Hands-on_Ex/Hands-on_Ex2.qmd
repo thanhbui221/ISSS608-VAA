@@ -1,8 +1,15 @@
 ---
 title: "Hands-on Exercise 2"
 author: "Bui Tien Thanh (tt.bui.2025@mitb.smu.edu.sg)"
-date: "2026-04-25"
+date: "2026-04-24"
+date-modified: "last-modified"
 description: "Beyond ggplot2 Fundamentals"
+format: html
+execute:
+    echo: true 
+    eval: true 
+    warning: false 
+    freeze: true
 ---
 
 # 2 Beyond ggplot2 Fundamentals
