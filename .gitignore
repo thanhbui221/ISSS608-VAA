@@ -6,3 +6,5 @@
 .quarto
 .positai
 .env
+/.quarto/
+**/*.quarto_ipynb

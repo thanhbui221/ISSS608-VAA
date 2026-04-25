@@ -1,8 +1,6 @@
 ---
 title: "ISSS608 Visual Analytics and Applications"
- author:                                                                                                                                             
-    - name: Bui Tien Thanh                                                                                                                            
-      email: tt.bui.2025@mitb.smu.edu.sg 
+author: Bui Tien Thanh (tt.bui.2025@mitb.smu.edu.sg) 
 ---
 
 Welcome! Use the links below to navigate to each section.
