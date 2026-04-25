@@ -7,6 +7,10 @@ website:
     left:
       - href: index.qmd
         text: Home
+      - href: Hands-on_Ex/index.qmd
+        text: Hands-on Exercises
+      - href: In-class_Ex/index.qmd
+        text: In-class Exercises
       - about.qmd
 
 format:
@@ -18,4 +22,3 @@ format:
     toc: true
 
 editor: visual
-

@@ -1,11 +1,26 @@
 ---
-title: "ISSS608-VAA"
+title: "ISSS608 Visual Analytics and Applications"
+ author:                                                                                                                                             
+    - name: Bui Tien Thanh                                                                                                                            
+      email: tt.bui.2025@mitb.smu.edu.sg 
 ---
 
-This is a Quarto website.
+Welcome! Use the links below to navigate to each section.
 
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
+::::: {style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 2rem;"}
+::: {style="border: 1px solid #dee2e6; border-radius: 8px; padding: 1.5rem;"}
+### Hands-on Exercises
 
-```{r}
-1 + 1
-```
+Practice exercises following the weekly tutorials.
+
+[Go to Hands-on Exercises →](Hands-on_Ex/index.qmd)
+:::
+
+::: {style="border: 1px solid #dee2e6; border-radius: 8px; padding: 1.5rem;"}
+### In-class Exercises
+
+Activities completed during class sessions.
+
+[Go to In-class Exercises →](In-class_Ex/index.qmd)
+:::
+:::::
