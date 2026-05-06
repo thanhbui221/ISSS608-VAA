@@ -1,0 +1,151 @@
+---
+title: "Hands-on Exercise 4 (Part 3)"
+author: "Bui Tien Thanh (tt.bui.2025@mitb.smu.edu.sg)"
+date: "2026-05-07"
+date-modified: "last-modified"
+description: "Visual Statistical Analysis with R"
+format: html
+execute:
+    echo: true
+    eval: true
+    warning: false
+    freeze: true
+---
+
+# Visual Statistical Analysis
+
+## Learning Outcome
+
+In this hands-on exercise, you will learn how to perform visual statistical analysis using ggstatsplot package.
+
+## Visual Statistical Analysis with ggstatsplot
+
+ggstatsplot is an extension of ggplot2 package for creating graphics with details from statistical tests included in the information-rich plots themselves.
+
+## Getting Started
+
+### Installing and Launching R Packages
+
+```{r}
+pacman::p_load(ggstatsplot, tidyverse)
+```
+
+### Importing Data
+
+```{r}
+exam <- read_csv("../data/Exam_data.csv")
+```
+
+### One-Sample Test: gghistostats() Method
+In the code chunk below, gghistostats() is used to build a visual of one-sample test on English scores.
+
+```{r}
+set.seed(1234)
+
+gghistostats(
+  data = exam,
+  x = ENGLISH,
+  type = "bayes",
+  test.value = 60,
+  xlab = "English scores"
+)
+```
+
+**Default information:**
+
+- Statistical details
+- Bayes Factor
+- Sample sizes
+- Distribution summary
+
+### Unpacking the Bayes Factor
+
+A Bayes factor is the ratio of the likelihood of one particular hypothesis to the likelihood of another. It can be interpreted as a measure of the strength of evidence in favor of one theory among two competing theories.
+
+That’s because the Bayes factor gives us a way to evaluate the data in favor of a null hypothesis, and to use external information to do so. It tells us what the weight of the evidence is in favor of a given hypothesis.
+
+When we are comparing two hypotheses, H1 (the alternate hypothesis) and H0 (the null hypothesis), the Bayes Factor is often written as B10. The Schwarz criterion is one of the easiest ways to calculate rough approximation of the Bayes Factor.
+
+### How to Interpret Bayes Factor
+
+A Bayes Factor can be any positive number. One of the most common interpretations is this one—first proposed by Harold Jeffereys (1961) and slightly modified by Lee and Wagenmakers in 2013.
+
+### Two-Sample Mean Test: ggbetweenstats()
+
+In the code chunk below, ggbetweenstats() is used to build a visual for two-sample mean test of Maths scores by gender.
+
+```{r}
+ggbetweenstats(
+  data = exam,
+  x = GENDER,
+  y = MATHS,
+  type = "np",
+  messages = FALSE
+)
+```
+
+**Default information:**
+
+- Statistical details
+- Bayes Factor
+- Sample sizes
+- Distribution summary
+
+### Oneway ANOVA Test: ggbetweenstats() Method
+
+In the code chunk below, ggbetweenstats() is used to build a visual for One-way ANOVA test on English score by race.
+
+```{r}
+ggbetweenstats(
+  data = exam,
+  x = RACE,
+  y = ENGLISH,
+  type = “p”,
+  mean.ci = TRUE,
+  pairwise.comparisons = TRUE,
+  pairwise.display = “s”,
+  p.adjust.method = “fdr”,
+  messages = FALSE
+)
+```
+
+**Pairwise display options:**
+
+- “ns” → only non-significant
+- “s” → only significant
+- “all” → everything
+
+### Significant Test of Correlation: ggscatterstats()
+
+In the code chunk below, ggscatterstats() is used to build a visual for Significant Test of Correlation between Maths scores and English scores.
+
+```{r}
+ggscatterstats(
+  data = exam,
+  x = MATHS,
+  y = ENGLISH,
+  marginal = FALSE
+)
+```
+
+### Significant Test of Association (Dependence): ggbarstats() Methods
+
+In the code chunk below, the Maths scores is binned into a 4-class variable by using cut().
+
+```{r}
+exam1 <- exam %>%
+  mutate(MATHS_bins =
+           cut(MATHS,
+               breaks = c(0,60,75,85,100))
+)
+```
+
+In this code chunk below ggbarstats() is used to build a visual for Significant Test of Association.
+
+```{r}
+ggbarstats(exam1,
+           x = MATHS_bins,
+           y = GENDER)
+```
+
+
