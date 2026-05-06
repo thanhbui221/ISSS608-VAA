@@ -8,3 +8,4 @@
 .env
 /.quarto/
 **/*.quarto_ipynb
+data/
