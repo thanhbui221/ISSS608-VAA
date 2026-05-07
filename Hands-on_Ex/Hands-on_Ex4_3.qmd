@@ -100,20 +100,20 @@ ggbetweenstats(
   data = exam,
   x = RACE,
   y = ENGLISH,
-  type = “p”,
+  type = "p",
   mean.ci = TRUE,
   pairwise.comparisons = TRUE,
-  pairwise.display = “s”,
-  p.adjust.method = “fdr”,
+  pairwise.display = "s",
+  p.adjust.method = "fdr",
   messages = FALSE
 )
 ```
 
 **Pairwise display options:**
 
-- “ns” → only non-significant
-- “s” → only significant
-- “all” → everything
+- "ns" → only non-significant
+- "s" → only significant
+- "all" → everything
 
 ### Significant Test of Correlation: ggscatterstats()
 
