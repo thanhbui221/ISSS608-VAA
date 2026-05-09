@@ -11,7 +11,7 @@
 
   <meta name="author" content="Bui Tien Thanh">
   <meta name="dcterms.date" content="2026-05-09">
-  <title>ISSS608-VAA – Motor Insurance Portfolio Analysis</title>
+  <title>ISSS608-VAA – Take-home Exercise 1 (Presentation): Motor Insurance Portfolio Analysis</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -133,7 +133,7 @@
     <div class="slides">
 
 <section id="title-slide" class="quarto-title-block center">
-  <h1 class="title">Motor Insurance Portfolio Analysis</h1>
+  <h1 class="title">Take-home Exercise 1 (Presentation): Motor Insurance Portfolio Analysis</h1>
   <p class="subtitle">Visual Analytics of Profitability and Risk</p>
 
 <div class="quarto-title-authors">
@@ -181,8 +181,8 @@ Bui Tien Thanh
 <p><strong>Key Questions:</strong></p>
 <ul>
 <li>What are the distribution patterns of premiums and claims?</li>
-<li>Which factors influence portfolio profitability?</li>
-<li>What drives claims volatility across segments?</li>
+<li>Which factors are associated with portfolio profitability?</li>
+<li>What patterns are observed in claims volatility across segments?</li>
 </ul>
 <p><strong>Methods:</strong> Univariate and bivariate visual analytics using ggplot2 and ggstatsplot</p>
 <aside class="notes">
@@ -221,7 +221,7 @@ Bui Tien Thanh
 <section id="normality-assessment" class="slide level2">
 <h2>Normality Assessment</h2>
 
-<img data-src="Take-home_Ex01_presentation_files/figure-html/unnamed-chunk-2-1.png" width="960" class="r-stretch"><aside class="notes">
+<img data-src="Take-home_Ex01_presentation_files/figure-revealjs/unnamed-chunk-2-1.png" width="960" class="r-stretch"><aside class="notes">
 <p>Q-Q plots show clear deviations from normality for all variables. Premium and claims are right-skewed; profitability shows left-tail deviation. Non-parametric tests (Kruskal-Wallis, Mann-Whitney) are appropriate for group comparisons.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -238,7 +238,7 @@ Bui Tien Thanh
 <section id="premium-distribution" class="slide level2">
 <h2>Premium Distribution</h2>
 
-<img data-src="Take-home_Ex01_presentation_files/figure-html/unnamed-chunk-3-1.png" width="960" class="r-stretch"><aside class="notes">
+<img data-src="Take-home_Ex01_presentation_files/figure-revealjs/unnamed-chunk-3-1.png" width="960" class="r-stretch"><aside class="notes">
 <p>Premium distribution is strongly right-skewed with most policies concentrated between €300-€600. The long tail indicates a small proportion of high-premium policies. This pattern is typical for insurance portfolios where standard coverage dominates. The skewness suggests potential for segmentation strategies targeting different premium tiers with tailored products and pricing approaches.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -255,7 +255,7 @@ Bui Tien Thanh
 <section id="claims-distribution" class="slide level2">
 <h2>Claims Distribution</h2>
 
-<img data-src="Take-home_Ex01_presentation_files/figure-html/unnamed-chunk-4-1.png" width="960" class="r-stretch"><aside class="notes">
+<img data-src="Take-home_Ex01_presentation_files/figure-revealjs/unnamed-chunk-4-1.png" width="960" class="r-stretch"><aside class="notes">
 <p>Claims distribution shows extreme right-skewness with high concentration at zero, indicating most policies have no claims. Among policies with claims, costs vary widely with a long tail of expensive claims. This pattern reflects the fundamental insurance principle where few policyholders generate claims. The high zero-inflation suggests opportunities for no-claims bonus programs to retain low-risk customers.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -272,7 +272,7 @@ Bui Tien Thanh
 <section id="profitability-patterns" class="slide level2">
 <h2>Profitability Patterns</h2>
 
-<img data-src="Take-home_Ex01_presentation_files/figure-html/unnamed-chunk-5-1.png" width="960" class="r-stretch"><aside class="notes">
+<img data-src="Take-home_Ex01_presentation_files/figure-revealjs/unnamed-chunk-5-1.png" width="960" class="r-stretch"><aside class="notes">
 <p>Overall profitability distribution centers around positive values, indicating a healthy portfolio. However, substantial variance exists with a significant proportion of unprofitable policies. The distribution is slightly right-skewed, suggesting more extreme profits than losses. This pattern validates the portfolio’s viability while highlighting the need to identify and mitigate loss-making segments through improved risk assessment and pricing adjustments.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -288,13 +288,8 @@ Bui Tien Thanh
 </section>
 <section id="premium-vs-claims-relationship" class="slide level2">
 <h2>Premium vs Claims Relationship</h2>
-<div class="cell">
-<div class="cell-output cell-output-stderr">
-<pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
-</div>
 
-</div>
-<img data-src="Take-home_Ex01_presentation_files/figure-html/unnamed-chunk-6-1.png" width="960" class="r-stretch"><aside class="notes">
+<img data-src="Take-home_Ex01_presentation_files/figure-revealjs/unnamed-chunk-6-1.png" width="960" class="r-stretch"><aside class="notes">
 <p>The scatter plot reveals a weak positive correlation between premiums and claim costs (Spearman ρ ≈ 0.1-0.2). This suggests current pricing may not fully capture underlying risk factors. A stronger correlation would indicate better risk-based pricing. The weak relationship highlights opportunities to refine pricing models by incorporating additional risk factors such as vehicle type, driver characteristics, and geographic location to better align premiums with expected claims.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -308,79 +303,11 @@ Bui Tien Thanh
           display:block!important;
       }</style></aside>
 </section>
-<section id="vehicle-type-analysis" class="slide level2">
-<h2>Vehicle Type Analysis</h2>
+<section id="profitability-by-fuel-type-detailed" class="slide level2">
+<h2>Profitability by Fuel Type (Detailed)</h2>
 
-<img data-src="Take-home_Ex01_presentation_files/figure-html/unnamed-chunk-7-1.png" width="960" class="r-stretch"><aside class="notes">
-<p>Profitability varies significantly across fuel types. Different fuel types show varying average profitability levels. These differences are statistically significant (p &lt; 0.05) based on Kruskal-Wallis tests. The variation suggests fuel type is a meaningful risk factor that should inform pricing strategies. Underperforming segments may require premium adjustments or stricter underwriting criteria.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="fuel-type-distribution" class="slide level2">
-<h2>Fuel Type Distribution</h2>
-
-<img data-src="Take-home_Ex01_presentation_files/figure-html/unnamed-chunk-8-1.png" width="960" class="r-stretch"><aside class="notes">
-<p>Fuel type distribution shows portfolio composition. Diesel dominates, followed by gasoline. Understanding distribution helps assess concentration risk and informs strategic decisions about market positioning.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="claims-occurrence" class="slide level2">
-<h2>Claims Occurrence</h2>
-
-<img data-src="Take-home_Ex01_presentation_files/figure-html/unnamed-chunk-9-1.png" width="960" class="r-stretch"><aside class="notes">
-<p>Most policies have no claims, reflecting typical insurance patterns. The high proportion of claim-free policies supports profitability but also highlights the importance of retention strategies for low-risk customers.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="ridgeline-plot-profitability-distributions" class="slide level2">
-<h2>Ridgeline Plot: Profitability Distributions</h2>
-
-<img data-src="Take-home_Ex01_presentation_files/figure-html/unnamed-chunk-10-1.png" width="960" class="r-stretch"><aside class="notes">
-<p>Ridgeline plots reveal overlapping distributions across fuel types, showing not just mean differences but full distributional patterns. Different fuel types show varying distribution shapes and spreads. This visualization technique, learned in Hands-on Exercise 4.2, effectively communicates both central tendency and spread simultaneously, helping identify which segments have consistent profitability versus high variability.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="uncertainty-visualization" class="slide level2">
-<h2>Uncertainty Visualization</h2>
-
-<img data-src="Take-home_Ex01_presentation_files/figure-html/unnamed-chunk-11-1.png" width="960" class="r-stretch"><aside class="notes">
-<p>Confidence intervals quantify uncertainty in mean estimates, crucial for decision-making. Non-overlapping intervals indicate statistically significant differences between fuel types. This visualization method from Hands-on Exercise 4.4 combines point estimates with uncertainty measures, enabling more informed risk assessment. Wider intervals for some fuel types suggest greater sampling variability or inherent volatility requiring careful interpretation.</p>
+<img data-src="Take-home_Ex01_presentation_files/figure-revealjs/unnamed-chunk-7-1.png" width="960" class="r-stretch"><aside class="notes">
+<p>Boxplot shows the distribution of profitability across fuel types with extreme outliers filtered for clarity. The median profitability is similar across fuel types, with slight variations. The dashed red line at zero helps identify unprofitable policies.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -396,8 +323,25 @@ Bui Tien Thanh
 <section id="geographic-analysis" class="slide level2">
 <h2>Geographic Analysis</h2>
 
-<img data-src="Take-home_Ex01_presentation_files/figure-html/unnamed-chunk-12-1.png" width="960" class="r-stretch"><aside class="notes">
-<p>Geographic location significantly impacts profitability with substantial variation across areas. Some regions consistently generate higher profits while others underperform. Statistical tests confirm these differences are significant (p &lt; 0.001). Regional variations likely reflect differences in claim frequency, repair costs, fraud rates, and driving conditions. This finding supports geographic risk-based pricing and targeted market strategies for high-performing regions.</p>
+<img data-src="Take-home_Ex01_presentation_files/figure-revealjs/unnamed-chunk-8-1.png" width="960" class="r-stretch"><aside class="notes">
+<p>Geographic location is significantly associated with profitability, with substantial variation across areas. Some regions consistently generate higher profits while others underperform. Statistical tests confirm these differences are significant (p &lt; 0.001). Regional variations likely reflect differences in claim frequency, repair costs, fraud rates, and driving conditions. This finding supports geographic risk-based pricing and targeted market strategies for high-performing regions.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="profitability-by-region-statistical-test" class="slide level2">
+<h2>Profitability by Region (Statistical Test)</h2>
+
+<img data-src="Take-home_Ex01_presentation_files/figure-revealjs/unnamed-chunk-9-1.png" width="960" class="r-stretch"><aside class="notes">
+<p>Statistical validation shows area U has slightly higher median profitability than area R. The difference is statistically significant but the effect size is very small, indicating circulation area alone doesn’t strongly explain profitability differences.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -413,8 +357,25 @@ Bui Tien Thanh
 <section id="raincloud-plot-profitability-by-area" class="slide level2">
 <h2>Raincloud Plot: Profitability by Area</h2>
 
-<img data-src="Take-home_Ex01_presentation_files/figure-html/unnamed-chunk-13-1.png" width="960" class="r-stretch"><aside class="notes">
+<img data-src="Take-home_Ex01_presentation_files/figure-revealjs/unnamed-chunk-10-1.png" width="960" class="r-stretch"><aside class="notes">
 <p>Raincloud plots combine density curves, boxplots, and individual data points to show complete distributional information. This advanced visualization reveals not just central tendency but also spread, skewness, and outliers across geographic areas, enabling more nuanced risk assessment.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="profitability-by-vehicle-age" class="slide level2">
+<h2>Profitability by Vehicle Age</h2>
+
+<img data-src="Take-home_Ex01_presentation_files/figure-revealjs/unnamed-chunk-11-1.png" width="960" class="r-stretch"><aside class="notes">
+<p>Profitability varies across vehicle age groups. Older vehicles, especially the 15+ group, show larger negative outliers, suggesting higher claim severity and greater loss risk. Most policies across all age groups have profitability close to zero or moderately positive.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -430,7 +391,7 @@ Bui Tien Thanh
 <section id="volatility-assessment" class="slide level2">
 <h2>Volatility Assessment</h2>
 
-<img data-src="Take-home_Ex01_presentation_files/figure-html/unnamed-chunk-14-1.png" width="960" class="r-stretch"><aside class="notes">
+<img data-src="Take-home_Ex01_presentation_files/figure-revealjs/unnamed-chunk-12-1.png" width="960" class="r-stretch"><aside class="notes">
 <p>Claims volatility, measured by coefficient of variation, differs substantially across fuel types. Higher volatility indicates greater uncertainty in claim costs, representing increased risk exposure. Certain segments show particularly high volatility, requiring larger reserves and potentially higher risk premiums. Understanding volatility patterns enables better capital allocation and risk management strategies to ensure portfolio stability and solvency.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -447,7 +408,7 @@ Bui Tien Thanh
 <section id="statistical-validation" class="slide level2">
 <h2>Statistical Validation</h2>
 
-<img data-src="Take-home_Ex01_presentation_files/figure-html/unnamed-chunk-15-1.png" width="960" class="r-stretch"><aside class="notes">
+<img data-src="Take-home_Ex01_presentation_files/figure-revealjs/unnamed-chunk-13-1.png" width="960" class="r-stretch"><aside class="notes">
 <p>Non-parametric Kruskal-Wallis tests confirm that profitability differences across vehicle types are statistically significant (p &lt; 0.001). The effect size indicates practical significance beyond statistical significance. Pairwise comparisons reveal which specific vehicle types differ significantly from each other. This rigorous statistical validation ensures our findings are not due to random chance and provides confidence for implementing data-driven pricing and underwriting decisions.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -470,7 +431,7 @@ Bui Tien Thanh
 </ul>
 <p><strong>Profitability Drivers:</strong></p>
 <ul>
-<li>Vehicle type significantly impacts profitability (p &lt; 0.001)</li>
+<li>Vehicle type shows significant association with profitability (p &lt; 0.001)</li>
 <li>Geographic location shows strong association with profit</li>
 <li>Weak premium-claim correlation suggests pricing gaps</li>
 </ul>
@@ -748,6 +709,82 @@ Bui Tien Thanh
         ]
       });
     </script>
+    
+
+    <script>
+
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+
+      // slide changes (different for each slide format).
+
+      (function () {
+
+        // dispatch for htmlwidgets
+
+        function fireSlideEnter() {
+
+          const event = window.document.createEvent("Event");
+
+          event.initEvent("slideenter", true, true);
+
+          window.document.dispatchEvent(event);
+
+        }
+
+    
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+
+          fireSlideEnter();
+
+    
+
+          // dispatch for shiny
+
+          if (window.jQuery) {
+
+            if (previousSlide) {
+
+              window.jQuery(previousSlide).trigger("hidden");
+
+            }
+
+            if (currentSlide) {
+
+              window.jQuery(currentSlide).trigger("shown");
+
+            }
+
+          }
+
+        }
+
+    
+
+        // hookup for slidy
+
+        if (window.w3c_slidy) {
+
+          window.w3c_slidy.add_observer(function (slide_num) {
+
+            // slide_num starts at position 1
+
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+
+          });
+
+        }
+
+    
+
+      })();
+
+    </script>
+
+    
+
     <script id="quarto-html-after-body" type="application/javascript">
       window.document.addEventListener("DOMContentLoaded", function (event) {
         const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")

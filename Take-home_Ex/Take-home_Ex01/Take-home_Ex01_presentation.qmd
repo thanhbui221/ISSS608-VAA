@@ -36,8 +36,8 @@ This presentation analyzes a Spanish motor insurance portfolio using visual anal
 **Key Questions:**
 
 - What are the distribution patterns of premiums and claims?
-- Which factors influence portfolio profitability?
-- What drives claims volatility across segments?
+- Which factors are associated with portfolio profitability?
+- What patterns are observed in claims volatility across segments?
 
 **Methods:** Univariate and bivariate visual analytics using ggplot2 and ggstatsplot
 
@@ -63,7 +63,11 @@ insurance_clean <- insurance_data %>%
     fire_incurred = replace_na(fire_incurred, 0),
     occupants_incurred = replace_na(occupants_incurred, 0),
     profitability = total_premium - total_incurred,
-    has_claim = ifelse(total_incurred > 0, "Yes", "No")
+    has_claim = ifelse(total_incurred > 0, "Yes", "No"),
+    vehicle_age_group = cut(vehicle_age, breaks = c(0, 5, 10, 15, 100),
+                    labels = c("0-5", "6-10", "11-15", "15+")),
+    driver_age_group = cut(driver_age, breaks = c(18, 30, 45, 60, 100),
+                      labels = c("18-30", "31-45", "46-60", "60+"))
   ) %>%
   filter(!is.na(profitability), !is.na(age_driving_licence))
 ```
@@ -119,10 +123,15 @@ Q-Q plots show clear deviations from normality for all variables. Premium and cl
 #| fig-width: 10
 #| fig-height: 5
 ggplot(insurance_clean, aes(x = total_premium)) +
-  geom_histogram(aes(y = after_stat(density)), bins = 50, fill = "steelblue", alpha = 0.7) +
+  geom_histogram(aes(y = after_stat(density)),
+                 bins = 50, fill = "steelblue", alpha = 0.7) +
   geom_density(color = "red", linewidth = 1) +
   scale_x_continuous(labels = comma) +
-  labs(title = "Premium Distribution", x = "Premium (€)", y = "Density") +
+  labs(
+    title = "Distribution of Premium",
+    x = "Premium (€)",
+    y = "Density"
+  ) +
   theme_minimal(base_size = 14)
 ```
 
@@ -140,7 +149,7 @@ ggplot(insurance_clean, aes(x = total_incurred)) +
   geom_histogram(aes(y = after_stat(density)), bins = 50, fill = "coral", alpha = 0.7) +
   geom_density(color = "darkred", linewidth = 1) +
   scale_x_continuous(labels = comma) +
-  labs(title = "Claims Cost Distribution", x = "Claim Cost (€)", y = "Density") +
+  labs(title = "Distribution of Claim Costs", x = "Claim Cost (€)", y = "Density") +
   theme_minimal(base_size = 14)
 ```
 
@@ -155,11 +164,17 @@ Claims distribution shows extreme right-skewness with high concentration at zero
 #| fig-width: 10
 #| fig-height: 5
 ggplot(insurance_clean, aes(x = profitability)) +
-  geom_histogram(aes(y = after_stat(density)), bins = 50, fill = "forestgreen", alpha = 0.7) +
+  geom_histogram(aes(y = after_stat(density)),
+                 bins = 50, fill = "forestgreen", alpha = 0.7) +
   geom_density(color = "darkgreen", linewidth = 1) +
   geom_vline(xintercept = 0, linetype = "dashed", color = "red") +
   scale_x_continuous(labels = comma) +
-  labs(title = "Profitability Distribution", x = "Profitability (€)", y = "Density") +
+  labs(
+    title = "Distribution of Profitability",
+    subtitle = "Profitability = Premium - Claims",
+    x = "Profitability (€)",
+    y = "Density"
+  ) +
   theme_minimal(base_size = 14)
 ```
 
@@ -191,119 +206,29 @@ ggplot(insurance_clean %>% sample_n(min(5000, nrow(insurance_clean))),
 The scatter plot reveals a weak positive correlation between premiums and claim costs (Spearman ρ ≈ 0.1-0.2). This suggests current pricing may not fully capture underlying risk factors. A stronger correlation would indicate better risk-based pricing. The weak relationship highlights opportunities to refine pricing models by incorporating additional risk factors such as vehicle type, driver characteristics, and geographic location to better align premiums with expected claims.
 :::
 
-## Vehicle Type Analysis
+## Profitability by Fuel Type (Detailed)
 
 ```{r}
 #| echo: false
 #| fig-width: 10
 #| fig-height: 5
 insurance_clean %>%
-  group_by(fuel_type) %>%
-  summarise(mean_profit = mean(profitability), n = n()) %>%
-  filter(n > 1000) %>%
-  ggplot(aes(x = reorder(fuel_type, mean_profit), y = mean_profit, fill = fuel_type)) +
-  geom_col() +
-  geom_hline(yintercept = 0, linetype = "dashed") +
-  coord_flip() +
-  scale_y_continuous(labels = comma) +
-  labs(title = "Average Profitability by Fuel Type", x = "Fuel Type", y = "Mean Profitability (€)") +
+  filter(profitability >= -2000, profitability <= 2000) %>%
+  ggplot(aes(x = fuel_type, y = profitability, fill = fuel_type)) +
+  geom_boxplot(alpha = 0.7, outlier.alpha = 0.25) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
+  labs(
+    title = "Profitability by Fuel Type",
+    subtitle = "Filtered to profitability between -€2,000 and €2,000 for readability",
+    x = "Fuel Type",
+    y = "Profitability (€)"
+  ) +
   theme_minimal(base_size = 14) +
   theme(legend.position = "none")
 ```
 
 ::: notes
-Profitability varies significantly across fuel types. Different fuel types show varying average profitability levels. These differences are statistically significant (p \< 0.05) based on Kruskal-Wallis tests. The variation suggests fuel type is a meaningful risk factor that should inform pricing strategies. Underperforming segments may require premium adjustments or stricter underwriting criteria.
-:::
-
-## Fuel Type Distribution
-
-```{r}
-#| echo: false
-#| fig-width: 10
-#| fig-height: 5
-insurance_clean %>%
-  count(fuel_type) %>%
-  mutate(pct = n / sum(n) * 100) %>%
-  ggplot(aes(x = reorder(fuel_type, n), y = n, fill = fuel_type)) +
-  geom_col() +
-  geom_text(aes(label = paste0(round(pct, 1), "%")), hjust = -0.2) +
-  coord_flip() +
-  labs(title = "Distribution of Fuel Types", x = "Fuel Type", y = "Count") +
-  scale_y_continuous(labels = comma) +
-  theme_minimal(base_size = 14) +
-  theme(legend.position = "none")
-```
-
-::: notes
-Fuel type distribution shows portfolio composition. Diesel dominates, followed by gasoline. Understanding distribution helps assess concentration risk and informs strategic decisions about market positioning.
-:::
-
-## Claims Occurrence
-
-```{r}
-#| echo: false
-#| fig-width: 10
-#| fig-height: 5
-insurance_clean %>%
-  count(has_claim) %>%
-  mutate(pct = n / sum(n) * 100) %>%
-  ggplot(aes(x = has_claim, y = n, fill = has_claim)) +
-  geom_col() +
-  geom_text(aes(label = paste0(round(pct, 1), "%\n(n=", scales::comma(n), ")")), vjust = -0.5) +
-  labs(title = "Policies with vs without Claims", x = "Has Claim", y = "Count") +
-  scale_y_continuous(labels = comma, expand = expansion(mult = c(0, 0.15))) +
-  theme_minimal(base_size = 14) +
-  theme(legend.position = "none")
-```
-
-::: notes
-Most policies have no claims, reflecting typical insurance patterns. The high proportion of claim-free policies supports profitability but also highlights the importance of retention strategies for low-risk customers.
-:::
-
-## Ridgeline Plot: Profitability Distributions
-
-```{r}
-#| echo: false
-#| fig-width: 10
-#| fig-height: 6
-#| warning: false
-insurance_clean %>%
-  ggplot(aes(x = profitability, y = fuel_type, fill = fuel_type)) +
-  geom_density_ridges(scale = 2, alpha = 0.7) +
-  scale_x_continuous(labels = comma, limits = c(-2000, 2000)) +
-  labs(title = "Profitability Distribution by Fuel Type",
-       x = "Profitability (€)", y = "Fuel Type") +
-  theme_minimal(base_size = 14) +
-  theme(legend.position = "none")
-```
-
-::: notes
-Ridgeline plots reveal overlapping distributions across fuel types, showing not just mean differences but full distributional patterns. Different fuel types show varying distribution shapes and spreads. This visualization technique, learned in Hands-on Exercise 4.2, effectively communicates both central tendency and spread simultaneously, helping identify which segments have consistent profitability versus high variability.
-:::
-
-## Uncertainty Visualization
-
-```{r}
-#| echo: false
-#| fig-width: 10
-#| fig-height: 6
-profit_summary <- insurance_clean %>%
-  group_by(fuel_type) %>%
-  summarise(n = n(), mean = mean(profitability), sd = sd(profitability), se = sd / sqrt(n)) %>%
-  filter(n > 1000)
-
-ggplot(profit_summary) +
-  geom_errorbar(aes(x = reorder(fuel_type, -mean), ymin = mean - 1.96*se, ymax = mean + 1.96*se),
-                width = 0.2, colour = "black", alpha = 0.9, linewidth = 0.5) +
-  geom_point(aes(x = fuel_type, y = mean), stat = "identity", color = "red", size = 3, alpha = 1) +
-  coord_flip() +
-  scale_y_continuous(labels = comma) +
-  labs(title = "Mean Profitability with 95% Confidence Intervals", x = "Fuel Type", y = "Mean Profitability (€)") +
-  theme_minimal(base_size = 14)
-```
-
-::: notes
-Confidence intervals quantify uncertainty in mean estimates, crucial for decision-making. Non-overlapping intervals indicate statistically significant differences between fuel types. This visualization method from Hands-on Exercise 4.4 combines point estimates with uncertainty measures, enabling more informed risk assessment. Wider intervals for some fuel types suggest greater sampling variability or inherent volatility requiring careful interpretation.
+Boxplot shows the distribution of profitability across fuel types with extreme outliers filtered for clarity. The median profitability is similar across fuel types, with slight variations. The dashed red line at zero helps identify unprofitable policies.
 :::
 
 ## Geographic Analysis
@@ -326,7 +251,31 @@ insurance_clean %>%
 ```
 
 ::: notes
-Geographic location significantly impacts profitability with substantial variation across areas. Some regions consistently generate higher profits while others underperform. Statistical tests confirm these differences are significant (p \< 0.001). Regional variations likely reflect differences in claim frequency, repair costs, fraud rates, and driving conditions. This finding supports geographic risk-based pricing and targeted market strategies for high-performing regions.
+Geographic location is significantly associated with profitability, with substantial variation across areas. Some regions consistently generate higher profits while others underperform. Statistical tests confirm these differences are significant (p \< 0.001). Regional variations likely reflect differences in claim frequency, repair costs, fraud rates, and driving conditions. This finding supports geographic risk-based pricing and targeted market strategies for high-performing regions.
+:::
+
+## Profitability by Region (Statistical Test)
+
+```{r}
+#| echo: false
+#| fig-width: 10
+#| fig-height: 6
+#| warning: false
+insurance_clean %>%
+  filter(profitability >= -2000, profitability <= 2000) %>%
+  ggbetweenstats(
+    data = .,
+    x = circulation_area,
+    y = profitability,
+    type = "nonparametric",
+    pairwise.comparisons = TRUE,
+    p.adjust.method = "bonferroni",
+    title = "Profitability Distribution by Circulation Area"
+  )
+```
+
+::: notes
+Statistical validation shows area U has slightly higher median profitability than area R. The difference is statistically significant but the effect size is very small, indicating circulation area alone doesn't strongly explain profitability differences.
 :::
 
 ## Raincloud Plot: Profitability by Area
@@ -336,21 +285,107 @@ Geographic location significantly impacts profitability with substantial variati
 #| fig-width: 10
 #| fig-height: 6
 #| warning: false
+# Data for plotting only
+plot_data <- insurance_clean %>%
+  filter(profitability >= -2000, profitability <= 2000)
+
+# Sample points for cleaner display
+set.seed(123)
+point_data <- plot_data %>%
+  group_by(circulation_area) %>%
+  slice_sample(n = 1500) %>%
+  ungroup()
+
+# Median values
+median_data <- plot_data %>%
+  group_by(circulation_area) %>%
+  summarise(
+    median_profit = median(profitability, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+ggplot(plot_data, aes(x = circulation_area, y = profitability,
+                      fill = circulation_area, color = circulation_area)) +
+  stat_halfeye(
+    adjust = 0.7,
+    width = 0.6,
+    justification = -0.25,
+    .width = 0,
+    point_colour = NA,
+    alpha = 0.45
+  ) +
+  geom_boxplot(
+    width = 0.12,
+    outlier.shape = NA,
+    alpha = 0.5,
+    color = "black"
+  ) +
+  geom_jitter(
+    data = point_data,
+    width = 0.08,
+    alpha = 0.10,
+    size = 0.6,
+    show.legend = FALSE
+  ) +
+  geom_point(
+    data = median_data,
+    aes(x = circulation_area, y = median_profit),
+    inherit.aes = FALSE,
+    color = "black",
+    size = 2.5
+  ) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
+  scale_y_continuous(labels = comma) +
+  labs(
+    title = "Raincloud Plot: Profitability by Circulation Area",
+    subtitle = "Filtered to profitability between -€2,000 and €2,000 for readability",
+    x = "Circulation Area",
+    y = "Profitability (€)"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    legend.position = "none",
+    panel.grid.minor = element_blank()
+  )
+```
+
+::: notes
+Raincloud plots combine density curves, boxplots, and individual data points to show complete distributional information. This advanced visualization reveals not just central tendency but also spread, skewness, and outliers across geographic areas, enabling more nuanced risk assessment.
+:::
+
+## Profitability by Vehicle Age
+
+```{r}
+#| echo: false
+#| fig-width: 10
+#| fig-height: 6
 insurance_clean %>%
-  ggplot(aes(x = circulation_area, y = profitability, fill = circulation_area)) +
-  stat_halfeye(adjust = 0.5, justification = -0.2, .width = 0, point_colour = NA) +
-  geom_boxplot(width = 0.15, outlier.shape = NA, alpha = 0.5) +
-  stat_dots(side = "left", justification = 1.1, binwidth = 100, dotsize = 0.3, overflow = "compress") +
-  scale_y_continuous(labels = comma, limits = c(-2000, 2000)) +
-  labs(title = "Raincloud Plot: Profitability by Circulation Area",
-       subtitle = "Combining density, boxplot, and individual observations",
-       x = "Circulation Area", y = "Profitability (€)") +
+  filter(
+    profitability >= -2000,
+    profitability <= 2000,
+    !is.na(vehicle_age_group)
+  ) %>%
+  ggplot(aes(
+    x = vehicle_age_group,
+    y = profitability,
+    fill = vehicle_age_group
+  )) +
+  geom_violin(alpha = 0.7, trim = TRUE) +
+  geom_boxplot(width = 0.2, alpha = 0.5, outlier.alpha = 0.2) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
+  scale_y_continuous(labels = comma) +
+  labs(
+    title = "Profitability by Vehicle Age Group",
+    subtitle = "Filtered to profitability between -€2,000 and €2,000 for readability",
+    x = "Vehicle Age Group",
+    y = "Profitability (€)"
+  ) +
   theme_minimal(base_size = 14) +
   theme(legend.position = "none")
 ```
 
 ::: notes
-Raincloud plots combine density curves, boxplots, and individual data points to show complete distributional information. This advanced visualization reveals not just central tendency but also spread, skewness, and outliers across geographic areas, enabling more nuanced risk assessment.
+Profitability varies across vehicle age groups. Older vehicles, especially the 15+ group, show larger negative outliers, suggesting higher claim severity and greater loss risk. Most policies across all age groups have profitability close to zero or moderately positive.
 :::
 
 ## Volatility Assessment
@@ -405,7 +440,7 @@ Non-parametric Kruskal-Wallis tests confirm that profitability differences acros
 
 **Profitability Drivers:**
 
-- Vehicle type significantly impacts profitability (p \< 0.001)
+- Vehicle type shows significant association with profitability (p \< 0.001)
 - Geographic location shows strong association with profit
 - Weak premium-claim correlation suggests pricing gaps
 

@@ -1,5 +1,5 @@
 ---
-title: "Take-home Exercise 1 (Tecnical Report)"
+title: "Take-home Exercise 1 (Technical Report)"
 author: "Bui Tien Thanh"
 date: "May 9, 2026"
 date-modified: "last-modified"
@@ -14,7 +14,7 @@ execute:
 
 This assignment focuses on analyzing a real-world motor vehicle insurance portfolio dataset from a Spanish insurance company using visual analytics techniques.
 
-**📋 [View Full Assignment Requirements](requirements.qmd)**
+[**View Full Assignment Requirements**](requirements.qmd)
 
 ### Quick Summary
 
@@ -63,8 +63,6 @@ skim(insurance_data)
 insurance_clean <- insurance_data %>%
   mutate(
     fuel_type = replace_na(fuel_type, "Unknown"),
-    fire_incurred = replace_na(fire_incurred, 0),
-    occupants_incurred = replace_na(occupants_incurred, 0),
     profitability = total_premium - total_incurred,
     profit_ratio = ifelse(total_premium > 0, profitability / total_premium, NA),
     has_claim = ifelse(total_incurred > 0, "Yes", "No"),
@@ -123,6 +121,31 @@ p_qq3 <- ggplot(insurance_clean, aes(sample = profitability)) +
 ```
 
 **Interpretation:** The Q-Q plots show clear deviations from the theoretical normal line for all three variables. total_premium displays right-skewness, while total_incurred has a very heavy right tail due to large claim observations. profitability shows strong left-tail deviation, suggesting the presence of extreme negative profitability cases. Therefore, the normality assumption is not satisfied, and non-parametric tests such as the Mann-Whitney U test and Kruskal-Wallis test are more appropriate for subsequent group comparisons.
+
+### Visual Analytics Approach
+
+This analysis employs a systematic visual analytics strategy to explore the insurance portfolio data:
+
+**Univariate Analysis:**
+
+- **Histograms with density curves** to reveal distribution shapes, identify skewness, and detect multimodality
+- **Boxplots** to identify outliers, visualize quartile ranges, and assess data spread
+- **Log transformations** to demonstrate data transformation techniques for handling skewed distributions and to show how transformations affect interpretability
+
+**Bivariate Analysis:**
+
+- **Scatter plots with correlation coefficients** to assess the strength and direction of relationships between continuous variables
+- **Grouped bar charts** to compare mean values across categorical groups
+- **Ridgeline plots** (from ggridges package) to compare full distributions across multiple groups simultaneously, showing both central tendency and spread
+- **Raincloud plots** (from ggdist package) to combine density curves, boxplots, and individual data points in a single visualization, providing comprehensive distributional information
+- **Error bar plots with confidence intervals** to quantify uncertainty in estimates and enable visual assessment of statistical significance
+
+**Statistical Validation:**
+
+- **ggbetweenstats** (from ggstatsplot package) to combine visualization with statistical testing, providing p-values, effect sizes, and pairwise comparisons in a single plot
+- **Non-parametric tests** (Kruskal-Wallis, Mann-Whitney) chosen based on Q-Q plot assessment showing non-normal distributions
+
+This multi-layered approach ensures that findings are both visually interpretable and statistically validated, supporting evidence-based recommendations for portfolio management.
 
 ## Analysis
 
@@ -316,7 +339,7 @@ library(scales)
 
 insurance_clean %>%
   ggplot(aes(x = profitability, y = fuel_type, fill = fuel_type)) +
-  geom_density_ridges(scale = 2, alpha = 0.7) +
+  geom_density_ridges(scale = 0.9, alpha = 0.7) +
   scale_x_continuous(labels = comma) +
   coord_cartesian(xlim = c(-2000, 2000)) +
   labs(
@@ -341,7 +364,7 @@ library(dplyr)
 insurance_clean %>%
   filter(profitability >= -2000, profitability <= 2000) %>%
   ggplot(aes(x = profitability, y = fuel_type, fill = fuel_type)) +
-  geom_density_ridges(scale = 2, alpha = 0.7, rel_min_height = 0.01) +
+  geom_density_ridges(scale = 0.9, alpha = 0.7, rel_min_height = 0.01) +
   scale_x_continuous(labels = comma) +
   labs(
     title = "Profitability Distribution by Fuel Type",
@@ -356,22 +379,6 @@ insurance_clean %>%
 ### Categorical Variables
 
 #### Fuel Type Distribution
-
-```{r}
-insurance_clean %>%
-  count(fuel_type) %>%
-  mutate(pct = n / sum(n) * 100) %>%
-  ggplot(aes(x = reorder(fuel_type, n), y = n, fill = fuel_type)) +
-  geom_col() +
-  geom_text(aes(label = paste0(round(pct, 1), "%")), hjust = -0.2) +
-  coord_flip() +
-  labs(title = "Distribution of Fuel Types", x = "Fuel Type", y = "Count") +
-  scale_y_continuous(labels = comma) +
-  theme_minimal() +
-  theme(legend.position = "none")
-```
-
-The fuel type distribution is highly imbalanced. Diesel vehicles account for the majority of the portfolio, representing around 63.9% of policies, followed by gasoline vehicles at 35.7%. The Unknown category is very small, accounting for only 0.4% of the data. This suggests that most insured vehicles in the portfolio are either diesel or gasoline, while missing or unclassified fuel types are rare.
 
 ```{r}
 insurance_clean %>%
@@ -397,23 +404,9 @@ insurance_clean %>%
   theme(legend.position = "none")
 ```
 
+The fuel type distribution is highly imbalanced. Diesel vehicles account for the majority of the portfolio, representing around 63.9% of policies, followed by gasoline vehicles at 35.7%. The Unknown category is very small, accounting for only 0.4% of the data. This suggests that most insured vehicles in the portfolio are either diesel or gasoline, while missing or unclassified fuel types are rare.
+
 #### Geographic Distribution
-
-```{r}
-insurance_clean %>%
-  count(circulation_area) %>%
-  mutate(pct = n / sum(n) * 100) %>%
-  ggplot(aes(x = reorder(circulation_area, n), y = n, fill = circulation_area)) +
-  geom_col() +
-  geom_text(aes(label = paste0(round(pct, 1), "%")), hjust = -0.2) +
-  coord_flip() +
-  labs(title = "Distribution by Circulation Area", x = "Area", y = "Count") +
-  scale_y_continuous(labels = comma) +
-  theme_minimal() +
-  theme(legend.position = "none")
-```
-
-Area U is slightly more common, but both R and U have substantial sample sizes.
 
 ```{r}
 insurance_clean %>%
@@ -438,6 +431,8 @@ insurance_clean %>%
   theme_minimal() +
   theme(legend.position = "none")
 ```
+
+Area U is slightly more common, but both R and U have substantial sample sizes.
 
 #### Claims Occurrence
 
@@ -475,21 +470,63 @@ This supports treating claim analysis as two parts: claim frequency and claim se
 #### Premium vs Claims Relationship
 
 ```{r}
-cor_value <- cor(insurance_clean$total_premium, insurance_clean$total_incurred, method = "spearman")
+set.seed(123)
 
-ggplot(insurance_clean %>% sample_n(min(5000, nrow(insurance_clean))),
-       aes(x = total_premium, y = total_incurred)) +
-  geom_point(alpha = 0.3, color = "steelblue") +
+cor_value <- cor(
+  insurance_clean$total_premium,
+  insurance_clean$total_incurred,
+  method = "spearman",
+  use = "complete.obs"
+)
+
+insurance_clean %>%
+  sample_n(min(5000, nrow(insurance_clean))) %>%
+  ggplot(aes(x = total_premium, y = total_incurred)) +
+  geom_point(alpha = 0.25, color = "steelblue") +
   geom_smooth(method = "lm", color = "red", se = TRUE) +
   scale_x_continuous(labels = comma) +
   scale_y_continuous(labels = comma) +
-  labs(title = "Premium vs Claim Cost Relationship",
-       subtitle = paste0("Spearman correlation: ", round(cor_value, 3)),
-       x = "Premium (€)", y = "Claim Cost (€)") +
+  labs(
+    title = "Premium vs Claim Cost Relationship",
+    subtitle = paste0("Spearman correlation: ", round(cor_value, 3)),
+    x = "Premium (€)",
+    y = "Claim Cost (€)"
+  ) +
+  theme_minimal()
+```
+
+Premium and claim cost have only a weak positive relationship. The Spearman correlation is 0.217, meaning higher-premium policies tend to have slightly higher claim costs, but the relationship is not strong.
+
+```{r}
+claims_positive <- insurance_clean %>%
+  filter(total_incurred > 0)
+
+cor_positive <- cor(
+  claims_positive$total_premium,
+  claims_positive$total_incurred,
+  method = "spearman",
+  use = "complete.obs"
+)
+
+claims_positive %>%
+  sample_n(min(5000, nrow(claims_positive))) %>%
+  ggplot(aes(x = total_premium, y = total_incurred)) +
+  geom_point(alpha = 0.25, color = "steelblue") +
+  geom_smooth(method = "lm", color = "red", se = TRUE) +
+  scale_x_continuous(labels = comma) +
+  scale_y_continuous(labels = comma) +
+  labs(
+    title = "Premium vs Claim Cost Relationship among Claim Policies",
+    subtitle = paste0("Positive claims only; Spearman correlation: ", round(cor_positive, 3)),
+    x = "Premium (€)",
+    y = "Claim Cost (€)"
+  ) +
   theme_minimal()
 ```
 
 #### Profitability by Fuel Type
+
+Since profitability is highly non-normal and contains extreme outliers, a non-parametric approach was selected. The Kruskal-Wallis test was used instead of one-way ANOVA because it does not require the normality assumption and is more appropriate for comparing profitability distributions across fuel types.
 
 ```{r}
 ggbetweenstats(
@@ -501,6 +538,26 @@ ggbetweenstats(
   p.adjust.method = "bonferroni",
   title = "Profitability Distribution by Fuel Type"
 )
+```
+
+**Interpretation:** Profitability differs significantly across fuel types based on the Kruskal-Wallis test, χ²(2) = 1674.41, p \< 0.001. The median profitability is highest for the `Unknown` fuel type (€275.96), followed by diesel (`D`, €240.75) and gasoline (`G`, €216.22). Pairwise comparisons with Bonferroni adjustment indicate significant differences between all fuel-type groups. However, the effect size is very small, suggesting that although the differences are statistically significant, fuel type alone has limited practical influence on profitability. The `Unknown` category should also be interpreted cautiously due to its much smaller sample size.
+
+fuel type is statistically associated with profitability, but the practical effect appears small.
+
+```{r}
+insurance_clean %>%
+  filter(profitability >= -2000, profitability <= 2000) %>%
+  ggplot(aes(x = fuel_type, y = profitability, fill = fuel_type)) +
+  geom_boxplot(alpha = 0.7, outlier.alpha = 0.25) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
+  labs(
+    title = "Profitability by Fuel Type",
+    subtitle = "Filtered to profitability between -€2,000 and €2,000 for readability",
+    x = "Fuel Type",
+    y = "Profitability (€)"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "none")
 ```
 
 #### Profitability by Region
@@ -517,6 +574,24 @@ ggbetweenstats(
 )
 ```
 
+**Interpretation:** Policies in area `U` show slightly higher median profitability than those in area `R`. The difference is statistically significant, but the effect size is very small, indicating that circulation area alone does not strongly explain profitability differences.
+
+Area matters statistically, but the practical difference is very small.
+
+```{r}
+insurance_clean %>%
+  filter(profitability >= -2000, profitability <= 2000) %>%
+  ggbetweenstats(
+    data = .,
+    x = circulation_area,
+    y = profitability,
+    type = "nonparametric",
+    pairwise.comparisons = TRUE,
+    p.adjust.method = "bonferroni",
+    title = "Profitability Distribution by Circulation Area"
+  )
+```
+
 #### Profitability by Vehicle Age
 
 ```{r}
@@ -530,23 +605,124 @@ ggplot(insurance_clean, aes(x = vehicle_age_group, y = profitability, fill = veh
   theme(legend.position = "none")
 ```
 
-#### Raincloud Plot: Profitability by Area
+**Interpretation:** Profitability varies across vehicle age groups, but the chart is strongly affected by extreme negative outliers. Most policies across all age groups appear to have profitability close to zero or moderately positive values. However, older vehicles, especially the `15+` group, show much larger negative outliers, suggesting that very old vehicles may be associated with higher claim severity and greater loss risk. The `NA` group is difficult to interpret and should be treated separately or excluded from age-based conclusions.
+
+Older vehicles, especially the 15+ group, seem to have larger downside risk / more severe negative profitability outliers.
 
 ```{r}
 insurance_clean %>%
-  ggplot(aes(x = circulation_area, y = profitability, fill = circulation_area)) +
-  stat_halfeye(adjust = 0.5, justification = -0.2, .width = 0, point_colour = NA) +
-  geom_boxplot(width = 0.15, outlier.shape = NA, alpha = 0.5) +
-  stat_dots(side = "left", justification = 1.1, binwidth = 100, dotsize = 0.3, overflow = "compress") +
-  scale_y_continuous(labels = comma, limits = c(-2000, 2000)) +
-  labs(title = "Raincloud Plot: Profitability Distribution by Circulation Area",
-       subtitle = "Combining density, boxplot, and individual observations",
-       x = "Circulation Area", y = "Profitability (€)") +
+  filter(
+    profitability >= -2000,
+    profitability <= 2000,
+    !is.na(vehicle_age_group)
+  ) %>%
+  ggplot(aes(
+    x = vehicle_age_group,
+    y = profitability,
+    fill = vehicle_age_group
+  )) +
+  geom_violin(alpha = 0.7, trim = TRUE) +
+  geom_boxplot(width = 0.2, alpha = 0.5, outlier.alpha = 0.2) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
+  scale_y_continuous(labels = comma) +
+  labs(
+    title = "Profitability by Vehicle Age Group",
+    subtitle = "Filtered to profitability between -€2,000 and €2,000 for readability",
+    x = "Vehicle Age Group",
+    y = "Profitability (€)"
+  ) +
   theme_minimal() +
   theme(legend.position = "none")
 ```
 
-### Factors Influencing Volatility
+#### Raincloud Plot: Profitability by Area
+
+```{r}
+library(dplyr)
+library(ggplot2)
+library(ggdist)
+library(scales)
+
+# Data for plotting only
+plot_data <- insurance_clean %>%
+  filter(profitability >= -2000, profitability <= 2000)
+
+# Sample points for cleaner display
+set.seed(123)
+point_data <- plot_data %>%
+  group_by(circulation_area) %>%
+  slice_sample(n = 1500) %>%
+  ungroup()
+
+# Median values
+median_data <- plot_data %>%
+  group_by(circulation_area) %>%
+  summarise(
+    median_profit = median(profitability, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+ggplot(plot_data, aes(x = circulation_area, y = profitability,
+                      fill = circulation_area, color = circulation_area)) +
+  
+  # Half-eye / half-violin density
+  stat_halfeye(
+    adjust = 0.7,
+    width = 0.6,
+    justification = -0.25,
+    .width = 0,
+    point_colour = NA,
+    alpha = 0.45
+  ) +
+  
+  # Boxplot in the middle
+  geom_boxplot(
+    width = 0.12,
+    outlier.shape = NA,
+    alpha = 0.5,
+    color = "black"
+  ) +
+  
+  # Sampled individual points
+  geom_jitter(
+    data = point_data,
+    width = 0.08,
+    alpha = 0.10,
+    size = 0.6,
+    show.legend = FALSE
+  ) +
+  
+  # Median point
+  geom_point(
+    data = median_data,
+    aes(x = circulation_area, y = median_profit),
+    inherit.aes = FALSE,
+    color = "black",
+    size = 2.5
+  ) +
+  
+  # Zero-profit line
+  geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
+  
+  scale_y_continuous(labels = comma) +
+  labs(
+    title = "Raincloud Plot: Profitability by Circulation Area",
+    subtitle = "Filtered to profitability between -€2,000 and €2,000 for readability",
+    x = "Circulation Area",
+    y = "Profitability (€)"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    legend.position = "none",
+    panel.grid.minor = element_blank()
+  )
+```
+
+**Interpretation:** The raincloud plot compares profitability between circulation areas `R` and `U`. Both areas show similar profitability distributions, with most observations concentrated slightly above zero. Area `U` appears to have a slightly higher median profitability than area `R`, which is consistent with the earlier Mann-Whitney result. However, the difference is visually small, suggesting that circulation area has limited practical impact on profitability. Both groups also show negative profitability cases, indicating that loss-making policies exist in both regions.
+
+This visual result is consistent with the Mann-Whitney test, which found a statistically significant difference between areas. However, the effect size was very small, so the difference is statistically detectable mainly because of the large sample size rather than because of a strong practical difference.
+
+### Factors Influencing Profitability
 
 #### Uncertainty Visualization: Mean Profitability with Confidence Intervals
 
@@ -555,26 +731,40 @@ profit_summary <- insurance_clean %>%
   group_by(fuel_type) %>%
   summarise(
     n = n(),
-    mean = mean(profitability),
-    sd = sd(profitability),
-    se = sd / sqrt(n)
+    median = median(profitability, na.rm = TRUE),
+    q1 = quantile(profitability, 0.25, na.rm = TRUE),
+    q3 = quantile(profitability, 0.75, na.rm = TRUE),
+    .groups = "drop"
   ) %>%
   filter(n > 1000)
 
 ggplot(profit_summary) +
-  geom_errorbar(aes(x = reorder(fuel_type, -mean),
-                    ymin = mean - 1.96*se,
-                    ymax = mean + 1.96*se),
-                width = 0.2, colour = "black", alpha = 0.9, linewidth = 0.5) +
-  geom_point(aes(x = fuel_type, y = mean),
-             stat = "identity", color = "red", size = 2, alpha = 1) +
+  geom_errorbar(
+    aes(
+      x = reorder(fuel_type, median),
+      ymin = q1,
+      ymax = q3
+    ),
+    width = 0.2,
+    colour = "black"
+  ) +
+  geom_point(
+    aes(x = reorder(fuel_type, median), y = median),
+    color = "red",
+    size = 2
+  ) +
   coord_flip() +
   scale_y_continuous(labels = comma) +
-  labs(title = "Mean Profitability by Fuel Type with 95% Confidence Intervals",
-       subtitle = "Error bars represent uncertainty in mean estimates",
-       x = "Fuel Type", y = "Mean Profitability (€)") +
+  labs(
+    title = "Median Profitability by Fuel Type with Interquartile Range",
+    subtitle = "Error bars represent the 25th to 75th percentile range",
+    x = "Fuel Type",
+    y = "Median Profitability (€)"
+  ) +
   theme_minimal()
 ```
+
+**Interpretation:** Since profitability is highly skewed and contains extreme outliers, median profitability with interquartile range is used instead of mean profitability with confidence intervals. The median provides a more robust measure of central tendency, while the IQR shows the spread of the middle 50% of observations. This approach is more consistent with the non-parametric tests used earlier.
 
 #### Claims Volatility Analysis
 
@@ -582,10 +772,11 @@ ggplot(profit_summary) +
 volatility_by_fuel <- insurance_clean %>%
   group_by(fuel_type) %>%
   summarise(
-    mean_claim = mean(total_incurred),
-    sd_claim = sd(total_incurred),
+    n = n(),
+    mean_claim = mean(total_incurred, na.rm = TRUE),
+    sd_claim = sd(total_incurred, na.rm = TRUE),
     cv = sd_claim / mean_claim,
-    n = n()
+    .groups = "drop"
   ) %>%
   filter(n > 100)
 
@@ -593,12 +784,23 @@ ggplot(volatility_by_fuel, aes(x = reorder(fuel_type, cv), y = cv, fill = fuel_t
   geom_col() +
   geom_text(aes(label = round(cv, 2)), hjust = -0.2) +
   coord_flip() +
-  labs(title = "Claims Volatility by Fuel Type",
-       subtitle = "Coefficient of Variation (SD/Mean)",
-       x = "Fuel Type", y = "Coefficient of Variation") +
+  scale_y_continuous(
+    labels = comma,
+    expand = expansion(mult = c(0, 0.15))
+  ) +
+  labs(
+    title = "Claims Volatility by Fuel Type",
+    subtitle = "Coefficient of Variation (SD / Mean)",
+    x = "Fuel Type",
+    y = "Coefficient of Variation"
+  ) +
   theme_minimal() +
   theme(legend.position = "none")
 ```
+
+**Interpretation:** Claim cost volatility differs across fuel types. Gasoline (`G`) has the highest coefficient of variation, followed by diesel (`D`), suggesting that claim costs are more variable relative to their average claim amount for these two fuel types. The `Unknown` category has a much lower CV, but this result should be interpreted cautiously because this group is much smaller and may not represent a consistent fuel category. Overall, claim costs appear highly volatile, especially for gasoline and diesel policies.
+
+BUT Because many policies have zero claims, the coefficient of variation may be inflated. Therefore, this result should be interpreted as a relative volatility indicator rather than a complete measure of claim risk.
 
 #### Volatility by Geographic Area
 
@@ -606,63 +808,38 @@ ggplot(volatility_by_fuel, aes(x = reorder(fuel_type, cv), y = cv, fill = fuel_t
 volatility_by_area <- insurance_clean %>%
   group_by(circulation_area) %>%
   summarise(
-    mean_claim = mean(total_incurred),
-    sd_claim = sd(total_incurred),
+    n = n(),
+    mean_claim = mean(total_incurred, na.rm = TRUE),
+    sd_claim = sd(total_incurred, na.rm = TRUE),
     cv = sd_claim / mean_claim,
-    n = n()
+    .groups = "drop"
   )
 
-ggplot(volatility_by_area, aes(x = reorder(circulation_area, cv), y = cv, fill = circulation_area)) +
+ggplot(volatility_by_area, aes(
+  x = reorder(circulation_area, cv),
+  y = cv,
+  fill = circulation_area
+)) +
   geom_col() +
   geom_text(aes(label = round(cv, 2)), hjust = -0.2) +
   coord_flip() +
-  labs(title = "Claims Volatility by Circulation Area",
-       subtitle = "Coefficient of Variation (SD/Mean)",
-       x = "Area", y = "Coefficient of Variation") +
+  scale_y_continuous(
+    labels = comma,
+    expand = expansion(mult = c(0, 0.15))
+  ) +
+  labs(
+    title = "Claims Volatility by Circulation Area",
+    subtitle = "Coefficient of Variation (SD / Mean)",
+    x = "Area",
+    y = "Coefficient of Variation"
+  ) +
   theme_minimal() +
   theme(legend.position = "none")
 ```
 
-#### Distribution Visualization with Uncertainty: ggdist Method
+**Interpretation:** Claim cost volatility differs between circulation areas. Area `R` has a higher coefficient of variation than area `U`, indicating that claim costs in area `R` are more variable relative to their average claim amount. In contrast, area `U` shows lower relative claim volatility. This suggests that although both regions contain claim risk, area `R` may have less predictable or more dispersed claim costs.
 
-```{r}
-insurance_clean %>%
-  ggplot(aes(x = fuel_type, y = profitability, fill = fuel_type)) +
-  stat_pointinterval(.width = c(0.50, 0.95), show.legend = FALSE) +
-  scale_y_continuous(labels = comma) +
-  labs(title = "Profitability Distribution with Multiple Confidence Intervals",
-       subtitle = "Point shows median; thick bar = 50% CI, thin bar = 95% CI",
-       x = "Fuel Type", y = "Profitability (€)") +
-  theme_minimal()
-```
-
-#### Statistical Validation
-
-```{r}
-# Test if profitability differs significantly across fuel types
-ggbetweenstats(
-  data = insurance_clean,
-  x = fuel_type,
-  y = profitability,
-  type = "nonparametric",
-  pairwise.comparisons = TRUE,
-  title = "Statistical Test: Profitability by Fuel Type"
-)
-```
-
-**Interpretation:** The Kruskal-Wallis test shows statistically significant differences in profitability across fuel types (p \< 0.001). The effect size (epsilon-squared or eta-squared) indicates the practical magnitude of these differences. While statistical significance confirms the differences are real, the effect size tells us whether these differences are large enough to warrant business action such as differential pricing strategies.
-
-```{r}
-# Test if claims differ by circulation area
-ggbetweenstats(
-  data = insurance_clean,
-  x = circulation_area,
-  y = total_incurred,
-  type = "nonparametric",
-  pairwise.comparisons = TRUE,
-  title = "Statistical Test: Claims by Circulation Area"
-)
-```
+However, because claim costs are zero-inflated, with many policies having no claims, the coefficient of variation may be inflated when the mean claim cost is low. Therefore, the CV should be interpreted as a relative volatility indicator rather than a complete measure of claim risk.
 
 ## Conclusion
 
@@ -670,25 +847,32 @@ ggbetweenstats(
 
 **Univariate Insights:**
 
-- Premium distribution is right-skewed with most policies concentrated in lower premium ranges
-- Claim costs show high concentration at zero (many policies with no claims) and right-skewed distribution for policies with claims
-- Profitability distribution centers around positive values, indicating overall portfolio profitability
+- The premium distribution is right-skewed, with most policies concentrated in lower premium ranges and a small number of high-premium outliers.
+- Claim costs are highly zero-inflated, as most policies have no claims. Among policies with claims, the distribution is strongly right-skewed due to a small number of high-severity claims.
+- Profitability is generally positive for most policies, indicating that the overall portfolio is profitable. However, the distribution has a long negative tail, showing that a small number of policies generate substantial losses.
 
 **Bivariate Insights:**
 
-- Weak positive correlation between premium and claim costs suggests pricing may not fully capture risk
-- Significant differences in profitability exist across vehicle body types (p \< 0.05)
-- Geographic areas show statistically significant differences in both profitability and claims volatility
-- Vehicle age demonstrates impact on profitability patterns
+- Premium and claim costs show only a weak positive relationship, suggesting that higher premiums are associated with higher claims to some extent, but premium alone does not strongly explain claim cost.
+- Profitability differs significantly across fuel types, although the effect size is small. This suggests that fuel type is statistically associated with profitability but may not be a strong standalone driver.
+- Circulation areas show statistically significant differences in profitability, with Area U having slightly higher median profitability than Area R. However, the practical difference appears limited.
+- Vehicle age appears to be associated with profitability patterns, with older vehicles, especially the 15+ group, showing larger negative outliers and potentially higher downside risk.
 
 **Volatility Findings:**
 
-- Claims volatility (coefficient of variation) varies substantially across vehicle types and geographic areas
-- Higher volatility in certain segments indicates greater uncertainty and risk exposure
+- Claim volatility, measured using the coefficient of variation, varies across fuel types and circulation areas.
+- Gasoline and diesel vehicles show relatively high claim volatility, indicating greater uncertainty in claim costs relative to their average claim amount.
+- Area R appears to have higher relative claim volatility than Area U, suggesting greater uncertainty or dispersion in claim costs for that region.
+- Since claim costs are zero-inflated, volatility measures should be interpreted carefully and treated as relative risk indicators rather than complete measures of claim risk.
 
 ### Recommendations
 
-1.  **Risk-Based Pricing:** Refine pricing models to better align premiums with claim risk, particularly for high-volatility segments
-2.  **Geographic Strategy:** Focus on profitable areas while reassessing underwriting criteria in high-volatility regions
-3.  **Vehicle Segmentation:** Adjust coverage terms and pricing for vehicle types showing unfavorable profitability patterns
-4.  **Portfolio Diversification:** Balance exposure across different risk segments to reduce overall volatility
+1.  **Risk-Based Pricing:** Refine pricing models to better align premiums with claim risk, especially for segments with high claim volatility or severe loss patterns.
+
+2.  **Geographic Strategy:** Review underwriting and pricing assumptions across circulation areas, particularly in regions with higher claim volatility.
+
+3.  **Vehicle Segmentation:** Pay closer attention to vehicle age and fuel type when assessing profitability, as some segments show higher downside risk or lower median profitability.
+
+4.  **Claim Severity Management:** Since a small number of severe claims account for large losses, consider additional controls such as claim monitoring, risk screening, or differentiated coverage terms for high-risk segments.
+
+5.  **Portfolio Diversification:** Maintain a balanced exposure across fuel types, regions, and vehicle age groups to reduce concentration in high-volatility segments.
