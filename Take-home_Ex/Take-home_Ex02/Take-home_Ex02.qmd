@@ -1,0 +1,35 @@
+---
+title: "Take-home Exercise 2"
+author: "Bui Tien Thanh"
+date: "May 9, 2026"
+date-modified: "last-modified"
+execute:
+  eval: true
+  echo: true
+  warning: false
+  freeze: true
+---
+
+## Overview
+
+[Add assignment description here]
+
+## Loading Packages
+
+```{r}
+pacman::p_load(tidyverse)
+```
+
+## Data Preparation
+
+```{r}
+# Load data
+```
+
+## Analysis
+
+### Section 1
+
+```{r}
+# Your code here
+```

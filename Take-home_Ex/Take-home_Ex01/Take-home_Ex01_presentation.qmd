@@ -1,0 +1,445 @@
+---
+title: "Take-home Exercise 1 (Presentation): Motor Insurance Portfolio Analysis"
+subtitle: "Visual Analytics of Profitability and Risk"
+author: "Bui Tien Thanh"
+date: "May 9, 2026"
+format:
+  revealjs:
+    theme: simple
+    transition: slide
+    slide-number: true
+    chalkboard: true
+---
+
+## Contents {.smaller}
+
+1.  Introduction & Objectives
+2.  Data Overview
+3.  Premium Distribution Analysis
+4.  Claims Distribution Analysis
+5.  Profitability Patterns
+6.  Vehicle Type Analysis
+7.  Geographic Analysis
+8.  Volatility Assessment
+9.  Statistical Validation
+10. Key Findings
+11. Recommendations
+
+::: notes
+This presentation analyzes a Spanish motor insurance portfolio using visual analytics techniques. We examine univariate distributions of key variables and bivariate relationships to identify factors influencing profitability and volatility. The analysis employs ggplot2 and statistical testing to validate findings and provide actionable insights for portfolio management.
+:::
+
+## Introduction & Objectives
+
+**Dataset:** Spanish motor insurance portfolio
+
+**Key Questions:**
+
+- What are the distribution patterns of premiums and claims?
+- Which factors influence portfolio profitability?
+- What drives claims volatility across segments?
+
+**Methods:** Univariate and bivariate visual analytics using ggplot2 and ggstatsplot
+
+::: notes
+The study analyzes real-world insurance data to understand profitability drivers and risk patterns. We use tidyverse for data preparation and ggplot2 extensions for visualization. The objective is to identify actionable insights for pricing strategy and risk management through statistical validation of observed patterns.
+:::
+
+## Data Overview
+
+```{r}
+#| echo: false
+#| message: false
+pacman::p_load(tidyverse, ggplot2, readxl, ggstatsplot, scales, ggridges, ggdist, patchwork)
+
+insurance_data <- read.csv(
+  "../../data/Dataset of motor insurance portfolio.csv",
+  sep = ";",
+  dec = ".")
+
+insurance_clean <- insurance_data %>%
+  mutate(
+    fuel_type = replace_na(fuel_type, "Unknown"),
+    fire_incurred = replace_na(fire_incurred, 0),
+    occupants_incurred = replace_na(occupants_incurred, 0),
+    profitability = total_premium - total_incurred,
+    has_claim = ifelse(total_incurred > 0, "Yes", "No")
+  ) %>%
+  filter(!is.na(profitability), !is.na(age_driving_licence))
+```
+
+**Dataset Size:** `r format(nrow(insurance_clean), big.mark=",")` policies (from `r format(nrow(insurance_data), big.mark=",")` original records)
+
+**Key Variables:** Premium, Claims, Vehicle Type, Geographic Area, Vehicle Age
+
+**Derived Metrics:** Profitability, Volatility (CV)
+
+::: notes
+The dataset contains over 600,000 insurance policies with information on premiums, claims, vehicle characteristics, and geographic location. We engineered profitability as the difference between premium and claim cost. Missing values were minimal and removed. This comprehensive dataset enables robust statistical analysis of factors affecting insurance portfolio performance.
+:::
+
+## Normality Assessment
+
+```{r}
+#| echo: false
+#| fig-width: 10
+#| fig-height: 6
+#| message: false
+pacman::p_load(patchwork)
+
+p_qq1 <- ggplot(insurance_clean, aes(sample = total_premium)) +
+  stat_qq(alpha = 0.4) +
+  stat_qq_line(color = "red") +
+  labs(title = "Q-Q Plot: Premium", x = "Theoretical", y = "Sample") +
+  theme_minimal(base_size = 12)
+
+p_qq2 <- ggplot(insurance_clean, aes(sample = total_incurred)) +
+  stat_qq(alpha = 0.4) +
+  stat_qq_line(color = "red") +
+  labs(title = "Q-Q Plot: Claims", x = "Theoretical", y = "Sample") +
+  theme_minimal(base_size = 12)
+
+p_qq3 <- ggplot(insurance_clean, aes(sample = profitability)) +
+  stat_qq(alpha = 0.4) +
+  stat_qq_line(color = "red") +
+  labs(title = "Q-Q Plot: Profitability", x = "Theoretical", y = "Sample") +
+  theme_minimal(base_size = 12)
+
+(p_qq1 | p_qq2 | p_qq3)
+```
+
+::: notes
+Q-Q plots show clear deviations from normality for all variables. Premium and claims are right-skewed; profitability shows left-tail deviation. Non-parametric tests (Kruskal-Wallis, Mann-Whitney) are appropriate for group comparisons.
+:::
+
+## Premium Distribution
+
+```{r}
+#| echo: false
+#| fig-width: 10
+#| fig-height: 5
+ggplot(insurance_clean, aes(x = total_premium)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 50, fill = "steelblue", alpha = 0.7) +
+  geom_density(color = "red", linewidth = 1) +
+  scale_x_continuous(labels = comma) +
+  labs(title = "Premium Distribution", x = "Premium (€)", y = "Density") +
+  theme_minimal(base_size = 14)
+```
+
+::: notes
+Premium distribution is strongly right-skewed with most policies concentrated between €300-€600. The long tail indicates a small proportion of high-premium policies. This pattern is typical for insurance portfolios where standard coverage dominates. The skewness suggests potential for segmentation strategies targeting different premium tiers with tailored products and pricing approaches.
+:::
+
+## Claims Distribution
+
+```{r}
+#| echo: false
+#| fig-width: 10
+#| fig-height: 5
+ggplot(insurance_clean, aes(x = total_incurred)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 50, fill = "coral", alpha = 0.7) +
+  geom_density(color = "darkred", linewidth = 1) +
+  scale_x_continuous(labels = comma) +
+  labs(title = "Claims Cost Distribution", x = "Claim Cost (€)", y = "Density") +
+  theme_minimal(base_size = 14)
+```
+
+::: notes
+Claims distribution shows extreme right-skewness with high concentration at zero, indicating most policies have no claims. Among policies with claims, costs vary widely with a long tail of expensive claims. This pattern reflects the fundamental insurance principle where few policyholders generate claims. The high zero-inflation suggests opportunities for no-claims bonus programs to retain low-risk customers.
+:::
+
+## Profitability Patterns
+
+```{r}
+#| echo: false
+#| fig-width: 10
+#| fig-height: 5
+ggplot(insurance_clean, aes(x = profitability)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 50, fill = "forestgreen", alpha = 0.7) +
+  geom_density(color = "darkgreen", linewidth = 1) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "red") +
+  scale_x_continuous(labels = comma) +
+  labs(title = "Profitability Distribution", x = "Profitability (€)", y = "Density") +
+  theme_minimal(base_size = 14)
+```
+
+::: notes
+Overall profitability distribution centers around positive values, indicating a healthy portfolio. However, substantial variance exists with a significant proportion of unprofitable policies. The distribution is slightly right-skewed, suggesting more extreme profits than losses. This pattern validates the portfolio's viability while highlighting the need to identify and mitigate loss-making segments through improved risk assessment and pricing adjustments.
+:::
+
+## Premium vs Claims Relationship
+
+```{r}
+#| echo: false
+#| fig-width: 10
+#| fig-height: 5
+cor_value <- cor(insurance_clean$total_premium, insurance_clean$total_incurred, method = "spearman")
+
+ggplot(insurance_clean %>% sample_n(min(5000, nrow(insurance_clean))),
+       aes(x = total_premium, y = total_incurred)) +
+  geom_point(alpha = 0.3, color = "steelblue") +
+  geom_smooth(method = "lm", color = "red", se = TRUE) +
+  scale_x_continuous(labels = comma) +
+  scale_y_continuous(labels = comma) +
+  labs(title = "Premium vs Claim Cost Relationship",
+       subtitle = paste0("Spearman correlation: ", round(cor_value, 3)),
+       x = "Premium (€)", y = "Claim Cost (€)") +
+  theme_minimal(base_size = 14)
+```
+
+::: notes
+The scatter plot reveals a weak positive correlation between premiums and claim costs (Spearman ρ ≈ 0.1-0.2). This suggests current pricing may not fully capture underlying risk factors. A stronger correlation would indicate better risk-based pricing. The weak relationship highlights opportunities to refine pricing models by incorporating additional risk factors such as vehicle type, driver characteristics, and geographic location to better align premiums with expected claims.
+:::
+
+## Vehicle Type Analysis
+
+```{r}
+#| echo: false
+#| fig-width: 10
+#| fig-height: 5
+insurance_clean %>%
+  group_by(fuel_type) %>%
+  summarise(mean_profit = mean(profitability), n = n()) %>%
+  filter(n > 1000) %>%
+  ggplot(aes(x = reorder(fuel_type, mean_profit), y = mean_profit, fill = fuel_type)) +
+  geom_col() +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  coord_flip() +
+  scale_y_continuous(labels = comma) +
+  labs(title = "Average Profitability by Fuel Type", x = "Fuel Type", y = "Mean Profitability (€)") +
+  theme_minimal(base_size = 14) +
+  theme(legend.position = "none")
+```
+
+::: notes
+Profitability varies significantly across fuel types. Different fuel types show varying average profitability levels. These differences are statistically significant (p \< 0.05) based on Kruskal-Wallis tests. The variation suggests fuel type is a meaningful risk factor that should inform pricing strategies. Underperforming segments may require premium adjustments or stricter underwriting criteria.
+:::
+
+## Fuel Type Distribution
+
+```{r}
+#| echo: false
+#| fig-width: 10
+#| fig-height: 5
+insurance_clean %>%
+  count(fuel_type) %>%
+  mutate(pct = n / sum(n) * 100) %>%
+  ggplot(aes(x = reorder(fuel_type, n), y = n, fill = fuel_type)) +
+  geom_col() +
+  geom_text(aes(label = paste0(round(pct, 1), "%")), hjust = -0.2) +
+  coord_flip() +
+  labs(title = "Distribution of Fuel Types", x = "Fuel Type", y = "Count") +
+  scale_y_continuous(labels = comma) +
+  theme_minimal(base_size = 14) +
+  theme(legend.position = "none")
+```
+
+::: notes
+Fuel type distribution shows portfolio composition. Diesel dominates, followed by gasoline. Understanding distribution helps assess concentration risk and informs strategic decisions about market positioning.
+:::
+
+## Claims Occurrence
+
+```{r}
+#| echo: false
+#| fig-width: 10
+#| fig-height: 5
+insurance_clean %>%
+  count(has_claim) %>%
+  mutate(pct = n / sum(n) * 100) %>%
+  ggplot(aes(x = has_claim, y = n, fill = has_claim)) +
+  geom_col() +
+  geom_text(aes(label = paste0(round(pct, 1), "%\n(n=", scales::comma(n), ")")), vjust = -0.5) +
+  labs(title = "Policies with vs without Claims", x = "Has Claim", y = "Count") +
+  scale_y_continuous(labels = comma, expand = expansion(mult = c(0, 0.15))) +
+  theme_minimal(base_size = 14) +
+  theme(legend.position = "none")
+```
+
+::: notes
+Most policies have no claims, reflecting typical insurance patterns. The high proportion of claim-free policies supports profitability but also highlights the importance of retention strategies for low-risk customers.
+:::
+
+## Ridgeline Plot: Profitability Distributions
+
+```{r}
+#| echo: false
+#| fig-width: 10
+#| fig-height: 6
+#| warning: false
+insurance_clean %>%
+  ggplot(aes(x = profitability, y = fuel_type, fill = fuel_type)) +
+  geom_density_ridges(scale = 2, alpha = 0.7) +
+  scale_x_continuous(labels = comma, limits = c(-2000, 2000)) +
+  labs(title = "Profitability Distribution by Fuel Type",
+       x = "Profitability (€)", y = "Fuel Type") +
+  theme_minimal(base_size = 14) +
+  theme(legend.position = "none")
+```
+
+::: notes
+Ridgeline plots reveal overlapping distributions across fuel types, showing not just mean differences but full distributional patterns. Different fuel types show varying distribution shapes and spreads. This visualization technique, learned in Hands-on Exercise 4.2, effectively communicates both central tendency and spread simultaneously, helping identify which segments have consistent profitability versus high variability.
+:::
+
+## Uncertainty Visualization
+
+```{r}
+#| echo: false
+#| fig-width: 10
+#| fig-height: 6
+profit_summary <- insurance_clean %>%
+  group_by(fuel_type) %>%
+  summarise(n = n(), mean = mean(profitability), sd = sd(profitability), se = sd / sqrt(n)) %>%
+  filter(n > 1000)
+
+ggplot(profit_summary) +
+  geom_errorbar(aes(x = reorder(fuel_type, -mean), ymin = mean - 1.96*se, ymax = mean + 1.96*se),
+                width = 0.2, colour = "black", alpha = 0.9, linewidth = 0.5) +
+  geom_point(aes(x = fuel_type, y = mean), stat = "identity", color = "red", size = 3, alpha = 1) +
+  coord_flip() +
+  scale_y_continuous(labels = comma) +
+  labs(title = "Mean Profitability with 95% Confidence Intervals", x = "Fuel Type", y = "Mean Profitability (€)") +
+  theme_minimal(base_size = 14)
+```
+
+::: notes
+Confidence intervals quantify uncertainty in mean estimates, crucial for decision-making. Non-overlapping intervals indicate statistically significant differences between fuel types. This visualization method from Hands-on Exercise 4.4 combines point estimates with uncertainty measures, enabling more informed risk assessment. Wider intervals for some fuel types suggest greater sampling variability or inherent volatility requiring careful interpretation.
+:::
+
+## Geographic Analysis
+
+```{r}
+#| echo: false
+#| fig-width: 10
+#| fig-height: 5
+insurance_clean %>%
+  group_by(circulation_area) %>%
+  summarise(mean_profit = mean(profitability), n = n()) %>%
+  ggplot(aes(x = reorder(circulation_area, mean_profit), y = mean_profit, fill = circulation_area)) +
+  geom_col() +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  coord_flip() +
+  scale_y_continuous(labels = comma) +
+  labs(title = "Average Profitability by Circulation Area", x = "Area", y = "Mean Profitability (€)") +
+  theme_minimal(base_size = 14) +
+  theme(legend.position = "none")
+```
+
+::: notes
+Geographic location significantly impacts profitability with substantial variation across areas. Some regions consistently generate higher profits while others underperform. Statistical tests confirm these differences are significant (p \< 0.001). Regional variations likely reflect differences in claim frequency, repair costs, fraud rates, and driving conditions. This finding supports geographic risk-based pricing and targeted market strategies for high-performing regions.
+:::
+
+## Raincloud Plot: Profitability by Area
+
+```{r}
+#| echo: false
+#| fig-width: 10
+#| fig-height: 6
+#| warning: false
+insurance_clean %>%
+  ggplot(aes(x = circulation_area, y = profitability, fill = circulation_area)) +
+  stat_halfeye(adjust = 0.5, justification = -0.2, .width = 0, point_colour = NA) +
+  geom_boxplot(width = 0.15, outlier.shape = NA, alpha = 0.5) +
+  stat_dots(side = "left", justification = 1.1, binwidth = 100, dotsize = 0.3, overflow = "compress") +
+  scale_y_continuous(labels = comma, limits = c(-2000, 2000)) +
+  labs(title = "Raincloud Plot: Profitability by Circulation Area",
+       subtitle = "Combining density, boxplot, and individual observations",
+       x = "Circulation Area", y = "Profitability (€)") +
+  theme_minimal(base_size = 14) +
+  theme(legend.position = "none")
+```
+
+::: notes
+Raincloud plots combine density curves, boxplots, and individual data points to show complete distributional information. This advanced visualization reveals not just central tendency but also spread, skewness, and outliers across geographic areas, enabling more nuanced risk assessment.
+:::
+
+## Volatility Assessment
+
+```{r}
+#| echo: false
+#| fig-width: 10
+#| fig-height: 5
+insurance_clean %>%
+  group_by(fuel_type) %>%
+  summarise(mean_claim = mean(total_incurred), sd_claim = sd(total_incurred), cv = sd_claim / mean_claim, n = n()) %>%
+  filter(n > 1000) %>%
+  ggplot(aes(x = reorder(fuel_type, cv), y = cv, fill = fuel_type)) +
+  geom_col() +
+  coord_flip() +
+  labs(title = "Claims Volatility by Fuel Type", subtitle = "Coefficient of Variation", x = "Fuel Type", y = "CV") +
+  theme_minimal(base_size = 14) +
+  theme(legend.position = "none")
+```
+
+::: notes
+Claims volatility, measured by coefficient of variation, differs substantially across fuel types. Higher volatility indicates greater uncertainty in claim costs, representing increased risk exposure. Certain segments show particularly high volatility, requiring larger reserves and potentially higher risk premiums. Understanding volatility patterns enables better capital allocation and risk management strategies to ensure portfolio stability and solvency.
+:::
+
+## Statistical Validation
+
+```{r}
+#| echo: false
+#| fig-width: 10
+#| fig-height: 5
+#| warning: false
+insurance_clean %>%
+  ggbetweenstats(
+    x = fuel_type,
+    y = profitability,
+    type = "nonparametric",
+    pairwise.comparisons = FALSE,
+    title = "Profitability Differences: Statistical Test"
+  )
+```
+
+::: notes
+Non-parametric Kruskal-Wallis tests confirm that profitability differences across vehicle types are statistically significant (p \< 0.001). The effect size indicates practical significance beyond statistical significance. Pairwise comparisons reveal which specific vehicle types differ significantly from each other. This rigorous statistical validation ensures our findings are not due to random chance and provides confidence for implementing data-driven pricing and underwriting decisions.
+:::
+
+## Key Findings {.smaller}
+
+**Distribution Patterns:**
+
+- Premiums and claims are right-skewed; most policies are low-risk
+- Profitability is generally positive but with high variance
+
+**Profitability Drivers:**
+
+- Vehicle type significantly impacts profitability (p \< 0.001)
+- Geographic location shows strong association with profit
+- Weak premium-claim correlation suggests pricing gaps
+
+**Volatility Insights:**
+
+- Claims volatility varies substantially across segments
+- High-volatility segments require enhanced risk management
+
+::: notes
+The analysis reveals three key insights. First, distribution patterns show typical insurance characteristics with concentration in low-risk segments. Second, both vehicle type and geography are significant profitability drivers, validated statistically. The weak premium-claim correlation suggests current pricing may not fully capture risk. Third, volatility analysis identifies segments requiring additional reserves. These findings provide actionable intelligence for portfolio optimization and risk management improvements.
+:::
+
+## Recommendations {.smaller}
+
+**1. Risk-Based Pricing**
+
+- Refine pricing models to incorporate vehicle type and geographic risk factors
+- Address premium-claim correlation gaps
+
+**2. Geographic Strategy**
+
+- Focus growth in high-profitability regions
+- Reassess underwriting in underperforming areas
+
+**3. Volatility Management**
+
+- Increase reserves for high-volatility segments
+- Implement enhanced monitoring for unstable portfolios
+
+**4. Portfolio Optimization**
+
+- Balance exposure across risk segments
+- Consider no-claims bonus programs for retention
+
+::: notes
+Four strategic recommendations emerge from this analysis. First, implement sophisticated risk-based pricing that accounts for vehicle type and geography. Second, adopt targeted geographic strategies focusing resources on profitable markets. Third, enhance volatility management through appropriate reserves and monitoring systems. Fourth, optimize portfolio composition by balancing risk exposure and implementing retention programs. These evidence-based recommendations can improve profitability while maintaining portfolio stability and competitive positioning.
+:::

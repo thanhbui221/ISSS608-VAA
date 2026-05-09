@@ -1,0 +1,88 @@
+---
+title: "Take-home Exercise 1 - Requirements"
+author: "ISSS608 Visual Analytics and Applications"
+date: "May 9, 2026"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+---
+
+## The Data
+
+A real world motor vehicle insurance portfolio data set from a Spanish insurance company specialised in non-life insurance will be used in this study. The data set and its cookbook are available for download at [Mendeley Data](https://data.mendeley.com/).
+
+**Data Location:**
+
+All the data has been put under `data/` folder:
+
+- `Dataset of motor insurance portfolio.csv`
+- `Descriptive of variables.xlsx`
+
+## The Tasks
+
+The specific tasks of this study are:
+
+1. **Apply suitable univariate visual analytics techniques** to explore the distributions and characteristics of numerical and categorical variables.
+
+2. **Apply suitable bivariate visual analytics techniques** to investigate and statistically validate factors influencing the profitability and volatility of the insurance portfolio.
+
+## The Designing Tool
+
+The data should be processed by using appropriate **tidyverse** family of packages and the visual analytics must be performed by using **ggplot2** and its extensions.
+
+## Deliverables
+
+The deliverables for this assignment are as follows:
+
+### 1. Executive Summary
+
+**Format:** Quarto presentation format (revealjs)
+
+**Requirements:**
+- Must contain between **10 and 15 slides**, inclusive of the cover page and contents page
+- Each slide must include **Speaker Notes** not exceeding 150 words
+- Speaker notes should provide interpretation and discussion of the patterns, distribution, and statistical insights revealed
+
+### 2. Reproducible Technical Report
+
+**Format:** Quarto HTML format
+
+**Requirements:**
+The report must:
+
+- Document the procedures used to prepare the analytical sandbox
+- Justify the selection of the visual analytics techniques employed
+- Describe the implementation and application of the visual analytics methods
+
+## Submission Instructions
+
+- The deliverable must be published on your **coursework webpage**. A separate tab should be used for Take-home Exercises.
+
+### Submission Date
+
+**Due:** 24th May 2026 (Sunday) by 11:59pm mid-night
+
+## Grading Criteria
+
+This assignment will be graded using the following criteria:
+
+### Data Wrangling (20 marks)
+
+This is an important aspect of visual analytics. You will be assessed on your ability to employ appropriate tidyverse functions to import, extract, clean, transform and process data. Besides assessing your ability to use the tidyverse functions, this criterion also includes your ability to clean and derive appropriate variables to meet the visual analysis need.
+
+### Visual Analysis (30 marks)
+
+In this exercise, you are expected to utilise the visual analytics methods introduced on lesson slides and readings materials included on the weekly course outlines, along with the R methods learned during the hands-on exercises, to perform your analysis. You will be assessed on your ability to apply these methods correctly and to provide accurate interpretations and discussions of the analysis results.
+
+### Visual Communication (20 marks)
+
+In this section, your ability to effectively communicate visual analysis results through user-friendly visual representations will be assessed. Since this course is focused on visual analysis, it is crucial that you demonstrate proficiency in using appropriate visualization techniques, principles and best practices to clearly convey the findings of your analysis.
+
+### Reproducibility (15 marks)
+
+This is a key learning outcome of this course. You will be assessed on your ability to thoroughly document the data preparation, visual analytics and visual design procedures.
+
+### Bonus (15 marks)
+
+Demonstrate your ability to employ methods beyond what you had learned in class to gain insights from the data. The methods used must be visual analytics in nature.

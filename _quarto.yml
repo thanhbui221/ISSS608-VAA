@@ -11,6 +11,8 @@ website:
         text: Hands-on Exercises
       - href: In-class_Ex/index.qmd
         text: In-class Exercises
+      - href: Take-home_Ex/index.qmd
+        text: Take-home Exercises
       - about.qmd
 
 format:

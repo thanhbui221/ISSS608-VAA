@@ -1,0 +1,15 @@
+---
+title: "Take-home Exercises"
+listing:
+  contents: "Take-home*.qmd"
+  sort: "date desc"
+  type: default
+  fields: [date, title, description]
+---
+
+This section contains take-home assignments for ISSS608.
+
+## Assignments
+
+- [Take-home Exercise 1](Take-home_Ex01/Take-home_Ex01.qmd) \| [Presentation](Take-home_Ex01/Take-home_Ex01_presentation.qmd)
+- [Take-home Exercise 2](Take-home_Ex02/Take-home_Ex02.qmd)
