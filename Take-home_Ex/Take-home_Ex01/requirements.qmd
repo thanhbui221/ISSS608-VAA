@@ -10,7 +10,7 @@ format:
 
 ## The Data
 
-A real world motor vehicle insurance portfolio data set from a Spanish insurance company specialised in non-life insurance will be used in this study. The data set and its cookbook are available for download at [Mendeley Data](https://data.mendeley.com/).
+A real world motor vehicle insurance portfolio data set from a Spanish insurance company specialised in non-life insurance will be used in this study. The data set and its cookbook are available for download at [Mendeley Data](https://data.mendeley.com/datasets/sw4jmdb2sm/1).
 
 **Data Location:**
 

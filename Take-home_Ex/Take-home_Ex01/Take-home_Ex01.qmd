@@ -27,6 +27,19 @@ This assignment focuses on analyzing a real-world motor vehicle insurance portfo
 
 ## Loading Packages
 
+We load the following R packages using the pacman::p_load() function:
+
+- `tidyverse` for data manipulation and visualization
+- `ggplot` for data visualization
+- `readxl` for reading Excel, CSV files
+- `skimr` for data profiling
+- `patchwork` for preparing composite figure created using ggplot2
+- `ggstatsplot` for creating graphics with details from statistical tests included in the information-rich plots themselves
+- `ggdist` for visualizations of distributions and uncertainty
+- `ggridges` for ridgeline plots
+- `scales` for providing the internal scaling infrastructure used by ggplot2
+- `viridis` for providding colorblind-friendly, perceptually uniform color palettes
+
 ```{r}
 pacman::p_load(tidyverse, ggplot2, readxl, skimr, patchwork, ggstatsplot, ggdist, ggridges, scales, viridis)
 ```
@@ -34,6 +47,11 @@ pacman::p_load(tidyverse, ggplot2, readxl, skimr, patchwork, ggstatsplot, ggdist
 ## Data Preparation
 
 ### Import Data
+
+There are two files: 
+
+- `Dataset of motor insurance portfolio.csv`: This is our main dataset 
+- `Descriptive of variables.xlsx`: This is just the metadata
 
 ```{r}
 insurance_data <- read.csv(
@@ -46,6 +64,8 @@ variable_desc <- read_excel("../../data/Descriptive of variables.xlsx")
 
 ### Data Exploration
 
+Quickly take a look of our insurance dataset
+
 ```{r}
 glimpse(insurance_data)
 skim(insurance_data)
@@ -53,11 +73,25 @@ skim(insurance_data)
 
 ### Data Cleaning and Feature Engineering
 
+After doing data exploration, we can quickly see some issues with our dataset.
+
 **Missing Value Treatment:**
 
 - `fuel_type`: 1,287 missing values (0.2%) recoded as "Unknown" to preserve records and make missing data visible
 - `age_driving_licence`: 2 missing values (\<0.001%) removed due to negligible impact
+- `vehicle_age`: 2 missing vablues (\<0.001%) removed due to negligible impact
 - `vehicle_value`: 513 missing values (0.08%) kept as NA; filtered out when analyzing vehicle value relationships
+
+**Features Engineering:**
+
+- `profitability`: total_premium - total_incurred
+- `profit_ratio`: profitability / total_premium
+- `has_claim`: "Yes" if total_incurred \> 0, "No" otherwise
+
+**Data Cleaning:**
+
+- We will filter rows with null profitability. This is due to null total_premium and/or total_incurred.
+- We will filter rows with null age_driving_licence.
 
 ```{r}
 insurance_clean <- insurance_data %>%
@@ -65,13 +99,9 @@ insurance_clean <- insurance_data %>%
     fuel_type = replace_na(fuel_type, "Unknown"),
     profitability = total_premium - total_incurred,
     profit_ratio = ifelse(total_premium > 0, profitability / total_premium, NA),
-    has_claim = ifelse(total_incurred > 0, "Yes", "No"),
-    vehicle_age_group = cut(vehicle_age, breaks = c(0, 5, 10, 15, 100),
-                    labels = c("0-5", "6-10", "11-15", "15+")),
-    driver_age_group = cut(driver_age, breaks = c(18, 30, 45, 60, 100),
-                      labels = c("18-30", "31-45", "46-60", "60+"))
+    has_claim = ifelse(total_incurred > 0, "Yes", "No")
   ) %>%
-  filter(!is.na(profitability), !is.na(age_driving_licence))
+  filter(!is.na(profitability), !is.na(age_driving_licence), !is.na(vehicle_age))
 
 cat("Original records:", nrow(insurance_data), "\n")
 cat("After cleaning:", nrow(insurance_clean), "\n")
@@ -497,6 +527,8 @@ insurance_clean %>%
 
 Premium and claim cost have only a weak positive relationship. The Spearman correlation is 0.217, meaning higher-premium policies tend to have slightly higher claim costs, but the relationship is not strong.
 
+I will keep the postitve claims only, and take a look at the relationship. Still, the Spearman correlation is 0.14, quite weak.
+
 ```{r}
 claims_positive <- insurance_clean %>%
   filter(total_incurred > 0)
@@ -542,7 +574,7 @@ ggbetweenstats(
 
 **Interpretation:** Profitability differs significantly across fuel types based on the Kruskal-Wallis test, χ²(2) = 1674.41, p \< 0.001. The median profitability is highest for the `Unknown` fuel type (€275.96), followed by diesel (`D`, €240.75) and gasoline (`G`, €216.22). Pairwise comparisons with Bonferroni adjustment indicate significant differences between all fuel-type groups. However, the effect size is very small, suggesting that although the differences are statistically significant, fuel type alone has limited practical influence on profitability. The `Unknown` category should also be interpreted cautiously due to its much smaller sample size.
 
-fuel type is statistically associated with profitability, but the practical effect appears small.
+=\> Fuel type is statistically associated with profitability, but the practical effect appears small.
 
 ```{r}
 insurance_clean %>%
@@ -576,23 +608,52 @@ ggbetweenstats(
 
 **Interpretation:** Policies in area `U` show slightly higher median profitability than those in area `R`. The difference is statistically significant, but the effect size is very small, indicating that circulation area alone does not strongly explain profitability differences.
 
-Area matters statistically, but the practical difference is very small.
-
-```{r}
-insurance_clean %>%
-  filter(profitability >= -2000, profitability <= 2000) %>%
-  ggbetweenstats(
-    data = .,
-    x = circulation_area,
-    y = profitability,
-    type = "nonparametric",
-    pairwise.comparisons = TRUE,
-    p.adjust.method = "bonferroni",
-    title = "Profitability Distribution by Circulation Area"
-  )
-```
+=\> Area matters statistically, but the practical difference is very small.
 
 #### Profitability by Vehicle Age
+
+We will create bin group for column vehicle_age. Need to look at its distribution first.
+
+```{r}
+p7 <- ggplot(insurance_clean, aes(x = vehicle_age)) +
+  geom_histogram(aes(y = after_stat(density)),
+                 bins = 50, fill = "forestgreen", alpha = 0.7) +
+  geom_density(color = "darkgreen", linewidth = 1) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "red") +
+  scale_x_continuous(labels = comma) +
+  labs(
+    title = "Distribution of vehicle_age",
+    x = "Vehicle Age (years)",
+    y = "Density"
+  ) +
+  theme_minimal()
+p7
+```
+
+The distribution of vehicle_age is not uniform. Most vehicles are concentrated between approximately 10 and 45 years old, with the highest density around 15–30 years. There are relatively fewer very new vehicles and fewer vehicles older than 50 years. Based on this distribution, vehicle_age was grouped into wider age bands: 0-5, 6-10, 11-20, 21-30, 31-40, 41-50, and 50+ years. This binning approach improves interpretability while preserving the main structure of the original distribution.
+
+```{r}
+insurance_clean <- insurance_clean %>%
+  mutate(
+    vehicle_age_group = case_when(
+      vehicle_age < 0 ~ "Invalid",
+      vehicle_age <= 5 ~ "0-5 years",
+      vehicle_age <= 10 ~ "6-10 years",
+      vehicle_age <= 20 ~ "11-20 years",
+      vehicle_age <= 30 ~ "21-30 years",
+      vehicle_age <= 40 ~ "31-40 years",
+      vehicle_age <= 50 ~ "41-50 years",
+      TRUE ~ "50+ years"
+    ),
+    vehicle_age_group = factor(
+      vehicle_age_group,
+      levels = c(
+        "Invalid", "0-5 years", "6-10 years", "11-20 years",
+        "21-30 years", "31-40 years", "41-50 years", "50+ years"
+      )
+    )
+  )
+```
 
 ```{r}
 ggplot(insurance_clean, aes(x = vehicle_age_group, y = profitability, fill = vehicle_age_group)) +
@@ -605,9 +666,7 @@ ggplot(insurance_clean, aes(x = vehicle_age_group, y = profitability, fill = veh
   theme(legend.position = "none")
 ```
 
-**Interpretation:** Profitability varies across vehicle age groups, but the chart is strongly affected by extreme negative outliers. Most policies across all age groups appear to have profitability close to zero or moderately positive values. However, older vehicles, especially the `15+` group, show much larger negative outliers, suggesting that very old vehicles may be associated with higher claim severity and greater loss risk. The `NA` group is difficult to interpret and should be treated separately or excluded from age-based conclusions.
-
-Older vehicles, especially the 15+ group, seem to have larger downside risk / more severe negative profitability outliers.
+**Interpretation:** Profitability varies across vehicle age groups, but the chart is strongly influenced by extreme negative outliers. Most policies in all age groups have profitability clustered close to zero, suggesting that typical profitability differences are not very large. However, older vehicle groups show more severe downside outcomes, with larger negative profitability outliers. This pattern is especially visible for vehicles aged 41–50 years and 50+ years, suggesting that very old vehicles may be associated with higher claim severity and greater loss risk. Therefore, older vehicles appear to carry greater downside risk, even if the majority of observations remain close to zero.
 
 ```{r}
 insurance_clean %>%
@@ -634,6 +693,8 @@ insurance_clean %>%
   theme_minimal() +
   theme(legend.position = "none")
 ```
+
+**Interpretation:** After filtering extreme profitability values, most vehicle age groups have similar median profitability, generally slightly above zero. However, older vehicles, especially the 41-50 years and 50+ years groups, show wider negative tails, suggesting higher downside risk even though typical profitability remains comparable across groups.
 
 #### Raincloud Plot: Profitability by Area
 

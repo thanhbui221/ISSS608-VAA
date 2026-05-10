@@ -5,7 +5,7 @@ author: Bui Tien Thanh (tt.bui.2025@mitb.smu.edu.sg)
 
 Welcome! Use the links below to navigate to each section.
 
-::::: {style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem; margin-top: 2rem;"}
+:::::: {style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem; margin-top: 2rem;"}
 ::: {style="border: 1px solid #dee2e6; border-radius: 8px; padding: 1.5rem;"}
 ### Hands-on Exercises
 
@@ -29,4 +29,4 @@ Assignments and projects for independent work.
 
 [Go to Take-home Exercises →](Take-home_Ex/index.qmd)
 :::
-:::::
+::::::
