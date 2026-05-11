@@ -38,7 +38,7 @@ We load the following R packages using the pacman::p_load() function:
 - `ggdist` for visualizations of distributions and uncertainty
 - `ggridges` for ridgeline plots
 - `scales` for providing the internal scaling infrastructure used by ggplot2
-- `viridis` for providding colorblind-friendly, perceptually uniform color palettes
+- `viridis` for providing colorblind-friendly, perceptually uniform color palettes
 
 ```{r}
 pacman::p_load(tidyverse, ggplot2, readxl, skimr, patchwork, ggstatsplot, ggdist, ggridges, scales, viridis)
@@ -48,9 +48,9 @@ pacman::p_load(tidyverse, ggplot2, readxl, skimr, patchwork, ggstatsplot, ggdist
 
 ### Import Data
 
-There are two files: 
+There are two files:
 
-- `Dataset of motor insurance portfolio.csv`: This is our main dataset 
+- `Dataset of motor insurance portfolio.csv`: This is our main dataset
 - `Descriptive of variables.xlsx`: This is just the metadata
 
 ```{r}
@@ -59,7 +59,6 @@ insurance_data <- read.csv(
   sep = ";",
   dec = "."
 )
-variable_desc <- read_excel("../../data/Descriptive of variables.xlsx")
 ```
 
 ### Data Exploration
@@ -68,25 +67,29 @@ Quickly take a look of our insurance dataset
 
 ```{r}
 glimpse(insurance_data)
+```
+
+```{r}
 skim(insurance_data)
 ```
 
-### Data Cleaning and Feature Engineering
+### Data Pre-Processing
 
 After doing data exploration, we can quickly see some issues with our dataset.
 
 **Missing Value Treatment:**
 
-- `fuel_type`: 1,287 missing values (0.2%) recoded as "Unknown" to preserve records and make missing data visible
+- `fuel_type`: 1,287 missing values (0.2%) removed due to neglibile impact.
 - `age_driving_licence`: 2 missing values (\<0.001%) removed due to negligible impact
-- `vehicle_age`: 2 missing vablues (\<0.001%) removed due to negligible impact
-- `vehicle_value`: 513 missing values (0.08%) kept as NA; filtered out when analyzing vehicle value relationships
+- `vehicle_age`: 2 missing values (\<0.001%) removed due to negligible impact
+- `vehicle_value`: 513 missing values (0.08%) removed due to negligible impact
 
 **Features Engineering:**
 
 - `profitability`: total_premium - total_incurred
 - `profit_ratio`: profitability / total_premium
 - `has_claim`: "Yes" if total_incurred \> 0, "No" otherwise
+- `years_with_licence`: year - age_driving_licence (actual years of driving experience)
 
 **Data Cleaning:**
 
@@ -96,12 +99,12 @@ After doing data exploration, we can quickly see some issues with our dataset.
 ```{r}
 insurance_clean <- insurance_data %>%
   mutate(
-    fuel_type = replace_na(fuel_type, "Unknown"),
+    years_with_licence = year - age_driving_licence,
     profitability = total_premium - total_incurred,
     profit_ratio = ifelse(total_premium > 0, profitability / total_premium, NA),
     has_claim = ifelse(total_incurred > 0, "Yes", "No")
   ) %>%
-  filter(!is.na(profitability), !is.na(age_driving_licence), !is.na(vehicle_age))
+  filter(!is.na(profitability), !is.na(age_driving_licence), !is.na(vehicle_age), !is.na(fuel_type), !is.na(vehicle_value))
 
 cat("Original records:", nrow(insurance_data), "\n")
 cat("After cleaning:", nrow(insurance_clean), "\n")
@@ -212,7 +215,7 @@ p2 <- ggplot(insurance_clean, aes(y = total_premium)) +
 p1 / p2
 ```
 
-The distribution of total premium is right-skewed, with most policies having relatively low premium values. The histogram shows that the majority of observations are concentrated below €500, while a small number of policies have much higher premiums, extending beyond €5,000. The boxplot confirms the presence of several upper-tail outliers. Therefore, the premium variable is not normally distributed and may require transformation or non-parametric methods in later analysis.
+**Interpretation:** The distribution of total premium is right-skewed, with most policies having relatively low premium values. The histogram shows that the majority of observations are concentrated below €500, while a small number of policies have much higher premiums, extending beyond €5,000. The boxplot confirms the presence of several upper-tail outliers. Therefore, the premium variable is not normally distributed. Will apply log transformation to this column to make a better chart only.
 
 ```{r}
 ggplot(insurance_clean, aes(x = log1p(total_premium))) +
@@ -246,7 +249,7 @@ p4 <- ggplot(insurance_clean, aes(x = total_incurred)) +
 p3 / p4
 ```
 
-The distribution of total incurred claim costs is extremely right-skewed. Most policies have very low or zero claim costs, while a small number of observations have exceptionally large claim amounts, reaching nearly €600,000. The boxplot confirms the presence of many upper-tail outliers. This pattern is common in insurance data, where most policyholders do not make large claims, but a few severe claims can significantly affect the overall distribution. Therefore, the variable is not normally distributed, and log transformation or non-parametric methods may be more appropriate for further analysis.
+**Interpretation:** The distribution of total incurred claim costs is extremely right-skewed. Most policies have very low or zero claim costs, while a small number of observations have exceptionally large claim amounts, reaching nearly €600,000. The boxplot confirms the presence of many upper-tail outliers. This pattern is common in insurance data, where most policyholders do not make large claims, but a few severe claims can significantly affect the overall distribution. Therefore, the variable is not normally distributed, and log transformation or non-parametric methods may be more appropriate for further analysis.
 
 ```{r}
 insurance_clean <- insurance_clean %>%
@@ -276,7 +279,9 @@ p4_log <- ggplot(insurance_clean, aes(y = log_total_incurred)) +
 p3_log / p4_log
 ```
 
-After applying the log transformation, the distribution of claim costs becomes easier to inspect, but a large spike remains at zero. This indicates that many policies have no incurred claims. Among policies with positive claim costs, the distribution is still right-skewed, although the log transformation reduces the influence of extreme claim values.
+**Interpretation:** After applying the log transformation, the distribution of claim costs becomes easier to inspect, but a large spike remains at zero. This indicates that many policies have no incurred claims. Among policies with positive claim costs, the distribution is still right-skewed, although the log transformation reduces the influence of extreme claim values.
+
+Lets take a look at the distribution of positive claims only.
 
 ```{r}
 claims_positive <- insurance_clean %>%
@@ -307,6 +312,10 @@ p4_log_positive <- ggplot(claims_positive, aes(y = log_total_incurred)) +
 
 p3_log_positive / p4_log_positive
 ```
+
+**Interpretation:** Although only positive incurred claims were included, the presence of extremely low log values suggests that some positive claim costs are very close to zero. These observations should be inspected because they may reflect very small claim payments, rounding effects, or possible data issues. Therefore, while the log transformation helps reduce the impact of very large claim costs, it does not fully remove extreme observations.
+
+The distribution remains non-normal even after log transformation, so non-parametric or robust methods remain appropriate for comparing claim costs across groups.
 
 #### Distribution of Profitability
 
@@ -340,7 +349,7 @@ p6 <- ggplot(insurance_clean, aes(y = profitability)) +
 p5 / p6
 ```
 
-Profitability, defined as total premium minus total incurred claims, shows a highly left-skewed distribution. Most policies have profitability close to zero or moderately positive, while a small number of policies generate very large losses due to high claim costs. The vertical dashed line at zero separates profitable and loss-making policies. The long negative tail indicates that claim severity has a strong impact on insurer profitability. Therefore, profitability is not normally distributed, and non-parametric methods or transformed visualizations are more appropriate for further analysis.
+**Interpretation:** Profitability, defined as total premium minus total incurred claims, shows a highly left-skewed distribution. Most policies have profitability close to zero or moderately positive, while a small number of policies generate very large losses due to high claim costs. The vertical dashed line at zero separates profitable and loss-making policies. The long negative tail indicates that claim severity has a strong impact on insurer profitability. Therefore, profitability is not normally distributed, and non-parametric methods or transformed visualizations are more appropriate for further analysis.
 
 ```{r}
 insurance_clean <- insurance_clean %>%
@@ -359,7 +368,7 @@ ggplot(insurance_clean, aes(x = signed_log_profitability)) +
   theme_minimal()
 ```
 
-The transformed distribution shows two distinct regions: a large cluster of profitable policies and a smaller group of loss-making policies. Most observations are concentrated on the positive side of zero, while the negative tail indicates policies where incurred claims exceed premiums. This confirms that profitability is not normally distributed and supports the use of non-parametric methods in subsequent analyses.
+**Interpretation:** The transformed distribution shows two distinct regions: a large cluster of profitable policies and a smaller group of loss-making policies. Most observations are concentrated on the positive side of zero, while the negative tail indicates policies where incurred claims exceed premiums. This confirms that profitability is not normally distributed and supports the use of non-parametric methods in subsequent analyses.
 
 #### Ridgeline Plot: Profitability by Fuel Type
 
@@ -382,7 +391,7 @@ insurance_clean %>%
   theme(legend.position = "none")
 ```
 
-The ridgeline plot compares the profitability distributions across different fuel types. Overall, the distributions largely overlap, suggesting that profitability patterns are broadly similar across fuel categories. Most policies are concentrated around slightly positive profitability values, while each fuel type also shows some negative-profitability cases. Diesel and gasoline vehicles appear to have similar central distributions, while the unknown fuel type shows a wider spread, indicating greater variability. However, this should be interpreted carefully because the unknown category may represent incomplete or less consistent records.
+**Interpretation:** The ridgeline plot compares the profitability distributions across different fuel types. Overall, the distributions largely overlap, suggesting that profitability patterns are broadly similar across fuel categories. Most policies are concentrated around slightly positive profitability values, while each fuel type also shows some negative-profitability cases. Diesel and gasoline vehicles appear to have similar central distributions.
 
 The below plot is restricted to the central profitability range to improve readability because extreme loss values distort the density estimation.
 
@@ -404,6 +413,241 @@ insurance_clean %>%
   ) +
   theme_minimal() +
   theme(legend.position = "none")
+```
+
+#### Distribution of Vehicle Age
+
+```{r}
+p_vage1 <- ggplot(insurance_clean, aes(x = vehicle_age)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 30, fill = "steelblue", alpha = 0.7) +
+  geom_density(color = "red", linewidth = 1) +
+  labs(title = "Distribution of Vehicle Age", x = "Vehicle Age (years)", y = "Density") +
+  theme_minimal()
+
+p_vage2 <- ggplot(insurance_clean, aes(y = vehicle_age)) +
+  geom_boxplot(fill = "steelblue", alpha = 0.7) +
+  coord_flip() +
+  labs(title = "Boxplot of Vehicle Age", x = NULL, y = "Vehicle Age (years)") +
+  theme_minimal()
+
+p_vage1 / p_vage2
+```
+
+**Interpretation:** The distribution of vehicle_age is not uniform. Most vehicles are concentrated between approximately 10 and 45 years old, with the highest density around 15–30 years. There are relatively fewer very new vehicles and fewer vehicles older than 50 years. Based on this distribution, vehicle_age was grouped into wider age bands: 0-5, 6-10, 11-20, 21-30, 31-40, 41-50, and 50+ years. This binning approach improves interpretability while preserving the main structure of the original distribution.
+
+```{r}
+insurance_clean <- insurance_clean %>%
+  mutate(
+    vehicle_age_group = case_when(
+      vehicle_age < 0 ~ "Invalid",
+      vehicle_age <= 5 ~ "0-5 years",
+      vehicle_age <= 10 ~ "6-10 years",
+      vehicle_age <= 20 ~ "11-20 years",
+      vehicle_age <= 30 ~ "21-30 years",
+      vehicle_age <= 40 ~ "31-40 years",
+      vehicle_age <= 50 ~ "41-50 years",
+      TRUE ~ "50+ years"
+    ),
+    vehicle_age_group = factor(
+      vehicle_age_group,
+      levels = c(
+        "Invalid", "0-5 years", "6-10 years", "11-20 years",
+        "21-30 years", "31-40 years", "41-50 years", "50+ years"
+      )
+    )
+  )
+```
+
+#### Distribution of Driver Age
+
+```{r}
+p_dage1 <- ggplot(insurance_clean, aes(x = driver_age)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 30, fill = "coral", alpha = 0.7) +
+  geom_density(color = "darkred", linewidth = 1) +
+  labs(title = "Distribution of Driver Age", x = "Driver Age (years)", y = "Density") +
+  theme_minimal()
+
+p_dage2 <- ggplot(insurance_clean, aes(y = driver_age)) +
+  geom_boxplot(fill = "coral", alpha = 0.7) +
+  coord_flip() +
+  labs(title = "Boxplot of Driver Age", x = NULL, y = "Driver Age (years)") +
+  theme_minimal()
+
+p_dage1 / p_dage2
+```
+
+**Interpretation:** From the distribution, most drivers are between around 35 and 65 years old, with the highest density around the late 30s to early 50s. The distribution is slightly right-skewed, with a small number of older drivers above 80 appearing as outliers in the boxplot. Since age may have a non-linear relationship with profitability and claim risk, grouping driver age into age bands makes the analysis easier to interpret.
+
+```{r}
+insurance_clean <- insurance_clean %>%
+  mutate(
+    driver_age_group = case_when(
+      driver_age <= 25 ~ "18-25 years",
+      driver_age <= 35 ~ "26-35 years",
+      driver_age <= 50 ~ "36-50 years",
+      driver_age <= 65 ~ "51-65 years",
+      TRUE ~ "65+ years"
+    ),
+    driver_age_group = factor(
+      driver_age_group,
+      levels = c("18-25 years", "26-35 years", "36-50 years", "51-65 years", "65+ years")
+    )
+  )
+```
+
+This grouping improves interpretability and allows profitability patterns to be compared across different driver age segments.
+
+#### Distribution of Driving License Age
+
+The variable years_with_licence appears to represent the calendar year in which the driver obtained their licence, rather than the number of years of driving experience. Since the dataset covers policies from 2022 to 2024, this variable was transformed into age_driving_licence by subtracting the licence year from the policy year. This derived variable better represents driving experience and is more interpretable for analysing claim risk and profitability.
+
+
+```{r}
+insurance_clean <- insurance_clean %>%
+  mutate(
+    age_driving_licence = 2024 - years_with_licence
+  )
+
+p_lage1 <- ggplot(insurance_clean, aes(x = age_driving_licence)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 30, fill = "forestgreen", alpha = 0.7) +
+  geom_density(color = "darkgreen", linewidth = 1) +
+  labs(
+    title = "Distribution of Driving Experience",
+    x = "Years Since Licence Obtained",
+    y = "Density"
+  ) +
+  theme_minimal()
+
+p_lage2 <- ggplot(insurance_clean, aes(y = age_driving_licence)) +
+  geom_boxplot(fill = "forestgreen", alpha = 0.7) +
+  coord_flip() +
+  labs(
+    title = "Boxplot of Driving Experience",
+    x = NULL,
+    y = "Years Since Licence Obtained"
+  ) +
+  theme_minimal()
+
+p_lage1 / p_lage2
+```
+
+**Interpretation:** The distribution of driving experience is highly right-skewed. Most drivers have around 18 to 25 years since obtaining their licence, with the highest concentration close to 20 years. The boxplot also shows several outliers, especially among drivers with more than 40 years of experience, and a few very low values close to zero. This suggests that the variable is not evenly distributed and may have a non-linear relationship with profitability or claim risk. Therefore, driving experience was converted into grouped categories to make the analysis easier to interpret and reduce the influence of individual extreme values.
+
+Based on this distribution, driving experience was grouped into 0-10, 11-20, 21-30, 31-40, and 40+ years. Wider groups were used because most observations are concentrated around 18–25 years, while the higher-experience values form a long tail.
+
+```{r}
+insurance_clean <- insurance_clean %>%
+  mutate(
+    driving_experience_group = case_when(
+      age_driving_licence < 0 ~ "Invalid",
+      age_driving_licence <= 10 ~ "0-10 years",
+      age_driving_licence <= 20 ~ "11-20 years",
+      age_driving_licence <= 30 ~ "21-30 years",
+      age_driving_licence <= 40 ~ "31-40 years",
+      TRUE ~ "40+ years"
+    ),
+    driving_experience_group = factor(
+      driving_experience_group,
+      levels = c(
+        "Invalid", "0-10 years", "11-20 years",
+        "21-30 years", "31-40 years", "40+ years"
+      )
+    )
+  )
+```
+
+#### Distribution of Power-to-Weight Ratio
+
+```{r}
+p_pwr1 <- ggplot(insurance_clean, aes(x = power_to_weight_ratio)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 30, fill = "purple", alpha = 0.7) +
+  geom_density(color = "darkviolet", linewidth = 1) +
+  labs(
+    title = "Distribution of Weight-to-Power Ratio",
+    x = "Weight-to-Power Ratio (kg per horsepower)",
+    y = "Density"
+  ) +
+  theme_minimal()
+
+p_pwr2 <- ggplot(insurance_clean, aes(y = power_to_weight_ratio)) +
+  geom_boxplot(fill = "purple", alpha = 0.7) +
+  coord_flip() +
+  labs(
+    title = "Boxplot of Weight-to-Power Ratio",
+    x = NULL,
+    y = "Weight-to-Power Ratio (kg per horsepower)"
+  ) +
+  theme_minimal()
+
+p_pwr1 / p_pwr2
+```
+
+**Interpretation:** The distribution of weight-to-power ratio is strongly right-skewed. Most vehicles are concentrated around approximately 8 to 15 kg per horsepower, while a smaller number of vehicles have much higher ratios. The boxplot also shows several high-end outliers, including one extreme value above 60. Since this variable is measured as kg per horsepower, a lower value indicates stronger vehicle performance, while a higher value indicates lower performance relative to vehicle weight. Therefore, the variable was grouped into categories to improve interpretability and reduce the influence of individual extreme values.
+
+```{r}
+insurance_clean <- insurance_clean %>%
+  mutate(
+    weight_power_group = cut(
+      power_to_weight_ratio,
+      breaks = quantile(
+        power_to_weight_ratio,
+        probs = c(0, 0.25, 0.5, 0.75, 1),
+        na.rm = TRUE
+      ),
+      include.lowest = TRUE,
+      labels = c("Low ratio / High performance",
+                 "Medium-low ratio",
+                 "Medium-high ratio",
+                 "High ratio / Low performance")
+    )
+  )
+```
+
+#### Distribution of Total Exposure
+
+```{r}
+p_exp1 <- ggplot(insurance_clean, aes(x = total_exposure)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 30, fill = "orange", alpha = 0.7) +
+  geom_density(color = "darkorange", linewidth = 1) +
+  labs(title = "Distribution of Total Exposure", x = "Total Exposure (years)", y = "Density") +
+  theme_minimal()
+
+p_exp2 <- ggplot(insurance_clean, aes(y = total_exposure)) +
+  geom_boxplot(fill = "orange", alpha = 0.7) +
+  coord_flip() +
+  labs(title = "Boxplot of Total Exposure", x = NULL, y = "Total Exposure (years)") +
+  theme_minimal()
+
+p_exp1 / p_exp2
+```
+
+**Interpretation:** The distribution of total_exposure shows that many policies have exposure close to 1 year, meaning they were active for almost the full policy period. However, there are also many partial-year policies with exposure values below 1. The boxplot shows that the median exposure is relatively high, around 0.8–0.9 years, while the lower quartile is around 0.4–0.5 years. Since exposure measures the amount of time a policy is active, it affects both premium earned and claim opportunity. Therefore, total_exposure should be considered when interpreting profitability and claim risk.
+
+Because exposure is bounded between 0 and 1 and has a large concentration near 1, it was grouped into exposure bands to compare short-term and full-year policies more clearly.
+
+```{r}
+insurance_clean <- insurance_clean %>%
+  mutate(
+    exposure_group = case_when(
+      is.na(total_exposure) ~ NA_character_,
+      total_exposure < 0.25 ~ "Very short exposure",
+      total_exposure < 0.50 ~ "Short exposure",
+      total_exposure < 0.75 ~ "Medium exposure",
+      total_exposure < 1.00 ~ "High exposure",
+      total_exposure >= 1.00 ~ "Full-year exposure",
+      TRUE ~ "Other"
+    ),
+    exposure_group = factor(
+      exposure_group,
+      levels = c(
+        "Very short exposure",
+        "Short exposure",
+        "Medium exposure",
+        "High exposure",
+        "Full-year exposure"
+      )
+    )
+  )
 ```
 
 ### Categorical Variables
@@ -434,7 +678,7 @@ insurance_clean %>%
   theme(legend.position = "none")
 ```
 
-The fuel type distribution is highly imbalanced. Diesel vehicles account for the majority of the portfolio, representing around 63.9% of policies, followed by gasoline vehicles at 35.7%. The Unknown category is very small, accounting for only 0.4% of the data. This suggests that most insured vehicles in the portfolio are either diesel or gasoline, while missing or unclassified fuel types are rare.
+**Interpretation:** The fuel type distribution is highly imbalanced. Diesel vehicles account for the majority of the portfolio, representing around 64.2% of policies, followed by gasoline vehicles at 35.8%.
 
 #### Geographic Distribution
 
@@ -462,7 +706,169 @@ insurance_clean %>%
   theme(legend.position = "none")
 ```
 
-Area U is slightly more common, but both R and U have substantial sample sizes.
+**Interpretation:** Area U is slightly more common, but both R and U have substantial sample sizes.
+
+#### Municipality Type Distribution
+
+```{r}
+insurance_clean %>%
+  count(municipality_type) %>%
+  mutate(pct = n / sum(n) * 100) %>%
+  ggplot(aes(x = reorder(municipality_type, n), y = n, fill = municipality_type)) +
+  geom_col() +
+  geom_text(aes(label = paste0(round(pct, 1), "%")), hjust = -0.1) +
+  coord_flip() +
+  scale_y_continuous(labels = comma, expand = expansion(mult = c(0, 0.15))) +
+  labs(title = "Distribution by Municipality Type", x = "Municipality Type", y = "Count") +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+**Interpretation:** The distribution of municipality_type shows that most policyholders are from inland municipalities, accounting for 64.6% of the dataset. Coastal municipalities represent 28.6%, while island municipalities account for only 6.8%. This indicates that the portfolio is geographically imbalanced, with inland areas dominating the sample. Since municipality type may reflect different driving environments, road conditions, traffic density, and claim exposure, it is useful to include this variable when comparing claim risk and profitability. However, results for the island group should be interpreted carefully because it has a much smaller sample size.
+
+Recode the labels for readability only.
+
+```{r}
+insurance_clean <- insurance_clean %>%
+  mutate(
+    municipality_type_label = case_when(
+      municipality_type == "I" ~ "Inland",
+      municipality_type == "C" ~ "Coastal",
+      municipality_type == "IS" ~ "Islands",
+      TRUE ~ "Other"
+    ),
+    municipality_type_label = factor(
+      municipality_type_label,
+      levels = c("Inland", "Coastal", "Islands", "Other")
+    )
+  )
+
+insurance_clean %>%
+  count(municipality_type_label) %>%
+  mutate(pct = n / sum(n) * 100) %>%
+  ggplot(aes(x = reorder(municipality_type_label, n), y = n, fill = municipality_type_label)) +
+  geom_col() +
+  geom_text(aes(label = paste0(round(pct, 1), "%")), hjust = -0.1) +
+  coord_flip() +
+  scale_y_continuous(labels = comma, expand = expansion(mult = c(0, 0.15))) +
+  labs(
+    title = "Distribution by Municipality Type",
+    x = "Municipality Type",
+    y = "Count"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+#### Bonus Score Distribution
+
+```{r}
+insurance_clean %>%
+  count(bonus_score) %>%
+  mutate(pct = n / sum(n) * 100) %>%
+  ggplot(aes(x = reorder(bonus_score, n), y = n, fill = bonus_score)) +
+  geom_col() +
+  geom_text(aes(label = paste0(round(pct, 1), "%")), hjust = -0.1) +
+  coord_flip() +
+  scale_y_continuous(labels = comma, expand = expansion(mult = c(0, 0.15))) +
+  labs(title = "Distribution by Bonus Score", x = "Bonus Score", y = "Count") +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+**Interpretation:** The distribution of bonus_score is highly imbalanced. The majority of policyholders are classified as G, representing a favourable claims history, and this group accounts for 96.4% of the dataset. The N group, representing a neutral profile, accounts for only 2.2%, while the B group, representing a poor claims history, accounts for 1.3%. This suggests that most policyholders in the portfolio have a positive claims history. However, because the N and B groups are very small, any profitability or claim-risk comparison involving these groups should be interpreted carefully.
+
+Recode the labels for readability.
+
+```{r}
+insurance_clean <- insurance_clean %>%
+  mutate(
+    bonus_score_label = case_when(
+      bonus_score == "G" ~ "Good claims history",
+      bonus_score == "N" ~ "Neutral profile",
+      bonus_score == "B" ~ "Poor claims history",
+      TRUE ~ "Other"
+    ),
+    bonus_score_label = factor(
+      bonus_score_label,
+      levels = c("Good claims history", "Neutral profile", "Poor claims history", "Other")
+    )
+  )
+
+insurance_clean %>%
+  count(bonus_score_label) %>%
+  mutate(pct = n / sum(n) * 100) %>%
+  ggplot(aes(x = reorder(bonus_score_label, n), y = n, fill = bonus_score_label)) +
+  geom_col() +
+  geom_text(aes(label = paste0(round(pct, 1), "%")), hjust = -0.1) +
+  coord_flip() +
+  scale_y_continuous(labels = comma, expand = expansion(mult = c(0, 0.15))) +
+  labs(title = "Distribution by Bonus Score", x = "Bonus Score", y = "Count") +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+```
+
+#### Policy Type Distribution
+
+```{r}
+insurance_clean %>%
+  count(policy_type) %>%
+  mutate(pct = n / sum(n) * 100) %>%
+  ggplot(aes(x = reorder(policy_type, n), y = n, fill = policy_type)) +
+  geom_col() +
+  geom_text(aes(label = paste0(round(pct, 1), "%")), hjust = -0.1) +
+  coord_flip() +
+  scale_y_continuous(labels = comma, expand = expansion(mult = c(0, 0.15))) +
+  labs(title = "Distribution by Policy Type", x = "Policy Type", y = "Count") +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+**Interpretation:** The distribution of policy_type shows that the portfolio is mainly concentrated in CC policies, which account for 57.9% of all observations. The second largest group is COMP_E, representing 25.6%, followed by TPG at 10.3%. In contrast, COMP_N and TP are much smaller groups, accounting for only 4.5% and 1.6%, respectively. This indicates that most policies include third-party liability combined with additional coverages, while basic third-party-only policies are relatively rare.
+
+Since policy type represents the coverage structure of the insurance contract, it is expected to be closely related to premium, claim cost, and profitability. Policies with broader coverage may generate higher premiums but may also expose the insurer to more types of claims. Therefore, policy_type is an important variable for comparing profitability and claim risk across different insurance products.
+
+However, the smaller sample sizes for TP and COMP_N mean that results for these groups should be interpreted carefully, as their profitability patterns may be less stable.
+
+Recode the labels for readability.
+
+```{r}
+insurance_clean <- insurance_clean %>%
+  mutate(
+    policy_type_label = case_when(
+      policy_type == "TP" ~ "Third-party only",
+      policy_type == "TPG" ~ "Third-party + glass",
+      policy_type == "CC" ~ "Third-party + add-ons",
+      policy_type == "COMP_E" ~ "Comprehensive with excess",
+      policy_type == "COMP_N" ~ "Comprehensive without excess",
+      TRUE ~ "Other"
+    ),
+    policy_type_label = factor(
+      policy_type_label,
+      levels = c(
+        "Third-party only",
+        "Third-party + glass",
+        "Third-party + add-ons",
+        "Comprehensive with excess",
+        "Comprehensive without excess",
+        "Other"
+      )
+    )
+  )
+
+insurance_clean %>%
+  count(policy_type_label) %>%
+  mutate(pct = n / sum(n) * 100) %>%
+  ggplot(aes(x = reorder(policy_type_label, n), y = n, fill = policy_type_label)) +
+  geom_col() +
+  geom_text(aes(label = paste0(round(pct, 1), "%")), hjust = -0.1) +
+  coord_flip() +
+  scale_y_continuous(labels = comma, expand = expansion(mult = c(0, 0.15))) +
+  labs(title = "Distribution by Policy Type", x = "Policy Type", y = "Count") +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
 
 #### Claims Occurrence
 
@@ -489,9 +895,82 @@ insurance_clean %>%
   theme(legend.position = "none")
 ```
 
-Most policies in the portfolio do not have any claims. Around 88.1% of policies have no claims, while only 11.9% have at least one claim. This indicates that claim occurrence is relatively rare, which is typical in motor insurance data. The strong imbalance also explains why the `total_incurred` variable has many zero values and a highly right-skewed distribution. For later modelling or statistical analysis, this imbalance should be considered carefully, especially if `has_claim` is used as a target variable.
+**Interpretation:** Most policies in the portfolio do not have any claims. Around 88.1% of policies have no claims, while only 11.9% have at least one claim. This indicates that claim occurrence is relatively rare, which is typical in motor insurance data. The strong imbalance also explains why the `total_incurred` variable has many zero values and a highly right-skewed distribution. For later modelling or statistical analysis, this imbalance should be considered carefully, especially if `has_claim` is used as a target variable.
 
 This supports treating claim analysis as two parts: claim frequency and claim severity. claims are rare, data is imbalanced, and claim cost is zero-inflated because most policies have no claims.
+
+## Data Wrangling Summary
+
+### Data Exploration
+
+After importing the dataset, we performed initial exploration using `glimpse()` and `skim()` to understand the structure, data types, and quality of the variables. Key findings included:
+
+- Dataset contains 647,387 policy records with 46 variables
+- Missing values identified in `fuel_type` (1,287), `age_driving_licence` (2), `vehicle_age` (2), and `vehicle_value` (513)
+- Numerical variables show right-skewed distributions typical of insurance data
+- Categorical variables show imbalanced distributions
+
+### Data Processing
+
+**Missing Value Treatment:**
+- `fuel_type`: Removed 1,287 missing values (0.2%) due to negligible impact
+- `age_driving_licence` and `vehicle_age`: Removed 4 records with missing values due to negligible impact
+- `vehicle_value`: Kept as NA; filtered when analyzing vehicle value relationships
+
+**Feature Engineering:**
+- Created `profitability` = total_premium - total_incurred
+- Created `profit_ratio` = profitability / total_premium
+- Created `has_claim` indicator variable
+- Created `years_with_licence` = year - age_driving_licence (actual years of driving experience)
+
+**Binning and Grouping:**
+After exploring raw distributions, we created categorical groups for analysis:
+- `vehicle_age_group`: 8 categories from "0-5 years" to "50+ years"
+- `driver_age_group`: 5 categories from "18-25 years" to "65+ years"
+- `license_age_group`: 5 categories from "0-5 years" to "30+ years" (based on years_with_licence)
+
+### Variables Used in Analysis
+
+```{r}
+variable_summary <- tibble(
+  Variable = c(
+    "total_premium", "total_incurred", "profitability",
+    "vehicle_age", "driver_age", "years_with_licence",
+    "power_to_weight_ratio", "total_exposure",
+    "fuel_type", "circulation_area", "municipality_type",
+    "bonus_score", "policy_type",
+    "vehicle_age_group", "driver_age_group", "license_age_group"
+  ),
+  Type = c(
+    "Numeric", "Numeric", "Numeric (Derived)",
+    "Numeric", "Numeric", "Numeric (Derived)",
+    "Numeric", "Numeric",
+    "Categorical", "Categorical", "Categorical",
+    "Categorical", "Categorical",
+    "Categorical (Derived)", "Categorical (Derived)", "Categorical (Derived)"
+  ),
+  Description = c(
+    "Total premium of the policy, sum of all individual coverage premiums",
+    "Total incurred cost of claims including paid amounts and outstanding reserves",
+    "Derived: total_premium - total_incurred",
+    "Age of the insured vehicle in years",
+    "Age of the main driver in years",
+    "Derived: years of driving experience (policy year - licence year)",
+    "Weight-to-power ratio (kg per horsepower), proxy for vehicle performance",
+    "Effective time-on-risk in policy years (0-1 for partial year, >1 for multi-year)",
+    "Vehicle fuel type: D=diesel, G=gasoline, Unknown=missing",
+    "Predominant circulation environment: U=urban, R=rural",
+    "Geographic classification: I=inland, C=coastal, IS=islands",
+    "Policyholder's claims history: G=good/favorable, N=neutral, B=bad/poor",
+    "Coverage structure: TP, TPG, CC, COMP_E, COMP_N",
+    "Categorical groups based on vehicle age (8 categories)",
+    "Categorical groups based on driver age (5 categories)",
+    "Categorical groups based on years with licence (5 categories)"
+  )
+)
+
+knitr::kable(variable_summary, caption = "Variables Used in Analysis")
+```
 
 ## Part 2: Bivariate Visual Analytics
 
@@ -525,7 +1004,7 @@ insurance_clean %>%
   theme_minimal()
 ```
 
-Premium and claim cost have only a weak positive relationship. The Spearman correlation is 0.217, meaning higher-premium policies tend to have slightly higher claim costs, but the relationship is not strong.
+**Interpretation:** Premium and claim cost have only a weak positive relationship. The Spearman correlation is 0.217, meaning higher-premium policies tend to have slightly higher claim costs, but the relationship is not strong.
 
 I will keep the postitve claims only, and take a look at the relationship. Still, the Spearman correlation is 0.14, quite weak.
 
@@ -556,6 +1035,44 @@ claims_positive %>%
   theme_minimal()
 ```
 
+#### Profitability by Claim Occurrence
+
+```{r}
+ggbetweenstats(
+  data = insurance_clean,
+  x = has_claim,
+  y = profitability,
+  type = "nonparametric",
+  pairwise.comparisons = TRUE,
+  p.adjust.method = "bonferroni",
+  title = "Profitability Distribution by Claim Occurrence"
+)
+```
+
+**Interpretation:** Claim occurrence shows the strongest relationship with profitability among all factors analyzed. The Mann-Whitney test reveals a highly significant difference (p < 0.001) with a large effect size. Policies without claims (No) have a median profitability of approximately €248, while policies with at least one claim (Yes) have dramatically lower median profitability, often negative or near zero. This confirms that claim occurrence is the most critical driver of profitability in the portfolio. 
+
+The effect size is large, with r≈0.78, indicating that claim occurrence is one of the strongest factors associated with profitability. Unlike some previous variables where the statistical significance was mainly driven by the large sample size, the difference here is both statistically and practically meaningful.
+
+```{r}
+insurance_clean %>%
+  filter(profitability >= -2000, profitability <= 2000) %>%
+  ggplot(aes(x = has_claim, y = profitability, fill = has_claim)) +
+  geom_violin(alpha = 0.7, trim = TRUE) +
+  geom_boxplot(width = 0.2, alpha = 0.5, outlier.alpha = 0.2) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
+  scale_y_continuous(labels = comma) +
+  labs(
+    title = "Profitability by Claim Occurrence",
+    subtitle = "Filtered to profitability between -€2,000 and €2,000 for readability",
+    x = "Has Claim",
+    y = "Profitability (€)"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+**Interpretation:** The violin plot clearly shows the dramatic difference in profitability distributions between policies with and without claims. Policies without claims are concentrated in positive profitability territory, with most values above zero. In contrast, policies with claims show a much wider distribution with substantial mass in negative profitability territory, indicating that claims directly erode profitability. This visual confirms that claim occurrence is the primary determinant of policy-level profitability.
+
 #### Profitability by Fuel Type
 
 Since profitability is highly non-normal and contains extreme outliers, a non-parametric approach was selected. The Kruskal-Wallis test was used instead of one-way ANOVA because it does not require the normality assumption and is more appropriate for comparing profitability distributions across fuel types.
@@ -572,7 +1089,7 @@ ggbetweenstats(
 )
 ```
 
-**Interpretation:** Profitability differs significantly across fuel types based on the Kruskal-Wallis test, χ²(2) = 1674.41, p \< 0.001. The median profitability is highest for the `Unknown` fuel type (€275.96), followed by diesel (`D`, €240.75) and gasoline (`G`, €216.22). Pairwise comparisons with Bonferroni adjustment indicate significant differences between all fuel-type groups. However, the effect size is very small, suggesting that although the differences are statistically significant, fuel type alone has limited practical influence on profitability. The `Unknown` category should also be interpreted cautiously due to its much smaller sample size.
+**Interpretation:** The Mann-Whitney test shows a statistically significant difference in profitability between the two fuel types, with a very small p-value. Diesel (D) policies have a higher median profitability of approximately €240.75, compared with €216.22 for gasoline (G) policies. This suggests that diesel policies are typically slightly more profitable than gasoline policies.However, the effect size is small (r ≈ 0.08), meaning the practical difference between the two groups is limited despite being statistically significant. This is likely because the dataset is very large, so even small differences can become statistically significant.
 
 =\> Fuel type is statistically associated with profitability, but the practical effect appears small.
 
@@ -612,48 +1129,6 @@ ggbetweenstats(
 
 #### Profitability by Vehicle Age
 
-We will create bin group for column vehicle_age. Need to look at its distribution first.
-
-```{r}
-p7 <- ggplot(insurance_clean, aes(x = vehicle_age)) +
-  geom_histogram(aes(y = after_stat(density)),
-                 bins = 50, fill = "forestgreen", alpha = 0.7) +
-  geom_density(color = "darkgreen", linewidth = 1) +
-  geom_vline(xintercept = 0, linetype = "dashed", color = "red") +
-  scale_x_continuous(labels = comma) +
-  labs(
-    title = "Distribution of vehicle_age",
-    x = "Vehicle Age (years)",
-    y = "Density"
-  ) +
-  theme_minimal()
-p7
-```
-
-The distribution of vehicle_age is not uniform. Most vehicles are concentrated between approximately 10 and 45 years old, with the highest density around 15–30 years. There are relatively fewer very new vehicles and fewer vehicles older than 50 years. Based on this distribution, vehicle_age was grouped into wider age bands: 0-5, 6-10, 11-20, 21-30, 31-40, 41-50, and 50+ years. This binning approach improves interpretability while preserving the main structure of the original distribution.
-
-```{r}
-insurance_clean <- insurance_clean %>%
-  mutate(
-    vehicle_age_group = case_when(
-      vehicle_age < 0 ~ "Invalid",
-      vehicle_age <= 5 ~ "0-5 years",
-      vehicle_age <= 10 ~ "6-10 years",
-      vehicle_age <= 20 ~ "11-20 years",
-      vehicle_age <= 30 ~ "21-30 years",
-      vehicle_age <= 40 ~ "31-40 years",
-      vehicle_age <= 50 ~ "41-50 years",
-      TRUE ~ "50+ years"
-    ),
-    vehicle_age_group = factor(
-      vehicle_age_group,
-      levels = c(
-        "Invalid", "0-5 years", "6-10 years", "11-20 years",
-        "21-30 years", "31-40 years", "41-50 years", "50+ years"
-      )
-    )
-  )
-```
 
 ```{r}
 ggplot(insurance_clean, aes(x = vehicle_age_group, y = profitability, fill = vehicle_age_group)) +
@@ -694,7 +1169,147 @@ insurance_clean %>%
   theme(legend.position = "none")
 ```
 
-**Interpretation:** After filtering extreme profitability values, most vehicle age groups have similar median profitability, generally slightly above zero. However, older vehicles, especially the 41-50 years and 50+ years groups, show wider negative tails, suggesting higher downside risk even though typical profitability remains comparable across groups.
+**Interpretation:** After filtering extreme profitability values, most vehicle age groups have similar median profitability, generally slightly above zero. However, older vehicle groups, especially 41-50 years and 50+ years, show wider negative tails, suggesting greater downside risk. This indicates that while typical profitability is relatively stable across vehicle age groups, very old vehicles may be more exposed to severe loss outcomes.
+
+#### Profitability by Driver Age Group
+
+```{r}
+ggbetweenstats(
+  data = insurance_clean,
+  x = driver_age_group,
+  y = profitability,
+  type = "nonparametric",
+  pairwise.comparisons = TRUE,
+  p.adjust.method = "bonferroni",
+  title = "Profitability Distribution by Driver Age Group"
+)
+```
+
+**Interpretation:** Profitability differs significantly across driver age groups based on the Kruskal-Wallis test, p<0.001. Younger drivers aged 18-25 show the highest median profitability, while the 36-50 and 65+ groups have lower median profitability. However, the effect size is very small, meaning the practical difference across age groups is limited. The result should also be interpreted carefully because the 18-25 group has a much smaller sample size than the other groups.
+
+#### Profitability by Driving Experience Group
+
+```{r}
+ggbetweenstats(
+  data = insurance_clean,
+  x = driving_experience_group,
+  y = profitability,
+  type = "nonparametric",
+  pairwise.comparisons = TRUE,
+  p.adjust.method = "bonferroni",
+  title = "Profitability Distribution by Driving Experience Group"
+)
+```
+
+**Interpretation:** Interpretation: The Kruskal-Wallis test shows a statistically significant difference in profitability across driving experience groups, p<0.001. However, the effect size is extremely small, suggesting that driving experience explains only a very limited amount of the variation in profitability. Most groups have broadly similar median profitability, generally around €225–€237. The 0-10 years group has a much lower median profitability, but this group contains only 15 observations, so it should not be used for strong conclusions. Overall, driving experience appears to have a statistically detectable but practically weak relationship with profitability.
+
+Several groups also contain large negative profitability outliers, especially the 11-20 years, 21-30 years, and 31-40 years groups. This suggests that severe loss cases occur across different experience levels, not only among inexperienced drivers.
+
+#### Profitability by Municipality Type
+
+```{r}
+ggbetweenstats(
+  data = insurance_clean,
+  x = municipality_type,
+  y = profitability,
+  type = "nonparametric",
+  pairwise.comparisons = TRUE,
+  p.adjust.method = "bonferroni",
+  title = "Profitability Distribution by Municipality Type"
+)
+```
+
+**Interpretation:** The Kruskal-Wallis test shows a statistically significant difference in profitability across municipality types, p<0.001. Coastal municipalities (C) have the highest median profitability at approximately €239.97, followed by inland municipalities (I) at €226.89, and island municipalities (IS) at €218.29. This suggests that profitability varies by geographic classification.
+
+However, the effect size is very small, meaning that municipality type explains only a limited amount of profitability variation. The statistical significance is likely partly driven by the very large sample size. In addition, the island group has a much smaller sample size than the coastal and inland groups, so its results should be interpreted more cautiously.
+
+#### Profitability by Bonus Score
+
+```{r}
+ggbetweenstats(
+  data = insurance_clean,
+  x = bonus_score,
+  y = profitability,
+  type = "nonparametric",
+  pairwise.comparisons = TRUE,
+  p.adjust.method = "bonferroni",
+  title = "Profitability Distribution by Bonus Score"
+)
+```
+
+**Interpretation:** The Kruskal-Wallis test shows a statistically significant difference in profitability across bonus score groups, p<0.001. The B group has the highest median profitability at approximately €333.29, followed by N at €239.25 and G at €228.79. This result is somewhat unexpected because B represents a poorer claims history, so it may have been expected to show lower profitability.
+
+However, the effect size is very small, suggesting that bonus score explains only a limited amount of profitability variation. In addition, the dataset is highly imbalanced: the G group dominates the portfolio, while B and N have much smaller sample sizes. Therefore, although the statistical test is significant, the practical importance of the difference should be interpreted carefully.
+
+#### Profitability by Policy Type
+
+```{r}
+ggbetweenstats(
+  data = insurance_clean,
+  x = policy_type,
+  y = profitability,
+  type = "nonparametric",
+  pairwise.comparisons = TRUE,
+  p.adjust.method = "bonferroni",
+  title = "Profitability Distribution by Policy Type"
+)
+```
+
+**Interpretation:** The Kruskal-Wallis test shows a statistically significant difference in profitability across policy types, p<0.001. Among the groups, COMP_N has the highest median profitability at approximately €405.38, followed by COMP_E at €306.63. In contrast, TP has the lowest median profitability at approximately €150.08, while CC and TPG show moderate median profitability values.
+
+=> This suggests that comprehensive policies, especially comprehensive policies without excess (COMP_N), tend to be more profitable in terms of median profitability. This may be because these policies generate higher premiums, which can offset claim costs. On the other hand, basic third-party policies (TP) appear less profitable, possibly because they have lower premium income while still being exposed to liability claims.
+
+=> However, although the effect size is larger than in some previous categorical comparisons, it is still relatively small. This means policy type has a statistically significant association with profitability, but it does not fully explain profitability variation. Extreme negative outliers are also present across several policy types, especially COMP_E, indicating that severe loss cases can occur even in generally profitable product groups.
+
+#### Power-to-Weight Ratio vs Profitability
+
+```{r}
+set.seed(123)
+cor_pwr <- cor(insurance_clean$power_to_weight_ratio, insurance_clean$profitability,
+               method = "spearman", use = "complete.obs")
+
+insurance_clean %>%
+  sample_n(min(5000, nrow(insurance_clean))) %>%
+  ggplot(aes(x = power_to_weight_ratio, y = profitability)) +
+  geom_point(alpha = 0.25, color = "purple") +
+  geom_smooth(method = "lm", color = "red", se = TRUE) +
+  scale_y_continuous(labels = comma) +
+  labs(
+    title = "Power-to-Weight Ratio vs Profitability",
+    subtitle = paste0("Spearman correlation: ", round(cor_pwr, 3)),
+    x = "Power-to-Weight Ratio",
+    y = "Profitability (€)"
+  ) +
+  theme_minimal()
+```
+
+**Interpretation:** The scatter plot shows a weak negative relationship between weight-to-power ratio and profitability. The Spearman correlation is -0.107, suggesting that vehicles with higher weight-to-power ratios tend to have slightly lower profitability. However, the relationship is weak, and most observations are clustered close to zero profitability. This means weight-to-power ratio alone does not strongly explain profitability variation.
+
+#### Total Exposure vs Profitability
+
+```{r}
+set.seed(123)
+cor_exp <- cor(insurance_clean$total_exposure, insurance_clean$profitability,
+               method = "spearman", use = "complete.obs")
+
+insurance_clean %>%
+  sample_n(min(5000, nrow(insurance_clean))) %>%
+  ggplot(aes(x = total_exposure, y = profitability)) +
+  geom_point(alpha = 0.25, color = "orange") +
+  geom_smooth(method = "lm", color = "red", se = TRUE) +
+  scale_y_continuous(labels = comma) +
+  labs(
+    title = "Total Exposure vs Profitability",
+    subtitle = paste0("Spearman correlation: ", round(cor_exp, 3)),
+    x = "Total Exposure (years)",
+    y = "Profitability (€)"
+  ) +
+  theme_minimal()
+```
+
+**Interpretation:** The scatter plot shows a moderate positive relationship between total_exposure and profitability, with a Spearman correlation of 0.565. This suggests that policies with longer exposure periods tend to have higher profitability. This is reasonable because higher exposure generally means the policy was active for longer, allowing more premium to be earned.
+
+However, total_exposure should be interpreted carefully because it is not a normal risk factor. It directly affects both premium earned and claim opportunity. Longer exposure can increase premium income, but it also gives more time for claims to occur. Therefore, the positive relationship may partly reflect the way profitability is constructed, rather than a pure risk effect.
 
 #### Raincloud Plot: Profitability by Area
 
@@ -859,7 +1474,7 @@ ggplot(volatility_by_fuel, aes(x = reorder(fuel_type, cv), y = cv, fill = fuel_t
   theme(legend.position = "none")
 ```
 
-**Interpretation:** Claim cost volatility differs across fuel types. Gasoline (`G`) has the highest coefficient of variation, followed by diesel (`D`), suggesting that claim costs are more variable relative to their average claim amount for these two fuel types. The `Unknown` category has a much lower CV, but this result should be interpreted cautiously because this group is much smaller and may not represent a consistent fuel category. Overall, claim costs appear highly volatile, especially for gasoline and diesel policies.
+**Interpretation:** Claim cost volatility differs across fuel types. Gasoline (`G`) has the highest coefficient of variation, followed by diesel (`D`), suggesting that claim costs are more variable relative to their average claim amount for these two fuel types. Overall, claim costs appear highly volatile, especially for gasoline and diesel policies.
 
 BUT Because many policies have zero claims, the coefficient of variation may be inflated. Therefore, this result should be interpreted as a relative volatility indicator rather than a complete measure of claim risk.
 

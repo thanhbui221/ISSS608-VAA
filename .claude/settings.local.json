@@ -3,7 +3,8 @@
     "allow": [
       "PowerShell(New-Item *)",
       "PowerShell(Rscript *)",
-      "Bash(Rscript *)"
+      "Bash(Rscript *)",
+      "Bash(python3 *)"
     ]
   }
 }
