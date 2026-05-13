@@ -15,15 +15,20 @@ format:
 
 1.  Introduction & Objectives
 2.  Data Overview
-3.  Premium Distribution Analysis
-4.  Claims Distribution Analysis
-5.  Profitability Patterns
-6.  Vehicle Type Analysis
-7.  Geographic Analysis
-8.  Volatility Assessment
-9.  Statistical Validation
-10. Key Findings
-11. Recommendations
+3.  Normality Assessment
+4.  Premium Distribution
+5.  Claims Distribution
+6.  Profitability Patterns
+7.  Premium vs Claims Relationship
+8.  Profitability by Policy Type
+9.  Total Exposure vs Profitability
+10. Profitability by Bonus Score
+11. Profitability by Vehicle Age
+12. Geographic Analysis
+13. Volatility Assessment
+14. Statistical Validation
+15. Key Findings
+16. Recommendations
 
 ::: notes
 This presentation analyzes a Spanish motor insurance portfolio using visual analytics techniques. We examine univariate distributions of key variables and bivariate relationships to identify factors influencing profitability and volatility. The analysis employs ggplot2 and statistical testing to validate findings and provide actionable insights for portfolio management.
@@ -59,17 +64,46 @@ insurance_data <- read.csv(
 
 insurance_clean <- insurance_data %>%
   mutate(
-    fuel_type = replace_na(fuel_type, "Unknown"),
-    fire_incurred = replace_na(fire_incurred, 0),
-    occupants_incurred = replace_na(occupants_incurred, 0),
+    years_with_licence = year - age_driving_licence,
     profitability = total_premium - total_incurred,
+    profit_ratio = ifelse(total_premium > 0, profitability / total_premium, NA),
     has_claim = ifelse(total_incurred > 0, "Yes", "No"),
-    vehicle_age_group = cut(vehicle_age, breaks = c(0, 5, 10, 15, 100),
-                    labels = c("0-5", "6-10", "11-15", "15+")),
-    driver_age_group = cut(driver_age, breaks = c(18, 30, 45, 60, 100),
-                      labels = c("18-30", "31-45", "46-60", "60+"))
+    vehicle_age_group = case_when(
+      vehicle_age < 0 ~ "Invalid",
+      vehicle_age <= 5 ~ "0-5 years",
+      vehicle_age <= 10 ~ "6-10 years",
+      vehicle_age <= 20 ~ "11-20 years",
+      vehicle_age <= 30 ~ "21-30 years",
+      vehicle_age <= 40 ~ "31-40 years",
+      vehicle_age <= 50 ~ "41-50 years",
+      TRUE ~ "50+ years"
+    ),
+    vehicle_age_group = factor(vehicle_age_group,
+      levels = c("Invalid", "0-5 years", "6-10 years", "11-20 years",
+                 "21-30 years", "31-40 years", "41-50 years", "50+ years")),
+    driver_age_group = case_when(
+      driver_age <= 25 ~ "18-25 years",
+      driver_age <= 35 ~ "26-35 years",
+      driver_age <= 50 ~ "36-50 years",
+      driver_age <= 65 ~ "51-65 years",
+      TRUE ~ "65+ years"
+    ),
+    driver_age_group = factor(driver_age_group,
+      levels = c("18-25 years", "26-35 years", "36-50 years", "51-65 years", "65+ years")),
+    age_driving_licence_years = year - age_driving_licence,
+    driving_experience_group = case_when(
+      age_driving_licence_years < 0 ~ "Invalid",
+      age_driving_licence_years <= 10 ~ "0-10 years",
+      age_driving_licence_years <= 20 ~ "11-20 years",
+      age_driving_licence_years <= 30 ~ "21-30 years",
+      age_driving_licence_years <= 40 ~ "31-40 years",
+      TRUE ~ "40+ years"
+    ),
+    driving_experience_group = factor(driving_experience_group,
+      levels = c("Invalid", "0-10 years", "11-20 years", "21-30 years", "31-40 years", "40+ years"))
   ) %>%
-  filter(!is.na(profitability), !is.na(age_driving_licence))
+  filter(!is.na(profitability), !is.na(age_driving_licence), !is.na(vehicle_age),
+         !is.na(fuel_type), !is.na(vehicle_value))
 ```
 
 **Dataset Size:** `r format(nrow(insurance_clean), big.mark=",")` policies (from `r format(nrow(insurance_data), big.mark=",")` original records)
@@ -385,7 +419,81 @@ insurance_clean %>%
 ```
 
 ::: notes
-Profitability varies across vehicle age groups. Older vehicles, especially the 15+ group, show larger negative outliers, suggesting higher claim severity and greater loss risk. Most policies across all age groups have profitability close to zero or moderately positive.
+Profitability varies across vehicle age groups. Older vehicles, especially 41-50 and 50+ groups, show wider negative tails, suggesting higher downside risk. Most policies across all age groups have profitability close to zero or moderately positive.
+:::
+
+## Profitability by Policy Type
+
+```{r}
+#| echo: false
+#| fig-width: 10
+#| fig-height: 6
+#| warning: false
+ggbetweenstats(
+  data = insurance_clean,
+  x = policy_type,
+  y = profitability,
+  type = "nonparametric",
+  pairwise.comparisons = TRUE,
+  p.adjust.method = "bonferroni",
+  title = "Profitability Distribution by Policy Type"
+)
+```
+
+::: notes
+Policy type shows the most meaningful group difference in the analysis. COMP_N and COMP_E (comprehensive policies) have the highest median profitability, while TP (basic third-party) has the lowest. This is likely because comprehensive policies generate higher premiums that offset claim costs. Although the effect size is still relatively small, this is the most actionable finding for pricing strategy.
+:::
+
+## Total Exposure vs Profitability
+
+```{r}
+#| echo: false
+#| fig-width: 10
+#| fig-height: 5
+#| warning: false
+set.seed(123)
+cor_exp <- cor(insurance_clean$total_exposure, insurance_clean$profitability,
+               method = "spearman", use = "complete.obs")
+
+insurance_clean %>%
+  sample_n(min(5000, nrow(insurance_clean))) %>%
+  ggplot(aes(x = total_exposure, y = profitability)) +
+  geom_point(alpha = 0.25, color = "orange") +
+  geom_smooth(method = "lm", color = "red", se = TRUE) +
+  scale_y_continuous(labels = comma) +
+  labs(
+    title = "Total Exposure vs Profitability",
+    subtitle = paste0("Spearman correlation: ", round(cor_exp, 3)),
+    x = "Total Exposure (years)",
+    y = "Profitability (€)"
+  ) +
+  theme_minimal(base_size = 14)
+```
+
+::: notes
+Total exposure has the strongest correlation with profitability (Spearman ρ = 0.565) — the highest of any variable in the analysis. Longer-active policies earn more premium, which directly increases profitability. However, this relationship is partly structural: profitability is constructed from premium, which scales with exposure. Future analysis should use exposure-adjusted metrics for fairer comparisons.
+:::
+
+## Profitability by Bonus Score
+
+```{r}
+#| echo: false
+#| fig-width: 10
+#| fig-height: 6
+#| warning: false
+ggbetweenstats(
+  data = insurance_clean,
+  x = bonus_score,
+  y = profitability,
+  type = "nonparametric",
+  pairwise.comparisons = TRUE,
+  p.adjust.method = "bonferroni",
+  title = "Profitability Distribution by Bonus Score"
+)
+```
+
+::: notes
+Bonus score shows a counterintuitive pattern: the B group (poor claims history) has the highest median profitability (\~€333), while G (good claims history) has the lowest (\~€229). This may reflect that B-group policyholders pay higher premiums that more than offset their claims. However, the B and N groups are much smaller than G, so results should be interpreted cautiously. The effect size is small.
 :::
 
 ## Volatility Assessment
@@ -433,48 +541,49 @@ Non-parametric Kruskal-Wallis tests confirm that profitability differences acros
 
 ## Key Findings {.smaller}
 
-**Distribution Patterns:**
+**Univariate:**
 
-- Premiums and claims are right-skewed; most policies are low-risk
-- Profitability is generally positive but with high variance
+- Premium right-skewed (most policies \< €500); claims 88.1% zero-inflated; profitability has long negative left tail
+- Portfolio dominated by diesel (63.9%), CC policy type (57.9%), good claims history (bonus G)
 
-**Profitability Drivers:**
+**Bivariate:**
 
-- Vehicle type shows significant association with profitability (p \< 0.001)
-- Geographic location shows strong association with profit
-- Weak premium-claim correlation suggests pricing gaps
+- Total exposure strongest predictor of profitability (Spearman ρ = 0.565) — longer policies earn more premium
+- Policy type most meaningful group difference: COMP_N/COMP_E more profitable than TP
+- All other categorical factors (fuel, area, vehicle age, driver age, experience, municipality, bonus score) are statistically significant but with very small effect sizes
+- Premium vs claims: weak relationship (ρ = 0.217) — premium alone does not predict claim cost
 
-**Volatility Insights:**
+**Volatility:**
 
-- Claims volatility varies substantially across segments
-- High-volatility segments require enhanced risk management
+- Gasoline vehicles and Area R show highest claim cost volatility (CV)
+- All CV measures inflated by zero-inflation; treat as relative risk indicators
 
 ::: notes
-The analysis reveals three key insights. First, distribution patterns show typical insurance characteristics with concentration in low-risk segments. Second, both vehicle type and geography are significant profitability drivers, validated statistically. The weak premium-claim correlation suggests current pricing may not fully capture risk. Third, volatility analysis identifies segments requiring additional reserves. These findings provide actionable intelligence for portfolio optimization and risk management improvements.
+Key takeaway: no single factor strongly explains profitability. Policy type and total exposure are the most actionable variables. Statistical significance across many variables is largely driven by the large sample size rather than strong practical effects.
 :::
 
 ## Recommendations {.smaller}
 
-**1. Risk-Based Pricing**
+**1. Policy Type Pricing**
 
-- Refine pricing models to incorporate vehicle type and geographic risk factors
-- Address premium-claim correlation gaps
+- Comprehensive policies (COMP_N, COMP_E) are more profitable — review whether TP premiums adequately cover liability exposure
 
-**2. Geographic Strategy**
+**2. Claim Severity Management**
 
-- Focus growth in high-profitability regions
-- Reassess underwriting in underperforming areas
+- A small number of extreme claims drive most losses — consider differentiated coverage terms or reinsurance for high-severity segments
 
-**3. Volatility Management**
+**3. Vehicle Age Risk**
 
-- Increase reserves for high-volatility segments
-- Implement enhanced monitoring for unstable portfolios
+- Older vehicles (41–50 years, 50+) show wider negative profitability tails — tighten underwriting criteria for very old vehicles
 
-**4. Portfolio Optimization**
+**4. Geographic Volatility**
 
-- Balance exposure across risk segments
-- Consider no-claims bonus programs for retention
+- Area R has higher claim volatility than Area U — adjust pricing and reserving assumptions by region
+
+**5. Exposure-Adjusted Analysis**
+
+- Total exposure strongly correlates with profitability by construction — use exposure-adjusted metrics for fairer segment comparisons in future analysis
 
 ::: notes
-Four strategic recommendations emerge from this analysis. First, implement sophisticated risk-based pricing that accounts for vehicle type and geography. Second, adopt targeted geographic strategies focusing resources on profitable markets. Third, enhance volatility management through appropriate reserves and monitoring systems. Fourth, optimize portfolio composition by balancing risk exposure and implementing retention programs. These evidence-based recommendations can improve profitability while maintaining portfolio stability and competitive positioning.
+Recommendations are grounded in the actual effect sizes observed. Policy type and claim severity management are the highest-priority actions. Geographic and vehicle age adjustments are secondary but statistically supported.
 :::

@@ -151,10 +151,15 @@ Bui Tien Thanh
 <ol type="1">
 <li>Introduction &amp; Objectives</li>
 <li>Data Overview</li>
-<li>Premium Distribution Analysis</li>
-<li>Claims Distribution Analysis</li>
+<li>Normality Assessment</li>
+<li>Premium Distribution</li>
+<li>Claims Distribution</li>
 <li>Profitability Patterns</li>
-<li>Vehicle Type Analysis</li>
+<li>Premium vs Claims Relationship</li>
+<li>Profitability by Policy Type</li>
+<li>Total Exposure vs Profitability</li>
+<li>Profitability by Bonus Score</li>
+<li>Profitability by Vehicle Age</li>
 <li>Geographic Analysis</li>
 <li>Volatility Assessment</li>
 <li>Statistical Validation</li>
@@ -201,7 +206,7 @@ Bui Tien Thanh
 </section>
 <section id="data-overview" class="slide level2">
 <h2>Data Overview</h2>
-<p><strong>Dataset Size:</strong> 354,138 policies (from 354,140 original records)</p>
+<p><strong>Dataset Size:</strong> 352,338 policies (from 354,140 original records)</p>
 <p><strong>Key Variables:</strong> Premium, Claims, Vehicle Type, Geographic Area, Vehicle Age</p>
 <p><strong>Derived Metrics:</strong> Profitability, Volatility (CV)</p>
 <aside class="notes">
@@ -375,7 +380,58 @@ Bui Tien Thanh
 <h2>Profitability by Vehicle Age</h2>
 
 <img data-src="Take-home_Ex01_presentation_files/figure-revealjs/unnamed-chunk-11-1.png" width="960" class="r-stretch"><aside class="notes">
-<p>Profitability varies across vehicle age groups. Older vehicles, especially the 15+ group, show larger negative outliers, suggesting higher claim severity and greater loss risk. Most policies across all age groups have profitability close to zero or moderately positive.</p>
+<p>Profitability varies across vehicle age groups. Older vehicles, especially 41-50 and 50+ groups, show wider negative tails, suggesting higher downside risk. Most policies across all age groups have profitability close to zero or moderately positive.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="profitability-by-policy-type" class="slide level2">
+<h2>Profitability by Policy Type</h2>
+
+<img data-src="Take-home_Ex01_presentation_files/figure-revealjs/unnamed-chunk-12-1.png" width="960" class="r-stretch"><aside class="notes">
+<p>Policy type shows the most meaningful group difference in the analysis. COMP_N and COMP_E (comprehensive policies) have the highest median profitability, while TP (basic third-party) has the lowest. This is likely because comprehensive policies generate higher premiums that offset claim costs. Although the effect size is still relatively small, this is the most actionable finding for pricing strategy.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="total-exposure-vs-profitability" class="slide level2">
+<h2>Total Exposure vs Profitability</h2>
+
+<img data-src="Take-home_Ex01_presentation_files/figure-revealjs/unnamed-chunk-13-1.png" width="960" class="r-stretch"><aside class="notes">
+<p>Total exposure has the strongest correlation with profitability (Spearman ρ = 0.565) — the highest of any variable in the analysis. Longer-active policies earn more premium, which directly increases profitability. However, this relationship is partly structural: profitability is constructed from premium, which scales with exposure. Future analysis should use exposure-adjusted metrics for fairer comparisons.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="profitability-by-bonus-score" class="slide level2">
+<h2>Profitability by Bonus Score</h2>
+
+<img data-src="Take-home_Ex01_presentation_files/figure-revealjs/unnamed-chunk-14-1.png" width="960" class="r-stretch"><aside class="notes">
+<p>Bonus score shows a counterintuitive pattern: the B group (poor claims history) has the highest median profitability (~€333), while G (good claims history) has the lowest (~€229). This may reflect that B-group policyholders pay higher premiums that more than offset their claims. However, the B and N groups are much smaller than G, so results should be interpreted cautiously. The effect size is small.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -391,7 +447,7 @@ Bui Tien Thanh
 <section id="volatility-assessment" class="slide level2">
 <h2>Volatility Assessment</h2>
 
-<img data-src="Take-home_Ex01_presentation_files/figure-revealjs/unnamed-chunk-12-1.png" width="960" class="r-stretch"><aside class="notes">
+<img data-src="Take-home_Ex01_presentation_files/figure-revealjs/unnamed-chunk-15-1.png" width="960" class="r-stretch"><aside class="notes">
 <p>Claims volatility, measured by coefficient of variation, differs substantially across fuel types. Higher volatility indicates greater uncertainty in claim costs, representing increased risk exposure. Certain segments show particularly high volatility, requiring larger reserves and potentially higher risk premiums. Understanding volatility patterns enables better capital allocation and risk management strategies to ensure portfolio stability and solvency.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -408,7 +464,7 @@ Bui Tien Thanh
 <section id="statistical-validation" class="slide level2">
 <h2>Statistical Validation</h2>
 
-<img data-src="Take-home_Ex01_presentation_files/figure-revealjs/unnamed-chunk-13-1.png" width="960" class="r-stretch"><aside class="notes">
+<img data-src="Take-home_Ex01_presentation_files/figure-revealjs/unnamed-chunk-16-1.png" width="960" class="r-stretch"><aside class="notes">
 <p>Non-parametric Kruskal-Wallis tests confirm that profitability differences across vehicle types are statistically significant (p &lt; 0.001). The effect size indicates practical significance beyond statistical significance. Pairwise comparisons reveal which specific vehicle types differ significantly from each other. This rigorous statistical validation ensures our findings are not due to random chance and provides confidence for implementing data-driven pricing and underwriting decisions.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -424,24 +480,25 @@ Bui Tien Thanh
 </section>
 <section id="key-findings" class="slide level2 smaller">
 <h2>Key Findings</h2>
-<p><strong>Distribution Patterns:</strong></p>
+<p><strong>Univariate:</strong></p>
 <ul>
-<li>Premiums and claims are right-skewed; most policies are low-risk</li>
-<li>Profitability is generally positive but with high variance</li>
+<li>Premium right-skewed (most policies &lt; €500); claims 88.1% zero-inflated; profitability has long negative left tail</li>
+<li>Portfolio dominated by diesel (63.9%), CC policy type (57.9%), good claims history (bonus G)</li>
 </ul>
-<p><strong>Profitability Drivers:</strong></p>
+<p><strong>Bivariate:</strong></p>
 <ul>
-<li>Vehicle type shows significant association with profitability (p &lt; 0.001)</li>
-<li>Geographic location shows strong association with profit</li>
-<li>Weak premium-claim correlation suggests pricing gaps</li>
+<li>Total exposure strongest predictor of profitability (Spearman ρ = 0.565) — longer policies earn more premium</li>
+<li>Policy type most meaningful group difference: COMP_N/COMP_E more profitable than TP</li>
+<li>All other categorical factors (fuel, area, vehicle age, driver age, experience, municipality, bonus score) are statistically significant but with very small effect sizes</li>
+<li>Premium vs claims: weak relationship (ρ = 0.217) — premium alone does not predict claim cost</li>
 </ul>
-<p><strong>Volatility Insights:</strong></p>
+<p><strong>Volatility:</strong></p>
 <ul>
-<li>Claims volatility varies substantially across segments</li>
-<li>High-volatility segments require enhanced risk management</li>
+<li>Gasoline vehicles and Area R show highest claim cost volatility (CV)</li>
+<li>All CV measures inflated by zero-inflation; treat as relative risk indicators</li>
 </ul>
 <aside class="notes">
-<p>The analysis reveals three key insights. First, distribution patterns show typical insurance characteristics with concentration in low-risk segments. Second, both vehicle type and geography are significant profitability drivers, validated statistically. The weak premium-claim correlation suggests current pricing may not fully capture risk. Third, volatility analysis identifies segments requiring additional reserves. These findings provide actionable intelligence for portfolio optimization and risk management improvements.</p>
+<p>Key takeaway: no single factor strongly explains profitability. Policy type and total exposure are the most actionable variables. Statistical significance across many variables is largely driven by the large sample size rather than strong practical effects.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -456,28 +513,28 @@ Bui Tien Thanh
 </section>
 <section id="recommendations" class="slide level2 smaller">
 <h2>Recommendations</h2>
-<p><strong>1. Risk-Based Pricing</strong></p>
+<p><strong>1. Policy Type Pricing</strong></p>
 <ul>
-<li>Refine pricing models to incorporate vehicle type and geographic risk factors</li>
-<li>Address premium-claim correlation gaps</li>
+<li>Comprehensive policies (COMP_N, COMP_E) are more profitable — review whether TP premiums adequately cover liability exposure</li>
 </ul>
-<p><strong>2. Geographic Strategy</strong></p>
+<p><strong>2. Claim Severity Management</strong></p>
 <ul>
-<li>Focus growth in high-profitability regions</li>
-<li>Reassess underwriting in underperforming areas</li>
+<li>A small number of extreme claims drive most losses — consider differentiated coverage terms or reinsurance for high-severity segments</li>
 </ul>
-<p><strong>3. Volatility Management</strong></p>
+<p><strong>3. Vehicle Age Risk</strong></p>
 <ul>
-<li>Increase reserves for high-volatility segments</li>
-<li>Implement enhanced monitoring for unstable portfolios</li>
+<li>Older vehicles (41–50 years, 50+) show wider negative profitability tails — tighten underwriting criteria for very old vehicles</li>
 </ul>
-<p><strong>4. Portfolio Optimization</strong></p>
+<p><strong>4. Geographic Volatility</strong></p>
 <ul>
-<li>Balance exposure across risk segments</li>
-<li>Consider no-claims bonus programs for retention</li>
+<li>Area R has higher claim volatility than Area U — adjust pricing and reserving assumptions by region</li>
+</ul>
+<p><strong>5. Exposure-Adjusted Analysis</strong></p>
+<ul>
+<li>Total exposure strongly correlates with profitability by construction — use exposure-adjusted metrics for fairer segment comparisons in future analysis</li>
 </ul>
 <aside class="notes">
-<p>Four strategic recommendations emerge from this analysis. First, implement sophisticated risk-based pricing that accounts for vehicle type and geography. Second, adopt targeted geographic strategies focusing resources on profitable markets. Third, enhance volatility management through appropriate reserves and monitoring systems. Fourth, optimize portfolio composition by balancing risk exposure and implementing retention programs. These evidence-based recommendations can improve profitability while maintaining portfolio stability and competitive positioning.</p>
+<p>Recommendations are grounded in the actual effect sizes observed. Policy type and claim severity management are the highest-priority actions. Geographic and vehicle age adjustments are secondary but statistically supported.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;

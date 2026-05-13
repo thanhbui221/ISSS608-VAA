@@ -4,7 +4,11 @@
       "PowerShell(New-Item *)",
       "PowerShell(Rscript *)",
       "Bash(Rscript *)",
-      "Bash(python3 *)"
+      "Bash(git checkout *)",
+      "Bash(git merge *)",
+      "Bash(git stash *)",
+      "Bash(git add *)",
+      "Bash(git commit *)"
     ]
   }
 }

@@ -501,7 +501,6 @@ This grouping improves interpretability and allows profitability patterns to be 
 
 The variable years_with_licence appears to represent the calendar year in which the driver obtained their licence, rather than the number of years of driving experience. Since the dataset covers policies from 2022 to 2024, this variable was transformed into age_driving_licence by subtracting the licence year from the policy year. This derived variable better represents driving experience and is more interpretable for analysing claim risk and profitability.
 
-
 ```{r}
 insurance_clean <- insurance_clean %>%
   mutate(
@@ -912,22 +911,11 @@ After importing the dataset, we performed initial exploration using `glimpse()` 
 
 ### Data Processing
 
-**Missing Value Treatment:**
-- `fuel_type`: Removed 1,287 missing values (0.2%) due to negligible impact
-- `age_driving_licence` and `vehicle_age`: Removed 4 records with missing values due to negligible impact
-- `vehicle_value`: Kept as NA; filtered when analyzing vehicle value relationships
+**Missing Value Treatment:** - `fuel_type`: Removed 1,287 missing values (0.2%) due to negligible impact - `age_driving_licence` and `vehicle_age`: Removed 4 records with missing values due to negligible impact - `vehicle_value`: Kept as NA; filtered when analyzing vehicle value relationships
 
-**Feature Engineering:**
-- Created `profitability` = total_premium - total_incurred
-- Created `profit_ratio` = profitability / total_premium
-- Created `has_claim` indicator variable
-- Created `years_with_licence` = year - age_driving_licence (actual years of driving experience)
+**Feature Engineering:** - Created `profitability` = total_premium - total_incurred - Created `profit_ratio` = profitability / total_premium - Created `has_claim` indicator variable - Created `years_with_licence` = year - age_driving_licence (actual years of driving experience)
 
-**Binning and Grouping:**
-After exploring raw distributions, we created categorical groups for analysis:
-- `vehicle_age_group`: 8 categories from "0-5 years" to "50+ years"
-- `driver_age_group`: 5 categories from "18-25 years" to "65+ years"
-- `license_age_group`: 5 categories from "0-5 years" to "30+ years" (based on years_with_licence)
+**Binning and Grouping:** After exploring raw distributions, we created categorical groups for analysis: - `vehicle_age_group`: 8 categories from "0-5 years" to "50+ years" - `driver_age_group`: 5 categories from "18-25 years" to "65+ years" - `license_age_group`: 5 categories from "0-5 years" to "30+ years" (based on years_with_licence)
 
 ### Variables Used in Analysis
 
@@ -1049,7 +1037,7 @@ ggbetweenstats(
 )
 ```
 
-**Interpretation:** Claim occurrence shows the strongest relationship with profitability among all factors analyzed. The Mann-Whitney test reveals a highly significant difference (p < 0.001) with a large effect size. Policies without claims (No) have a median profitability of approximately €248, while policies with at least one claim (Yes) have dramatically lower median profitability, often negative or near zero. This confirms that claim occurrence is the most critical driver of profitability in the portfolio. 
+**Interpretation:** Claim occurrence shows the strongest relationship with profitability among all factors analyzed. The Mann-Whitney test reveals a highly significant difference (p \< 0.001) with a large effect size. Policies without claims (No) have a median profitability of approximately €248, while policies with at least one claim (Yes) have dramatically lower median profitability, often negative or near zero. This confirms that claim occurrence is the most critical driver of profitability in the portfolio.
 
 The effect size is large, with r≈0.78, indicating that claim occurrence is one of the strongest factors associated with profitability. Unlike some previous variables where the statistical significance was mainly driven by the large sample size, the difference here is both statistically and practically meaningful.
 
@@ -1129,7 +1117,6 @@ ggbetweenstats(
 
 #### Profitability by Vehicle Age
 
-
 ```{r}
 ggplot(insurance_clean, aes(x = vehicle_age_group, y = profitability, fill = vehicle_age_group)) +
   geom_violin(alpha = 0.7) +
@@ -1185,7 +1172,7 @@ ggbetweenstats(
 )
 ```
 
-**Interpretation:** Profitability differs significantly across driver age groups based on the Kruskal-Wallis test, p<0.001. Younger drivers aged 18-25 show the highest median profitability, while the 36-50 and 65+ groups have lower median profitability. However, the effect size is very small, meaning the practical difference across age groups is limited. The result should also be interpreted carefully because the 18-25 group has a much smaller sample size than the other groups.
+**Interpretation:** Profitability differs significantly across driver age groups based on the Kruskal-Wallis test, p\<0.001. Younger drivers aged 18-25 show the highest median profitability, while the 36-50 and 65+ groups have lower median profitability. However, the effect size is very small, meaning the practical difference across age groups is limited. The result should also be interpreted carefully because the 18-25 group has a much smaller sample size than the other groups.
 
 #### Profitability by Driving Experience Group
 
@@ -1201,7 +1188,7 @@ ggbetweenstats(
 )
 ```
 
-**Interpretation:** Interpretation: The Kruskal-Wallis test shows a statistically significant difference in profitability across driving experience groups, p<0.001. However, the effect size is extremely small, suggesting that driving experience explains only a very limited amount of the variation in profitability. Most groups have broadly similar median profitability, generally around €225–€237. The 0-10 years group has a much lower median profitability, but this group contains only 15 observations, so it should not be used for strong conclusions. Overall, driving experience appears to have a statistically detectable but practically weak relationship with profitability.
+**Interpretation:** Interpretation: The Kruskal-Wallis test shows a statistically significant difference in profitability across driving experience groups, p\<0.001. However, the effect size is extremely small, suggesting that driving experience explains only a very limited amount of the variation in profitability. Most groups have broadly similar median profitability, generally around €225–€237. The 0-10 years group has a much lower median profitability, but this group contains only 15 observations, so it should not be used for strong conclusions. Overall, driving experience appears to have a statistically detectable but practically weak relationship with profitability.
 
 Several groups also contain large negative profitability outliers, especially the 11-20 years, 21-30 years, and 31-40 years groups. This suggests that severe loss cases occur across different experience levels, not only among inexperienced drivers.
 
@@ -1219,7 +1206,7 @@ ggbetweenstats(
 )
 ```
 
-**Interpretation:** The Kruskal-Wallis test shows a statistically significant difference in profitability across municipality types, p<0.001. Coastal municipalities (C) have the highest median profitability at approximately €239.97, followed by inland municipalities (I) at €226.89, and island municipalities (IS) at €218.29. This suggests that profitability varies by geographic classification.
+**Interpretation:** The Kruskal-Wallis test shows a statistically significant difference in profitability across municipality types, p\<0.001. Coastal municipalities (C) have the highest median profitability at approximately €239.97, followed by inland municipalities (I) at €226.89, and island municipalities (IS) at €218.29. This suggests that profitability varies by geographic classification.
 
 However, the effect size is very small, meaning that municipality type explains only a limited amount of profitability variation. The statistical significance is likely partly driven by the very large sample size. In addition, the island group has a much smaller sample size than the coastal and inland groups, so its results should be interpreted more cautiously.
 
@@ -1237,7 +1224,7 @@ ggbetweenstats(
 )
 ```
 
-**Interpretation:** The Kruskal-Wallis test shows a statistically significant difference in profitability across bonus score groups, p<0.001. The B group has the highest median profitability at approximately €333.29, followed by N at €239.25 and G at €228.79. This result is somewhat unexpected because B represents a poorer claims history, so it may have been expected to show lower profitability.
+**Interpretation:** The Kruskal-Wallis test shows a statistically significant difference in profitability across bonus score groups, p\<0.001. The B group has the highest median profitability at approximately €333.29, followed by N at €239.25 and G at €228.79. This result is somewhat unexpected because B represents a poorer claims history, so it may have been expected to show lower profitability.
 
 However, the effect size is very small, suggesting that bonus score explains only a limited amount of profitability variation. In addition, the dataset is highly imbalanced: the G group dominates the portfolio, while B and N have much smaller sample sizes. Therefore, although the statistical test is significant, the practical importance of the difference should be interpreted carefully.
 
@@ -1255,11 +1242,11 @@ ggbetweenstats(
 )
 ```
 
-**Interpretation:** The Kruskal-Wallis test shows a statistically significant difference in profitability across policy types, p<0.001. Among the groups, COMP_N has the highest median profitability at approximately €405.38, followed by COMP_E at €306.63. In contrast, TP has the lowest median profitability at approximately €150.08, while CC and TPG show moderate median profitability values.
+**Interpretation:** The Kruskal-Wallis test shows a statistically significant difference in profitability across policy types, p\<0.001. Among the groups, COMP_N has the highest median profitability at approximately €405.38, followed by COMP_E at €306.63. In contrast, TP has the lowest median profitability at approximately €150.08, while CC and TPG show moderate median profitability values.
 
-=> This suggests that comprehensive policies, especially comprehensive policies without excess (COMP_N), tend to be more profitable in terms of median profitability. This may be because these policies generate higher premiums, which can offset claim costs. On the other hand, basic third-party policies (TP) appear less profitable, possibly because they have lower premium income while still being exposed to liability claims.
+=\> This suggests that comprehensive policies, especially comprehensive policies without excess (COMP_N), tend to be more profitable in terms of median profitability. This may be because these policies generate higher premiums, which can offset claim costs. On the other hand, basic third-party policies (TP) appear less profitable, possibly because they have lower premium income while still being exposed to liability claims.
 
-=> However, although the effect size is larger than in some previous categorical comparisons, it is still relatively small. This means policy type has a statistically significant association with profitability, but it does not fully explain profitability variation. Extreme negative outliers are also present across several policy types, especially COMP_E, indicating that severe loss cases can occur even in generally profitable product groups.
+=\> However, although the effect size is larger than in some previous categorical comparisons, it is still relatively small. This means policy type has a statistically significant association with profitability, but it does not fully explain profitability variation. Extreme negative outliers are also present across several policy types, especially COMP_E, indicating that severe loss cases can occur even in generally profitable product groups.
 
 #### Power-to-Weight Ratio vs Profitability
 
@@ -1517,38 +1504,58 @@ ggplot(volatility_by_area, aes(
 
 However, because claim costs are zero-inflated, with many policies having no claims, the coefficient of variation may be inflated when the mean claim cost is low. Therefore, the CV should be interpreted as a relative volatility indicator rather than a complete measure of claim risk.
 
+#### Profitability by Claim Occurrence
+
+```{r}
+ggbetweenstats(
+  data = insurance_clean,
+  x = has_claim,
+  y = profitability,
+  type = "nonparametric",
+  pairwise.comparisons = TRUE,
+  p.adjust.method = "bonferroni",
+  title = "Profitability Distribution by Claim Occurrence"
+)
+```
+
+**Interpretation:** Policies with claims have much lower profitability than policies without claims, which is expected because profitability is calculated by subtracting incurred claims from premium. Therefore, this result should be treated as a validation check rather than a new insight. More meaningful analysis should focus on pre-claim variables that may help explain why some policies become less profitable.
+
 ## Conclusion
 
 ### Key Findings
 
 **Univariate Insights:**
 
-- The premium distribution is right-skewed, with most policies concentrated in lower premium ranges and a small number of high-premium outliers.
-- Claim costs are highly zero-inflated, as most policies have no claims. Among policies with claims, the distribution is strongly right-skewed due to a small number of high-severity claims.
-- Profitability is generally positive for most policies, indicating that the overall portfolio is profitable. However, the distribution has a long negative tail, showing that a small number of policies generate substantial losses.
+- Premium is right-skewed, with most policies below €500 and a small number of high-premium outliers extending beyond €5,000.
+- Claim costs are highly zero-inflated — 88.1% of policies have no claims. Among those with claims, the distribution is strongly right-skewed, with a few extreme cases reaching nearly €600,000.
+- Profitability is generally positive for most policies, but the distribution has a long negative left tail driven by high-severity claims. The signed log transformation reveals two distinct clusters: a large profitable group and a smaller loss-making group.
+- Vehicle age is concentrated between 10–45 years, with relatively few new or very old vehicles. Driver age and driving experience are broadly distributed, with most policyholders in the 36–65 age range and 11–40 years of experience.
+- The portfolio is dominated by diesel vehicles (63.9%) and CC policy type (57.9%). Most policyholders have a good claims history (bonus score G).
 
 **Bivariate Insights:**
 
-- Premium and claim costs show only a weak positive relationship, suggesting that higher premiums are associated with higher claims to some extent, but premium alone does not strongly explain claim cost.
-- Profitability differs significantly across fuel types, although the effect size is small. This suggests that fuel type is statistically associated with profitability but may not be a strong standalone driver.
-- Circulation areas show statistically significant differences in profitability, with Area U having slightly higher median profitability than Area R. However, the practical difference appears limited.
-- Vehicle age appears to be associated with profitability patterns, with older vehicles, especially the 15+ group, showing larger negative outliers and potentially higher downside risk.
+- Premium and claim costs have only a weak positive relationship (Spearman ρ = 0.217), indicating that premium alone does not strongly predict claim cost.
+- Total exposure has the strongest positive relationship with profitability (Spearman ρ = 0.565), reflecting that longer-active policies earn more premium. This should be interpreted carefully as exposure directly affects how profitability is constructed.
+- Power-to-weight ratio shows a weak negative relationship with profitability (Spearman ρ = −0.107), suggesting higher-performance vehicles carry slightly more risk.
+- Policy type shows the most meaningful group difference: comprehensive policies (COMP_N, COMP_E) have higher median profitability than basic third-party policies (TP), likely due to higher premium income.
+- Bonus score shows a counterintuitive pattern — the B (poor claims history) group has the highest median profitability — but this group is very small and results should be interpreted cautiously.
+- Profitability differs significantly across fuel type, circulation area, vehicle age group, driver age group, driving experience group, and municipality type. However, effect sizes are consistently very small across all these variables, meaning no single factor strongly explains profitability variation.
+- Policies with claims have substantially lower profitability than those without, which is expected by construction. This confirms the importance of claim occurrence as a driver of loss, rather than being a new analytical insight.
 
 **Volatility Findings:**
 
-- Claim volatility, measured using the coefficient of variation, varies across fuel types and circulation areas.
-- Gasoline and diesel vehicles show relatively high claim volatility, indicating greater uncertainty in claim costs relative to their average claim amount.
-- Area R appears to have higher relative claim volatility than Area U, suggesting greater uncertainty or dispersion in claim costs for that region.
-- Since claim costs are zero-inflated, volatility measures should be interpreted carefully and treated as relative risk indicators rather than complete measures of claim risk.
+- Gasoline vehicles show the highest claim cost volatility (CV), followed by diesel, indicating greater unpredictability in claim amounts for these fuel types.
+- Area R has higher relative claim volatility than Area U, suggesting more dispersed or unpredictable claim costs in rural/regional areas.
+- All volatility measures are inflated by zero-inflation in claim costs and should be treated as relative risk indicators rather than absolute measures.
 
 ### Recommendations
 
-1.  **Risk-Based Pricing:** Refine pricing models to better align premiums with claim risk, especially for segments with high claim volatility or severe loss patterns.
+1.  **Policy Type Pricing:** Comprehensive policies (COMP_N, COMP_E) are more profitable than basic third-party policies. Review whether TP pricing adequately compensates for liability exposure.
 
-2.  **Geographic Strategy:** Review underwriting and pricing assumptions across circulation areas, particularly in regions with higher claim volatility.
+2.  **Claim Severity Management:** A small number of extreme claims drive most losses. Consider differentiated coverage terms, claim monitoring, or reinsurance for high-severity segments.
 
-3.  **Vehicle Segmentation:** Pay closer attention to vehicle age and fuel type when assessing profitability, as some segments show higher downside risk or lower median profitability.
+3.  **Vehicle Age Risk:** Older vehicles (41–50 years, 50+) show wider negative profitability tails. Underwriting criteria for very old vehicles should reflect this higher downside risk.
 
-4.  **Claim Severity Management:** Since a small number of severe claims account for large losses, consider additional controls such as claim monitoring, risk screening, or differentiated coverage terms for high-risk segments.
+4.  **Geographic Volatility:** Area R shows higher claim volatility than Area U. Pricing and reserving assumptions should account for this regional disparity.
 
-5.  **Portfolio Diversification:** Maintain a balanced exposure across fuel types, regions, and vehicle age groups to reduce concentration in high-volatility segments.
+5.  **Exposure-Adjusted Analysis:** Since total exposure strongly correlates with profitability by construction, future analysis should use exposure-adjusted metrics (e.g. profitability per unit exposure) for fairer segment comparisons.
