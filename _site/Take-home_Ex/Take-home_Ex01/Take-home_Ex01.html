@@ -193,10 +193,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#part-2-bivariate-visual-analytics" id="toc-part-2-bivariate-visual-analytics" class="nav-link" data-scroll-target="#part-2-bivariate-visual-analytics">Part 2: Bivariate Visual Analytics</a>
   <ul class="collapse">
   <li><a href="#factors-influencing-profitability" id="toc-factors-influencing-profitability" class="nav-link" data-scroll-target="#factors-influencing-profitability">Factors Influencing Profitability</a></li>
-  <li><a href="#factors-influencing-profitability-1" id="toc-factors-influencing-profitability-1" class="nav-link" data-scroll-target="#factors-influencing-profitability-1">Factors Influencing Profitability</a></li>
   </ul></li>
-  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a>
+  <li><a href="#limitations" id="toc-limitations" class="nav-link" data-scroll-target="#limitations">Limitations</a>
   <ul class="collapse">
+  <li><a href="#multiple-testing" id="toc-multiple-testing" class="nav-link" data-scroll-target="#multiple-testing">Multiple Testing</a></li>
+  <li><a href="#small-sample-sizes" id="toc-small-sample-sizes" class="nav-link" data-scroll-target="#small-sample-sizes">Small Sample Sizes</a></li>
+  <li><a href="#effect-size-interpretation" id="toc-effect-size-interpretation" class="nav-link" data-scroll-target="#effect-size-interpretation">Effect Size Interpretation</a></li>
+  <li><a href="#factors-influencing-profitability-1" id="toc-factors-influencing-profitability-1" class="nav-link" data-scroll-target="#factors-influencing-profitability-1">Factors Influencing Profitability</a></li>
+  <li><a href="#factors-influencing-profitability-2" id="toc-factors-influencing-profitability-2" class="nav-link" data-scroll-target="#factors-influencing-profitability-2">Factors Influencing Profitability</a></li>
   <li><a href="#key-findings" id="toc-key-findings" class="nav-link" data-scroll-target="#key-findings">Key Findings</a></li>
   <li><a href="#recommendations" id="toc-recommendations" class="nav-link" data-scroll-target="#recommendations">Recommendations</a></li>
   </ul></li>
@@ -232,7 +236,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">May 13, 2026</p>
+      <p class="date-modified">May 16, 2026</p>
     </div>
   </div>
     
@@ -1147,7 +1151,7 @@ $ liability_exposure          &lt;dbl&gt; 0.09863014, 1.00000000, 1.00000000, 1.
 </ul>
 <p><strong>Bivariate Analysis:</strong></p>
 <ul>
-<li><strong>Scatter plots with correlation coefficients</strong> to assess the strength and direction of relationships between continuous variables</li>
+<li><strong>Scatter plots with correlation coefficients</strong> to assess the strength and direction of relationships (linear relationship) between continuous variables</li>
 <li><strong>Grouped bar charts</strong> to compare mean values across categorical groups</li>
 <li><strong>Ridgeline plots</strong> (from ggridges package) to compare full distributions across multiple groups simultaneously, showing both central tendency and spread</li>
 <li><strong>Raincloud plots</strong> (from ggdist package) to combine density curves, boxplots, and individual data points in a single visualization, providing comprehensive distributional information</li>
@@ -1203,7 +1207,7 @@ $ liability_exposure          &lt;dbl&gt; 0.09863014, 1.00000000, 1.00000000, 1.
 </div>
 </div>
 </div>
-<p><strong>Interpretation:</strong> The distribution of total premium is right-skewed, with most policies having relatively low premium values. The histogram shows that the majority of observations are concentrated below €500, while a small number of policies have much higher premiums, extending beyond €5,000. The boxplot confirms the presence of several upper-tail outliers. Therefore, the premium variable is not normally distributed. Will apply log transformation to this column to make a better chart only.</p>
+<p><strong>Interpretation:</strong> The distribution of total premium is right-skewed, with most policies having relatively low premium values. The histogram shows that the majority of observations are concentrated below €500, while a small number of policies have much higher premiums, extending beyond €5,000. The boxplot confirms the presence of several upper-tail outliers. Therefore, the premium variable is not normally distributed. A log transformation is applied below for visualization purposes only to better display the distribution shape.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(insurance_clean, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">log1p</span>(total_premium))) <span class="sc">+</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density)),</span>
@@ -1322,8 +1326,7 @@ $ liability_exposure          &lt;dbl&gt; 0.09863014, 1.00000000, 1.00000000, 1.
 </div>
 </div>
 </div>
-<p><strong>Interpretation:</strong> Although only positive incurred claims were included, the presence of extremely low log values suggests that some positive claim costs are very close to zero. These observations should be inspected because they may reflect very small claim payments, rounding effects, or possible data issues. Therefore, while the log transformation helps reduce the impact of very large claim costs, it does not fully remove extreme observations.</p>
-<p>The distribution remains non-normal even after log transformation, so non-parametric or robust methods remain appropriate for comparing claim costs across groups.</p>
+<p><strong>Interpretation:</strong> The log-transformed distribution of positive claims shows that claim amounts span a wide range, from small claims (low log values) to large claims (high log values). Low log values simply represent legitimately small claim payments (e.g., log(100) ≈ 4.6). The distribution remains right-skewed even after log transformation, so non-parametric or robust methods remain appropriate for comparing claim costs across groups.</p>
 </section>
 <section id="distribution-of-profitability" class="level4">
 <h4 class="anchored" data-anchor-id="distribution-of-profitability">Distribution of Profitability</h4>
@@ -1538,34 +1541,29 @@ $ liability_exposure          &lt;dbl&gt; 0.09863014, 1.00000000, 1.00000000, 1.
 </section>
 <section id="distribution-of-driving-license-age" class="level4">
 <h4 class="anchored" data-anchor-id="distribution-of-driving-license-age">Distribution of Driving License Age</h4>
-<p>The variable years_with_licence appears to represent the calendar year in which the driver obtained their licence, rather than the number of years of driving experience. Since the dataset covers policies from 2022 to 2024, this variable was transformed into age_driving_licence by subtracting the licence year from the policy year. This derived variable better represents driving experience and is more interpretable for analysing claim risk and profitability.</p>
+<p>The variable years_with_licence was derived earlier as year - age_driving_licence, representing the actual years of driving experience. This variable is more interpretable for analysing claim risk and profitability than the raw licence year.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>insurance_clean <span class="ot">&lt;-</span> insurance_clean <span class="sc">%&gt;%</span></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">age_driving_licence =</span> <span class="dv">2024</span> <span class="sc">-</span> years_with_licence</span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>p_lage1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(insurance_clean, <span class="fu">aes</span>(<span class="at">x =</span> age_driving_licence)) <span class="sc">+</span></span>
-<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density)), <span class="at">bins =</span> <span class="dv">30</span>, <span class="at">fill =</span> <span class="st">"forestgreen"</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
-<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">color =</span> <span class="st">"darkgreen"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Distribution of Driving Experience"</span>,</span>
-<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Years Since Licence Obtained"</span>,</span>
-<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Density"</span></span>
-<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
-<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>p_lage2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(insurance_clean, <span class="fu">aes</span>(<span class="at">y =</span> age_driving_licence)) <span class="sc">+</span></span>
-<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">fill =</span> <span class="st">"forestgreen"</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
-<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
-<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Boxplot of Driving Experience"</span>,</span>
-<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="cn">NULL</span>,</span>
-<span id="cb26-22"><a href="#cb26-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Years Since Licence Obtained"</span></span>
-<span id="cb26-23"><a href="#cb26-23" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb26-24"><a href="#cb26-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
-<span id="cb26-25"><a href="#cb26-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-26"><a href="#cb26-26" aria-hidden="true" tabindex="-1"></a>p_lage1 <span class="sc">/</span> p_lage2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>p_lage1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(insurance_clean, <span class="fu">aes</span>(<span class="at">x =</span> years_with_licence)) <span class="sc">+</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density)), <span class="at">bins =</span> <span class="dv">30</span>, <span class="at">fill =</span> <span class="st">"forestgreen"</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">color =</span> <span class="st">"darkgreen"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Distribution of Driving Experience"</span>,</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Years Since Licence Obtained"</span>,</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Density"</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>p_lage2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(insurance_clean, <span class="fu">aes</span>(<span class="at">y =</span> years_with_licence)) <span class="sc">+</span></span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">fill =</span> <span class="st">"forestgreen"</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Boxplot of Driving Experience"</span>,</span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="cn">NULL</span>,</span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Years Since Licence Obtained"</span></span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a>p_lage1 <span class="sc">/</span> p_lage2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1580,11 +1578,11 @@ $ liability_exposure          &lt;dbl&gt; 0.09863014, 1.00000000, 1.00000000, 1.
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>insurance_clean <span class="ot">&lt;-</span> insurance_clean <span class="sc">%&gt;%</span></span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">driving_experience_group =</span> <span class="fu">case_when</span>(</span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>      age_driving_licence <span class="sc">&lt;</span> <span class="dv">0</span> <span class="sc">~</span> <span class="st">"Invalid"</span>,</span>
-<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>      age_driving_licence <span class="sc">&lt;=</span> <span class="dv">10</span> <span class="sc">~</span> <span class="st">"0-10 years"</span>,</span>
-<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>      age_driving_licence <span class="sc">&lt;=</span> <span class="dv">20</span> <span class="sc">~</span> <span class="st">"11-20 years"</span>,</span>
-<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>      age_driving_licence <span class="sc">&lt;=</span> <span class="dv">30</span> <span class="sc">~</span> <span class="st">"21-30 years"</span>,</span>
-<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>      age_driving_licence <span class="sc">&lt;=</span> <span class="dv">40</span> <span class="sc">~</span> <span class="st">"31-40 years"</span>,</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>      years_with_licence <span class="sc">&lt;</span> <span class="dv">0</span> <span class="sc">~</span> <span class="st">"Invalid"</span>,</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>      years_with_licence <span class="sc">&lt;=</span> <span class="dv">10</span> <span class="sc">~</span> <span class="st">"0-10 years"</span>,</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>      years_with_licence <span class="sc">&lt;=</span> <span class="dv">20</span> <span class="sc">~</span> <span class="st">"11-20 years"</span>,</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>      years_with_licence <span class="sc">&lt;=</span> <span class="dv">30</span> <span class="sc">~</span> <span class="st">"21-30 years"</span>,</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>      years_with_licence <span class="sc">&lt;=</span> <span class="dv">40</span> <span class="sc">~</span> <span class="st">"31-40 years"</span>,</span>
 <span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"40+ years"</span></span>
 <span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>    ),</span>
 <span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">driving_experience_group =</span> <span class="fu">factor</span>(</span>
@@ -2180,7 +2178,7 @@ $ liability_exposure          &lt;dbl&gt; 0.09863014, 1.00000000, 1.00000000, 1.
 <span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sample_n</span>(<span class="fu">min</span>(<span class="dv">5000</span>, <span class="fu">nrow</span>(insurance_clean))) <span class="sc">%&gt;%</span></span>
 <span id="cb42-12"><a href="#cb42-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> total_premium, <span class="at">y =</span> total_incurred)) <span class="sc">+</span></span>
 <span id="cb42-13"><a href="#cb42-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.25</span>, <span class="at">color =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
-<span id="cb42-14"><a href="#cb42-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">se =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb42-14"><a href="#cb42-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"loess"</span>, <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">se =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
 <span id="cb42-15"><a href="#cb42-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">labels =</span> comma) <span class="sc">+</span></span>
 <span id="cb42-16"><a href="#cb42-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> comma) <span class="sc">+</span></span>
 <span id="cb42-17"><a href="#cb42-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
@@ -2215,7 +2213,7 @@ $ liability_exposure          &lt;dbl&gt; 0.09863014, 1.00000000, 1.00000000, 1.
 <span id="cb43-12"><a href="#cb43-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sample_n</span>(<span class="fu">min</span>(<span class="dv">5000</span>, <span class="fu">nrow</span>(claims_positive))) <span class="sc">%&gt;%</span></span>
 <span id="cb43-13"><a href="#cb43-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> total_premium, <span class="at">y =</span> total_incurred)) <span class="sc">+</span></span>
 <span id="cb43-14"><a href="#cb43-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.25</span>, <span class="at">color =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
-<span id="cb43-15"><a href="#cb43-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">se =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb43-15"><a href="#cb43-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"loess"</span>, <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">se =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
 <span id="cb43-16"><a href="#cb43-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">labels =</span> comma) <span class="sc">+</span></span>
 <span id="cb43-17"><a href="#cb43-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> comma) <span class="sc">+</span></span>
 <span id="cb43-18"><a href="#cb43-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
@@ -2531,7 +2529,7 @@ $ liability_exposure          &lt;dbl&gt; 0.09863014, 1.00000000, 1.00000000, 1.
 <span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sample_n</span>(<span class="fu">min</span>(<span class="dv">5000</span>, <span class="fu">nrow</span>(insurance_clean))) <span class="sc">%&gt;%</span></span>
 <span id="cb56-7"><a href="#cb56-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> power_to_weight_ratio, <span class="at">y =</span> profitability)) <span class="sc">+</span></span>
 <span id="cb56-8"><a href="#cb56-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.25</span>, <span class="at">color =</span> <span class="st">"purple"</span>) <span class="sc">+</span></span>
-<span id="cb56-9"><a href="#cb56-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">se =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb56-9"><a href="#cb56-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"loess"</span>, <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">se =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
 <span id="cb56-10"><a href="#cb56-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> comma) <span class="sc">+</span></span>
 <span id="cb56-11"><a href="#cb56-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
 <span id="cb56-12"><a href="#cb56-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Power-to-Weight Ratio vs Profitability"</span>,</span>
@@ -2561,7 +2559,7 @@ $ liability_exposure          &lt;dbl&gt; 0.09863014, 1.00000000, 1.00000000, 1.
 <span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sample_n</span>(<span class="fu">min</span>(<span class="dv">5000</span>, <span class="fu">nrow</span>(insurance_clean))) <span class="sc">%&gt;%</span></span>
 <span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> total_exposure, <span class="at">y =</span> profitability)) <span class="sc">+</span></span>
 <span id="cb57-8"><a href="#cb57-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.25</span>, <span class="at">color =</span> <span class="st">"orange"</span>) <span class="sc">+</span></span>
-<span id="cb57-9"><a href="#cb57-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">se =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb57-9"><a href="#cb57-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"loess"</span>, <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">se =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
 <span id="cb57-10"><a href="#cb57-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> comma) <span class="sc">+</span></span>
 <span id="cb57-11"><a href="#cb57-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
 <span id="cb57-12"><a href="#cb57-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Total Exposure vs Profitability"</span>,</span>
@@ -2674,6 +2672,22 @@ $ liability_exposure          &lt;dbl&gt; 0.09863014, 1.00000000, 1.00000000, 1.
 <p>This visual result is consistent with the Mann-Whitney test, which found a statistically significant difference between areas. However, the effect size was very small, so the difference is statistically detectable mainly because of the large sample size rather than because of a strong practical difference.</p>
 </section>
 </section>
+</section>
+<section id="limitations" class="level2">
+<h2 class="anchored" data-anchor-id="limitations">Limitations</h2>
+<section id="multiple-testing" class="level3">
+<h3 class="anchored" data-anchor-id="multiple-testing">Multiple Testing</h3>
+<p>This analysis conducted numerous statistical tests (10+ bivariate comparisons) without applying a global family-wise error rate correction. While Bonferroni correction was applied within each <code>ggbetweenstats</code> analysis for pairwise comparisons, the overall multiple testing problem across all analyses was not addressed. This increases the risk of Type I errors (false positives). Readers should interpret p-values cautiously and focus on effect sizes and practical significance rather than statistical significance alone.</p>
+</section>
+<section id="small-sample-sizes" class="level3">
+<h3 class="anchored" data-anchor-id="small-sample-sizes">Small Sample Sizes</h3>
+<p>Several subgroups have small sample sizes that limit the reliability of their results: - Driver age 18-25: Very small sample size compared to other age groups - Bonus score B and N: Only 1.3% and 2.2% of the portfolio respectively - Municipality type IS (Islands): Only 6.8% of observations - Policy type TP and COMP_N: 1.6% and 4.5% respectively - Driving experience 0-10 years: Only 15 observations</p>
+<p>Results for these groups should be interpreted with caution, as small samples can produce unstable estimates and may not be representative of the broader population.</p>
+</section>
+<section id="effect-size-interpretation" class="level3">
+<h3 class="anchored" data-anchor-id="effect-size-interpretation">Effect Size Interpretation</h3>
+<p>Throughout the bivariate analysis, most statistically significant results showed very small effect sizes. This pattern is common in large datasets where even trivial differences become statistically significant. The practical importance of these findings should be evaluated based on effect sizes and business context rather than p-values alone.</p>
+</section>
 <section id="factors-influencing-profitability-1" class="level3">
 <h3 class="anchored" data-anchor-id="factors-influencing-profitability-1">Factors Influencing Profitability</h3>
 <section id="uncertainty-visualization-mean-profitability-with-confidence-intervals" class="level4">
@@ -2728,32 +2742,33 @@ $ liability_exposure          &lt;dbl&gt; 0.09863014, 1.00000000, 1.00000000, 1.
 <h4 class="anchored" data-anchor-id="claims-volatility-analysis">Claims Volatility Analysis</h4>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>volatility_by_fuel <span class="ot">&lt;-</span> insurance_clean <span class="sc">%&gt;%</span></span>
-<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(fuel_type) <span class="sc">%&gt;%</span></span>
-<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">n =</span> <span class="fu">n</span>(),</span>
-<span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_claim =</span> <span class="fu">mean</span>(total_incurred, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb60-6"><a href="#cb60-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">sd_claim =</span> <span class="fu">sd</span>(total_incurred, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb60-7"><a href="#cb60-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">cv =</span> sd_claim <span class="sc">/</span> mean_claim,</span>
-<span id="cb60-8"><a href="#cb60-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
-<span id="cb60-9"><a href="#cb60-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb60-10"><a href="#cb60-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(n <span class="sc">&gt;</span> <span class="dv">100</span>)</span>
-<span id="cb60-11"><a href="#cb60-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb60-12"><a href="#cb60-12" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(volatility_by_fuel, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(fuel_type, cv), <span class="at">y =</span> cv, <span class="at">fill =</span> fuel_type)) <span class="sc">+</span></span>
-<span id="cb60-13"><a href="#cb60-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
-<span id="cb60-14"><a href="#cb60-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">round</span>(cv, <span class="dv">2</span>)), <span class="at">hjust =</span> <span class="sc">-</span><span class="fl">0.2</span>) <span class="sc">+</span></span>
-<span id="cb60-15"><a href="#cb60-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
-<span id="cb60-16"><a href="#cb60-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(</span>
-<span id="cb60-17"><a href="#cb60-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">labels =</span> comma,</span>
-<span id="cb60-18"><a href="#cb60-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">expand =</span> <span class="fu">expansion</span>(<span class="at">mult =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.15</span>))</span>
-<span id="cb60-19"><a href="#cb60-19" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb60-20"><a href="#cb60-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb60-21"><a href="#cb60-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Claims Volatility by Fuel Type"</span>,</span>
-<span id="cb60-22"><a href="#cb60-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Coefficient of Variation (SD / Mean)"</span>,</span>
-<span id="cb60-23"><a href="#cb60-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Fuel Type"</span>,</span>
-<span id="cb60-24"><a href="#cb60-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Coefficient of Variation"</span></span>
-<span id="cb60-25"><a href="#cb60-25" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb60-26"><a href="#cb60-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb60-27"><a href="#cb60-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(total_incurred <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(fuel_type) <span class="sc">%&gt;%</span></span>
+<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">n =</span> <span class="fu">n</span>(),</span>
+<span id="cb60-6"><a href="#cb60-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_claim =</span> <span class="fu">mean</span>(total_incurred, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb60-7"><a href="#cb60-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">sd_claim =</span> <span class="fu">sd</span>(total_incurred, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb60-8"><a href="#cb60-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">cv =</span> sd_claim <span class="sc">/</span> mean_claim,</span>
+<span id="cb60-9"><a href="#cb60-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb60-10"><a href="#cb60-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb60-11"><a href="#cb60-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(n <span class="sc">&gt;</span> <span class="dv">100</span>)</span>
+<span id="cb60-12"><a href="#cb60-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-13"><a href="#cb60-13" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(volatility_by_fuel, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(fuel_type, cv), <span class="at">y =</span> cv, <span class="at">fill =</span> fuel_type)) <span class="sc">+</span></span>
+<span id="cb60-14"><a href="#cb60-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
+<span id="cb60-15"><a href="#cb60-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">round</span>(cv, <span class="dv">2</span>)), <span class="at">hjust =</span> <span class="sc">-</span><span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb60-16"><a href="#cb60-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb60-17"><a href="#cb60-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(</span>
+<span id="cb60-18"><a href="#cb60-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">labels =</span> comma,</span>
+<span id="cb60-19"><a href="#cb60-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">expand =</span> <span class="fu">expansion</span>(<span class="at">mult =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.15</span>))</span>
+<span id="cb60-20"><a href="#cb60-20" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb60-21"><a href="#cb60-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb60-22"><a href="#cb60-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Claims Volatility by Fuel Type"</span>,</span>
+<span id="cb60-23"><a href="#cb60-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Coefficient of Variation (SD / Mean) - Positive claims only"</span>,</span>
+<span id="cb60-24"><a href="#cb60-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Fuel Type"</span>,</span>
+<span id="cb60-25"><a href="#cb60-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Coefficient of Variation"</span></span>
+<span id="cb60-26"><a href="#cb60-26" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb60-27"><a href="#cb60-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb60-28"><a href="#cb60-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -2762,42 +2777,42 @@ $ liability_exposure          &lt;dbl&gt; 0.09863014, 1.00000000, 1.00000000, 1.
 </div>
 </div>
 </div>
-<p><strong>Interpretation:</strong> Claim cost volatility differs across fuel types. Gasoline (<code>G</code>) has the highest coefficient of variation, followed by diesel (<code>D</code>), suggesting that claim costs are more variable relative to their average claim amount for these two fuel types. Overall, claim costs appear highly volatile, especially for gasoline and diesel policies.</p>
-<p>BUT Because many policies have zero claims, the coefficient of variation may be inflated. Therefore, this result should be interpreted as a relative volatility indicator rather than a complete measure of claim risk.</p>
+<p><strong>Interpretation:</strong> Among policies with positive claims, claim cost volatility differs across fuel types. Gasoline (<code>G</code>) has the highest coefficient of variation, followed by diesel (<code>D</code>), indicating that claim amounts are more variable relative to their average for gasoline policies. This suggests greater unpredictability in claim severity for gasoline vehicles compared to diesel vehicles.</p>
 </section>
 <section id="volatility-by-geographic-area" class="level4">
 <h4 class="anchored" data-anchor-id="volatility-by-geographic-area">Volatility by Geographic Area</h4>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>volatility_by_area <span class="ot">&lt;-</span> insurance_clean <span class="sc">%&gt;%</span></span>
-<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(circulation_area) <span class="sc">%&gt;%</span></span>
-<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb61-4"><a href="#cb61-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">n =</span> <span class="fu">n</span>(),</span>
-<span id="cb61-5"><a href="#cb61-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_claim =</span> <span class="fu">mean</span>(total_incurred, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb61-6"><a href="#cb61-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">sd_claim =</span> <span class="fu">sd</span>(total_incurred, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb61-7"><a href="#cb61-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">cv =</span> sd_claim <span class="sc">/</span> mean_claim,</span>
-<span id="cb61-8"><a href="#cb61-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
-<span id="cb61-9"><a href="#cb61-9" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb61-10"><a href="#cb61-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-11"><a href="#cb61-11" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(volatility_by_area, <span class="fu">aes</span>(</span>
-<span id="cb61-12"><a href="#cb61-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="fu">reorder</span>(circulation_area, cv),</span>
-<span id="cb61-13"><a href="#cb61-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> cv,</span>
-<span id="cb61-14"><a href="#cb61-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">fill =</span> circulation_area</span>
-<span id="cb61-15"><a href="#cb61-15" aria-hidden="true" tabindex="-1"></a>)) <span class="sc">+</span></span>
-<span id="cb61-16"><a href="#cb61-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
-<span id="cb61-17"><a href="#cb61-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">round</span>(cv, <span class="dv">2</span>)), <span class="at">hjust =</span> <span class="sc">-</span><span class="fl">0.2</span>) <span class="sc">+</span></span>
-<span id="cb61-18"><a href="#cb61-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
-<span id="cb61-19"><a href="#cb61-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(</span>
-<span id="cb61-20"><a href="#cb61-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">labels =</span> comma,</span>
-<span id="cb61-21"><a href="#cb61-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">expand =</span> <span class="fu">expansion</span>(<span class="at">mult =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.15</span>))</span>
-<span id="cb61-22"><a href="#cb61-22" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb61-23"><a href="#cb61-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb61-24"><a href="#cb61-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Claims Volatility by Circulation Area"</span>,</span>
-<span id="cb61-25"><a href="#cb61-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Coefficient of Variation (SD / Mean)"</span>,</span>
-<span id="cb61-26"><a href="#cb61-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Area"</span>,</span>
-<span id="cb61-27"><a href="#cb61-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Coefficient of Variation"</span></span>
-<span id="cb61-28"><a href="#cb61-28" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb61-29"><a href="#cb61-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb61-30"><a href="#cb61-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(total_incurred <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(circulation_area) <span class="sc">%&gt;%</span></span>
+<span id="cb61-4"><a href="#cb61-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb61-5"><a href="#cb61-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">n =</span> <span class="fu">n</span>(),</span>
+<span id="cb61-6"><a href="#cb61-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_claim =</span> <span class="fu">mean</span>(total_incurred, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb61-7"><a href="#cb61-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">sd_claim =</span> <span class="fu">sd</span>(total_incurred, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb61-8"><a href="#cb61-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">cv =</span> sd_claim <span class="sc">/</span> mean_claim,</span>
+<span id="cb61-9"><a href="#cb61-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb61-10"><a href="#cb61-10" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb61-11"><a href="#cb61-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-12"><a href="#cb61-12" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(volatility_by_area, <span class="fu">aes</span>(</span>
+<span id="cb61-13"><a href="#cb61-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="fu">reorder</span>(circulation_area, cv),</span>
+<span id="cb61-14"><a href="#cb61-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> cv,</span>
+<span id="cb61-15"><a href="#cb61-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">fill =</span> circulation_area</span>
+<span id="cb61-16"><a href="#cb61-16" aria-hidden="true" tabindex="-1"></a>)) <span class="sc">+</span></span>
+<span id="cb61-17"><a href="#cb61-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
+<span id="cb61-18"><a href="#cb61-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">round</span>(cv, <span class="dv">2</span>)), <span class="at">hjust =</span> <span class="sc">-</span><span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb61-19"><a href="#cb61-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb61-20"><a href="#cb61-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(</span>
+<span id="cb61-21"><a href="#cb61-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">labels =</span> comma,</span>
+<span id="cb61-22"><a href="#cb61-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">expand =</span> <span class="fu">expansion</span>(<span class="at">mult =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.15</span>))</span>
+<span id="cb61-23"><a href="#cb61-23" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb61-24"><a href="#cb61-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb61-25"><a href="#cb61-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Claims Volatility by Circulation Area"</span>,</span>
+<span id="cb61-26"><a href="#cb61-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Coefficient of Variation (SD / Mean) - Positive claims only"</span>,</span>
+<span id="cb61-27"><a href="#cb61-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Area"</span>,</span>
+<span id="cb61-28"><a href="#cb61-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Coefficient of Variation"</span></span>
+<span id="cb61-29"><a href="#cb61-29" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb61-30"><a href="#cb61-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb61-31"><a href="#cb61-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -2806,35 +2821,15 @@ $ liability_exposure          &lt;dbl&gt; 0.09863014, 1.00000000, 1.00000000, 1.
 </div>
 </div>
 </div>
-<p><strong>Interpretation:</strong> Claim cost volatility differs between circulation areas. Area <code>R</code> has a higher coefficient of variation than area <code>U</code>, indicating that claim costs in area <code>R</code> are more variable relative to their average claim amount. In contrast, area <code>U</code> shows lower relative claim volatility. This suggests that although both regions contain claim risk, area <code>R</code> may have less predictable or more dispersed claim costs.</p>
-<p>However, because claim costs are zero-inflated, with many policies having no claims, the coefficient of variation may be inflated when the mean claim cost is low. Therefore, the CV should be interpreted as a relative volatility indicator rather than a complete measure of claim risk.</p>
-</section>
-<section id="profitability-by-claim-occurrence-1" class="level4">
-<h4 class="anchored" data-anchor-id="profitability-by-claim-occurrence-1">Profitability by Claim Occurrence</h4>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggbetweenstats</span>(</span>
-<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> insurance_clean,</span>
-<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> has_claim,</span>
-<span id="cb62-4"><a href="#cb62-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> profitability,</span>
-<span id="cb62-5"><a href="#cb62-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"nonparametric"</span>,</span>
-<span id="cb62-6"><a href="#cb62-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">pairwise.comparisons =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb62-7"><a href="#cb62-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">p.adjust.method =</span> <span class="st">"bonferroni"</span>,</span>
-<span id="cb62-8"><a href="#cb62-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">"Profitability Distribution by Claim Occurrence"</span></span>
-<span id="cb62-9"><a href="#cb62-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="Take-home_Ex01_files/figure-html/unnamed-chunk-56-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<p><strong>Interpretation:</strong> Policies with claims have much lower profitability than policies without claims, which is expected because profitability is calculated by subtracting incurred claims from premium. Therefore, this result should be treated as a validation check rather than a new insight. More meaningful analysis should focus on pre-claim variables that may help explain why some policies become less profitable.</p>
+<p><strong>Interpretation:</strong> Among policies with positive claims, claim cost volatility differs between circulation areas. Area <code>R</code> has a higher coefficient of variation than area <code>U</code>, indicating that claim amounts in area <code>R</code> are more variable relative to their average. This suggests that rural/regional areas may have less predictable claim severity compared to urban areas.</p>
 </section>
 </section>
+<section id="factors-influencing-profitability-2" class="level3">
+<h3 class="anchored" data-anchor-id="factors-influencing-profitability-2">Factors Influencing Profitability</h3>
+<section id="uncertainty-visualization-mean-profitability-with-confidence-intervals-1" class="level4">
+<h4 class="anchored" data-anchor-id="uncertainty-visualization-mean-profitability-with-confidence-intervals-1">Uncertainty Visualization: Mean Profitability with Confidence Intervals</h4>
 </section>
-<section id="conclusion" class="level2">
-<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+</section>
 <section id="key-findings" class="level3">
 <h3 class="anchored" data-anchor-id="key-findings">Key Findings</h3>
 <p><strong>Univariate Insights:</strong></p>

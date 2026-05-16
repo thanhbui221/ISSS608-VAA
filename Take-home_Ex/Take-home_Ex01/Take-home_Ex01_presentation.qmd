@@ -227,7 +227,7 @@ cor_value <- cor(insurance_clean$total_premium, insurance_clean$total_incurred, 
 ggplot(insurance_clean %>% sample_n(min(5000, nrow(insurance_clean))),
        aes(x = total_premium, y = total_incurred)) +
   geom_point(alpha = 0.3, color = "steelblue") +
-  geom_smooth(method = "lm", color = "red", se = TRUE) +
+  geom_smooth(method = "loess", color = "red", se = TRUE) +
   scale_x_continuous(labels = comma) +
   scale_y_continuous(labels = comma) +
   labs(title = "Premium vs Claim Cost Relationship",
@@ -459,7 +459,7 @@ insurance_clean %>%
   sample_n(min(5000, nrow(insurance_clean))) %>%
   ggplot(aes(x = total_exposure, y = profitability)) +
   geom_point(alpha = 0.25, color = "orange") +
-  geom_smooth(method = "lm", color = "red", se = TRUE) +
+  geom_smooth(method = "loess", color = "red", se = TRUE) +
   scale_y_continuous(labels = comma) +
   labs(
     title = "Total Exposure vs Profitability",
@@ -503,13 +503,14 @@ Bonus score shows a counterintuitive pattern: the B group (poor claims history) 
 #| fig-width: 10
 #| fig-height: 5
 insurance_clean %>%
+  filter(total_incurred > 0) %>%
   group_by(fuel_type) %>%
   summarise(mean_claim = mean(total_incurred), sd_claim = sd(total_incurred), cv = sd_claim / mean_claim, n = n()) %>%
   filter(n > 1000) %>%
   ggplot(aes(x = reorder(fuel_type, cv), y = cv, fill = fuel_type)) +
   geom_col() +
   coord_flip() +
-  labs(title = "Claims Volatility by Fuel Type", subtitle = "Coefficient of Variation", x = "Fuel Type", y = "CV") +
+  labs(title = "Claims Volatility by Fuel Type", subtitle = "Coefficient of Variation (Positive claims only)", x = "Fuel Type", y = "CV") +
   theme_minimal(base_size = 14) +
   theme(legend.position = "none")
 ```
@@ -560,6 +561,8 @@ Non-parametric Kruskal-Wallis tests confirm that profitability differences acros
 
 ::: notes
 Key takeaway: no single factor strongly explains profitability. Policy type and total exposure are the most actionable variables. Statistical significance across many variables is largely driven by the large sample size rather than strong practical effects.
+
+**Limitations:** Multiple testing without global correction increases Type I error risk. Small sample sizes for some groups (18-25 age, bonus B/N, islands, TP/COMP_N) limit reliability. Most significant results have very small effect sizes—focus on practical significance, not just p-values.
 :::
 
 ## Recommendations {.smaller}

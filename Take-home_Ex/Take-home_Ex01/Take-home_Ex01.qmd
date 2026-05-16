@@ -7,7 +7,7 @@ execute:
   eval: true
   echo: true
   warning: false
-  freeze: true
+  freeze: false
 ---
 
 ## Overview
@@ -167,7 +167,7 @@ This analysis employs a systematic visual analytics strategy to explore the insu
 
 **Bivariate Analysis:**
 
-- **Scatter plots with correlation coefficients** to assess the strength and direction of relationships between continuous variables
+- **Scatter plots with correlation coefficients** to assess the strength and direction of relationships (linear relationship) between continuous variables
 - **Grouped bar charts** to compare mean values across categorical groups
 - **Ridgeline plots** (from ggridges package) to compare full distributions across multiple groups simultaneously, showing both central tendency and spread
 - **Raincloud plots** (from ggdist package) to combine density curves, boxplots, and individual data points in a single visualization, providing comprehensive distributional information
@@ -215,7 +215,7 @@ p2 <- ggplot(insurance_clean, aes(y = total_premium)) +
 p1 / p2
 ```
 
-**Interpretation:** The distribution of total premium is right-skewed, with most policies having relatively low premium values. The histogram shows that the majority of observations are concentrated below €500, while a small number of policies have much higher premiums, extending beyond €5,000. The boxplot confirms the presence of several upper-tail outliers. Therefore, the premium variable is not normally distributed. Will apply log transformation to this column to make a better chart only.
+**Interpretation:** The distribution of total premium is right-skewed, with most policies having relatively low premium values. The histogram shows that the majority of observations are concentrated below €500, while a small number of policies have much higher premiums, extending beyond €5,000. The boxplot confirms the presence of several upper-tail outliers. Therefore, the premium variable is not normally distributed. A log transformation is applied below for visualization purposes only to better display the distribution shape.
 
 ```{r}
 ggplot(insurance_clean, aes(x = log1p(total_premium))) +
@@ -313,9 +313,7 @@ p4_log_positive <- ggplot(claims_positive, aes(y = log_total_incurred)) +
 p3_log_positive / p4_log_positive
 ```
 
-**Interpretation:** Although only positive incurred claims were included, the presence of extremely low log values suggests that some positive claim costs are very close to zero. These observations should be inspected because they may reflect very small claim payments, rounding effects, or possible data issues. Therefore, while the log transformation helps reduce the impact of very large claim costs, it does not fully remove extreme observations.
-
-The distribution remains non-normal even after log transformation, so non-parametric or robust methods remain appropriate for comparing claim costs across groups.
+**Interpretation:** The log-transformed distribution of positive claims shows that claim amounts span a wide range, from small claims (low log values) to large claims (high log values). Low log values simply represent legitimately small claim payments (e.g., log(100) ≈ 4.6). The distribution remains right-skewed even after log transformation, so non-parametric or robust methods remain appropriate for comparing claim costs across groups.
 
 #### Distribution of Profitability
 
@@ -499,15 +497,10 @@ This grouping improves interpretability and allows profitability patterns to be 
 
 #### Distribution of Driving License Age
 
-The variable years_with_licence appears to represent the calendar year in which the driver obtained their licence, rather than the number of years of driving experience. Since the dataset covers policies from 2022 to 2024, this variable was transformed into age_driving_licence by subtracting the licence year from the policy year. This derived variable better represents driving experience and is more interpretable for analysing claim risk and profitability.
+The variable years_with_licence was derived earlier as year - age_driving_licence, representing the actual years of driving experience. This variable is more interpretable for analysing claim risk and profitability than the raw licence year.
 
 ```{r}
-insurance_clean <- insurance_clean %>%
-  mutate(
-    age_driving_licence = 2024 - years_with_licence
-  )
-
-p_lage1 <- ggplot(insurance_clean, aes(x = age_driving_licence)) +
+p_lage1 <- ggplot(insurance_clean, aes(x = years_with_licence)) +
   geom_histogram(aes(y = after_stat(density)), bins = 30, fill = "forestgreen", alpha = 0.7) +
   geom_density(color = "darkgreen", linewidth = 1) +
   labs(
@@ -517,7 +510,7 @@ p_lage1 <- ggplot(insurance_clean, aes(x = age_driving_licence)) +
   ) +
   theme_minimal()
 
-p_lage2 <- ggplot(insurance_clean, aes(y = age_driving_licence)) +
+p_lage2 <- ggplot(insurance_clean, aes(y = years_with_licence)) +
   geom_boxplot(fill = "forestgreen", alpha = 0.7) +
   coord_flip() +
   labs(
@@ -538,11 +531,11 @@ Based on this distribution, driving experience was grouped into 0-10, 11-20, 21-
 insurance_clean <- insurance_clean %>%
   mutate(
     driving_experience_group = case_when(
-      age_driving_licence < 0 ~ "Invalid",
-      age_driving_licence <= 10 ~ "0-10 years",
-      age_driving_licence <= 20 ~ "11-20 years",
-      age_driving_licence <= 30 ~ "21-30 years",
-      age_driving_licence <= 40 ~ "31-40 years",
+      years_with_licence < 0 ~ "Invalid",
+      years_with_licence <= 10 ~ "0-10 years",
+      years_with_licence <= 20 ~ "11-20 years",
+      years_with_licence <= 30 ~ "21-30 years",
+      years_with_licence <= 40 ~ "31-40 years",
       TRUE ~ "40+ years"
     ),
     driving_experience_group = factor(
@@ -980,7 +973,7 @@ insurance_clean %>%
   sample_n(min(5000, nrow(insurance_clean))) %>%
   ggplot(aes(x = total_premium, y = total_incurred)) +
   geom_point(alpha = 0.25, color = "steelblue") +
-  geom_smooth(method = "lm", color = "red", se = TRUE) +
+  geom_smooth(method = "loess", color = "red", se = TRUE) +
   scale_x_continuous(labels = comma) +
   scale_y_continuous(labels = comma) +
   labs(
@@ -1011,7 +1004,7 @@ claims_positive %>%
   sample_n(min(5000, nrow(claims_positive))) %>%
   ggplot(aes(x = total_premium, y = total_incurred)) +
   geom_point(alpha = 0.25, color = "steelblue") +
-  geom_smooth(method = "lm", color = "red", se = TRUE) +
+  geom_smooth(method = "loess", color = "red", se = TRUE) +
   scale_x_continuous(labels = comma) +
   scale_y_continuous(labels = comma) +
   labs(
@@ -1259,7 +1252,7 @@ insurance_clean %>%
   sample_n(min(5000, nrow(insurance_clean))) %>%
   ggplot(aes(x = power_to_weight_ratio, y = profitability)) +
   geom_point(alpha = 0.25, color = "purple") +
-  geom_smooth(method = "lm", color = "red", se = TRUE) +
+  geom_smooth(method = "loess", color = "red", se = TRUE) +
   scale_y_continuous(labels = comma) +
   labs(
     title = "Power-to-Weight Ratio vs Profitability",
@@ -1283,7 +1276,7 @@ insurance_clean %>%
   sample_n(min(5000, nrow(insurance_clean))) %>%
   ggplot(aes(x = total_exposure, y = profitability)) +
   geom_point(alpha = 0.25, color = "orange") +
-  geom_smooth(method = "lm", color = "red", se = TRUE) +
+  geom_smooth(method = "loess", color = "red", se = TRUE) +
   scale_y_continuous(labels = comma) +
   labs(
     title = "Total Exposure vs Profitability",
@@ -1385,6 +1378,22 @@ ggplot(plot_data, aes(x = circulation_area, y = profitability,
 
 This visual result is consistent with the Mann-Whitney test, which found a statistically significant difference between areas. However, the effect size was very small, so the difference is statistically detectable mainly because of the large sample size rather than because of a strong practical difference.
 
+## Limitations
+
+### Multiple Testing
+
+This analysis conducted numerous statistical tests (10+ bivariate comparisons) without applying a global family-wise error rate correction. While Bonferroni correction was applied within each `ggbetweenstats` analysis for pairwise comparisons, the overall multiple testing problem across all analyses was not addressed. This increases the risk of Type I errors (false positives). Readers should interpret p-values cautiously and focus on effect sizes and practical significance rather than statistical significance alone.
+
+### Small Sample Sizes
+
+Several subgroups have small sample sizes that limit the reliability of their results: - Driver age 18-25: Very small sample size compared to other age groups - Bonus score B and N: Only 1.3% and 2.2% of the portfolio respectively - Municipality type IS (Islands): Only 6.8% of observations - Policy type TP and COMP_N: 1.6% and 4.5% respectively - Driving experience 0-10 years: Only 15 observations
+
+Results for these groups should be interpreted with caution, as small samples can produce unstable estimates and may not be representative of the broader population.
+
+### Effect Size Interpretation
+
+Throughout the bivariate analysis, most statistically significant results showed very small effect sizes. This pattern is common in large datasets where even trivial differences become statistically significant. The practical importance of these findings should be evaluated based on effect sizes and business context rather than p-values alone.
+
 ### Factors Influencing Profitability
 
 #### Uncertainty Visualization: Mean Profitability with Confidence Intervals
@@ -1433,6 +1442,7 @@ ggplot(profit_summary) +
 
 ```{r}
 volatility_by_fuel <- insurance_clean %>%
+  filter(total_incurred > 0) %>%
   group_by(fuel_type) %>%
   summarise(
     n = n(),
@@ -1453,7 +1463,7 @@ ggplot(volatility_by_fuel, aes(x = reorder(fuel_type, cv), y = cv, fill = fuel_t
   ) +
   labs(
     title = "Claims Volatility by Fuel Type",
-    subtitle = "Coefficient of Variation (SD / Mean)",
+    subtitle = "Coefficient of Variation (SD / Mean) - Positive claims only",
     x = "Fuel Type",
     y = "Coefficient of Variation"
   ) +
@@ -1461,14 +1471,13 @@ ggplot(volatility_by_fuel, aes(x = reorder(fuel_type, cv), y = cv, fill = fuel_t
   theme(legend.position = "none")
 ```
 
-**Interpretation:** Claim cost volatility differs across fuel types. Gasoline (`G`) has the highest coefficient of variation, followed by diesel (`D`), suggesting that claim costs are more variable relative to their average claim amount for these two fuel types. Overall, claim costs appear highly volatile, especially for gasoline and diesel policies.
-
-BUT Because many policies have zero claims, the coefficient of variation may be inflated. Therefore, this result should be interpreted as a relative volatility indicator rather than a complete measure of claim risk.
+**Interpretation:** Among policies with positive claims, claim cost volatility differs across fuel types. Gasoline (`G`) has the highest coefficient of variation, followed by diesel (`D`), indicating that claim amounts are more variable relative to their average for gasoline policies. This suggests greater unpredictability in claim severity for gasoline vehicles compared to diesel vehicles.
 
 #### Volatility by Geographic Area
 
 ```{r}
 volatility_by_area <- insurance_clean %>%
+  filter(total_incurred > 0) %>%
   group_by(circulation_area) %>%
   summarise(
     n = n(),
@@ -1492,7 +1501,7 @@ ggplot(volatility_by_area, aes(
   ) +
   labs(
     title = "Claims Volatility by Circulation Area",
-    subtitle = "Coefficient of Variation (SD / Mean)",
+    subtitle = "Coefficient of Variation (SD / Mean) - Positive claims only",
     x = "Area",
     y = "Coefficient of Variation"
   ) +
@@ -1500,27 +1509,11 @@ ggplot(volatility_by_area, aes(
   theme(legend.position = "none")
 ```
 
-**Interpretation:** Claim cost volatility differs between circulation areas. Area `R` has a higher coefficient of variation than area `U`, indicating that claim costs in area `R` are more variable relative to their average claim amount. In contrast, area `U` shows lower relative claim volatility. This suggests that although both regions contain claim risk, area `R` may have less predictable or more dispersed claim costs.
+**Interpretation:** Among policies with positive claims, claim cost volatility differs between circulation areas. Area `R` has a higher coefficient of variation than area `U`, indicating that claim amounts in area `R` are more variable relative to their average. This suggests that rural/regional areas may have less predictable claim severity compared to urban areas.
 
-However, because claim costs are zero-inflated, with many policies having no claims, the coefficient of variation may be inflated when the mean claim cost is low. Therefore, the CV should be interpreted as a relative volatility indicator rather than a complete measure of claim risk.
+### Factors Influencing Profitability
 
-#### Profitability by Claim Occurrence
-
-```{r}
-ggbetweenstats(
-  data = insurance_clean,
-  x = has_claim,
-  y = profitability,
-  type = "nonparametric",
-  pairwise.comparisons = TRUE,
-  p.adjust.method = "bonferroni",
-  title = "Profitability Distribution by Claim Occurrence"
-)
-```
-
-**Interpretation:** Policies with claims have much lower profitability than policies without claims, which is expected because profitability is calculated by subtracting incurred claims from premium. Therefore, this result should be treated as a validation check rather than a new insight. More meaningful analysis should focus on pre-claim variables that may help explain why some policies become less profitable.
-
-## Conclusion
+#### Uncertainty Visualization: Mean Profitability with Confidence Intervals
 
 ### Key Findings
 
