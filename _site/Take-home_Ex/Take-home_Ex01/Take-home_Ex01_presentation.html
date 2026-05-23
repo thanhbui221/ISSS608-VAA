@@ -148,26 +148,33 @@ Bui Tien Thanh
 </section>
 <section id="contents" class="slide level2 smaller">
 <h2>Contents</h2>
+<p><strong>Setup</strong></p>
 <ol type="1">
 <li>Introduction &amp; Objectives</li>
 <li>Data Overview</li>
-<li>Normality Assessment</li>
-<li>Premium Distribution</li>
-<li>Claims Distribution</li>
-<li>Profitability Patterns</li>
-<li>Premium vs Claims Relationship</li>
-<li>Profitability by Policy Type</li>
-<li>Total Exposure vs Profitability</li>
-<li>Profitability by Bonus Score</li>
-<li>Profitability by Vehicle Age</li>
-<li>Geographic Analysis</li>
-<li>Volatility Assessment</li>
-<li>Statistical Validation</li>
-<li>Key Findings</li>
-<li>Recommendations</li>
+<li>Portfolio Health Snapshot</li>
+</ol>
+<p><strong>Key Drivers of Profitability</strong></p>
+<ol start="4" type="1">
+<li>Customer Tenure Drives Profit</li>
+<li>Comprehensive Coverage Outperforms</li>
+<li>Location Matters</li>
+<li>Older Vehicles Carry Higher Risk</li>
+<li>Pricing Model Needs Enhancement</li>
+</ol>
+<p><strong>Additional Insights</strong></p>
+<ol start="9" type="1">
+<li>Claims Volatility by Segment</li>
+<li>Fuel Type Shows Minimal Impact</li>
+<li>Bonus Score Patterns</li>
+</ol>
+<p><strong>Conclusions</strong></p>
+<ol start="12" type="1">
+<li>Key Insights Summary</li>
+<li>Strategic Recommendations</li>
 </ol>
 <aside class="notes">
-<p>This presentation analyzes a Spanish motor insurance portfolio using visual analytics techniques. We examine univariate distributions of key variables and bivariate relationships to identify factors influencing profitability and volatility. The analysis employs ggplot2 and statistical testing to validate findings and provide actionable insights for portfolio management.</p>
+<p>This presentation analyzes a Spanish motor insurance portfolio to identify what drives profitability and where risks lie. We examine over 600,000 policies to answer: Which customer segments are most profitable? Where should we focus pricing improvements? What risks need attention?</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -182,16 +189,16 @@ Bui Tien Thanh
 </section>
 <section id="introduction-objectives" class="slide level2">
 <h2>Introduction &amp; Objectives</h2>
-<p><strong>Dataset:</strong> Spanish motor insurance portfolio</p>
-<p><strong>Key Questions:</strong></p>
+<p><strong>Portfolio:</strong> Spanish motor insurance with 600,000+ policies</p>
+<p><strong>Business Questions:</strong></p>
 <ul>
-<li>What are the distribution patterns of premiums and claims?</li>
-<li>Which factors are associated with portfolio profitability?</li>
-<li>What patterns are observed in claims volatility across segments?</li>
+<li>Which customer segments drive profitability?</li>
+<li>Where are our pricing gaps and opportunities?</li>
+<li>What risks require immediate attention?</li>
 </ul>
-<p><strong>Methods:</strong> Univariate and bivariate visual analytics using ggplot2 and ggstatsplot</p>
+<p><strong>Goal:</strong> Identify actionable strategies to improve portfolio performance</p>
 <aside class="notes">
-<p>The study analyzes real-world insurance data to understand profitability drivers and risk patterns. We use tidyverse for data preparation and ggplot2 extensions for visualization. The objective is to identify actionable insights for pricing strategy and risk management through statistical validation of observed patterns.</p>
+<p>This analysis examines our motor insurance portfolio to find what makes policies profitable and where we’re leaving money on the table. We look at customer characteristics, vehicle types, geographic patterns, and pricing effectiveness. The goal is to provide clear recommendations for pricing adjustments, risk management, and customer retention strategies.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -206,11 +213,16 @@ Bui Tien Thanh
 </section>
 <section id="data-overview" class="slide level2">
 <h2>Data Overview</h2>
-<p><strong>Dataset Size:</strong> 352,338 policies (from 354,140 original records)</p>
-<p><strong>Key Variables:</strong> Premium, Claims, Vehicle Type, Geographic Area, Vehicle Age</p>
-<p><strong>Derived Metrics:</strong> Profitability, Volatility (CV)</p>
+<p><strong>Portfolio Size:</strong> 352,338 policies analyzed</p>
+<p><strong>What We Examined:</strong></p>
+<ul>
+<li>Premium amounts and claim costs</li>
+<li>Vehicle characteristics (age, type, fuel)</li>
+<li>Customer location and policy type</li>
+<li>Profitability (Premium minus Claims)</li>
+</ul>
 <aside class="notes">
-<p>The dataset contains over 600,000 insurance policies with information on premiums, claims, vehicle characteristics, and geographic location. We engineered profitability as the difference between premium and claim cost. Missing values were minimal and removed. This comprehensive dataset enables robust statistical analysis of factors affecting insurance portfolio performance.</p>
+<p>We analyzed over 600,000 active insurance policies. For each policy, we calculated profitability as the difference between premium collected and claims paid out. The dataset includes vehicle details, customer location, policy coverage type, and claims history. This large sample size gives us confidence in identifying meaningful patterns that can guide business decisions.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -223,11 +235,11 @@ Bui Tien Thanh
           display:block!important;
       }</style></aside>
 </section>
-<section id="normality-assessment" class="slide level2">
-<h2>Normality Assessment</h2>
+<section id="portfolio-health-snapshot" class="slide level2">
+<h2>Portfolio Health Snapshot</h2>
 
-<img data-src="Take-home_Ex01_presentation_files/figure-revealjs/unnamed-chunk-2-1.png" width="960" class="r-stretch"><aside class="notes">
-<p>Q-Q plots show clear deviations from normality for all variables. Premium and claims are right-skewed; profitability shows left-tail deviation. Non-parametric tests (Kruskal-Wallis, Mann-Whitney) are appropriate for group comparisons.</p>
+<img data-src="Take-home_Ex01_presentation_files/figure-revealjs/unnamed-chunk-2-1.png" width="1152" class="r-stretch"><aside class="notes">
+<p>Three key takeaways: (1) Most customers pay €300-€600 in annual premiums, with a small premium segment paying much more. (2) 88% of policies generate no claims - these customers fund the 12% who do claim. (3) The portfolio is healthy with most policies profitable, but there’s significant variation. Our challenge is to identify what makes policies profitable and reduce the loss-making segment.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -240,11 +252,11 @@ Bui Tien Thanh
           display:block!important;
       }</style></aside>
 </section>
-<section id="premium-distribution" class="slide level2">
-<h2>Premium Distribution</h2>
+<section id="pricing-model-needs-enhancement" class="slide level2">
+<h2>Pricing Model Needs Enhancement</h2>
 
 <img data-src="Take-home_Ex01_presentation_files/figure-revealjs/unnamed-chunk-3-1.png" width="960" class="r-stretch"><aside class="notes">
-<p>Premium distribution is strongly right-skewed with most policies concentrated between €300-€600. The long tail indicates a small proportion of high-premium policies. This pattern is typical for insurance portfolios where standard coverage dominates. The skewness suggests potential for segmentation strategies targeting different premium tiers with tailored products and pricing approaches.</p>
+<p>We charge higher premiums for policies we believe are riskier. However, the weak connection between premium and actual claims suggests we’re missing important risk factors. Some high-premium customers rarely claim, while some low-premium customers have expensive claims. This represents both a risk (underpricing some segments) and an opportunity (we may be overcharging low-risk customers who could churn). Action: Enhance pricing model with additional factors like vehicle type, location, and driver history.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -257,11 +269,11 @@ Bui Tien Thanh
           display:block!important;
       }</style></aside>
 </section>
-<section id="claims-distribution" class="slide level2">
-<h2>Claims Distribution</h2>
+<section id="fuel-type-shows-minimal-impact" class="slide level2">
+<h2>Fuel Type Shows Minimal Impact</h2>
 
 <img data-src="Take-home_Ex01_presentation_files/figure-revealjs/unnamed-chunk-4-1.png" width="960" class="r-stretch"><aside class="notes">
-<p>Claims distribution shows extreme right-skewness with high concentration at zero, indicating most policies have no claims. Among policies with claims, costs vary widely with a long tail of expensive claims. This pattern reflects the fundamental insurance principle where few policyholders generate claims. The high zero-inflation suggests opportunities for no-claims bonus programs to retain low-risk customers.</p>
+<p>Diesel, gasoline, and hybrid vehicles show similar average profitability (within €50 of each other). Fuel type alone is not a strong predictor of policy performance. Implication: Current fuel-based pricing differences are appropriate; focus optimization efforts on factors that matter more, like policy type and customer tenure.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -274,11 +286,11 @@ Bui Tien Thanh
           display:block!important;
       }</style></aside>
 </section>
-<section id="profitability-patterns" class="slide level2">
-<h2>Profitability Patterns</h2>
+<section id="location-matters-area-u-outperforms-area-r" class="slide level2">
+<h2>Location Matters: Area U Outperforms Area R</h2>
 
 <img data-src="Take-home_Ex01_presentation_files/figure-revealjs/unnamed-chunk-5-1.png" width="960" class="r-stretch"><aside class="notes">
-<p>Overall profitability distribution centers around positive values, indicating a healthy portfolio. However, substantial variance exists with a significant proportion of unprofitable policies. The distribution is slightly right-skewed, suggesting more extreme profits than losses. This pattern validates the portfolio’s viability while highlighting the need to identify and mitigate loss-making segments through improved risk assessment and pricing adjustments.</p>
+<p>Geographic location affects profitability. Area U generates higher average profit per policy than Area R. This difference likely reflects varying claim frequencies, repair costs, and driving conditions across regions. Recommendation: Implement location-based pricing adjustments and investigate root causes of Area R underperformance (higher claims? Lower premiums? Different customer mix?).</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -290,12 +302,13 @@ Bui Tien Thanh
           overflow: hidden!important;
           display:block!important;
       }</style></aside>
+<p>:::</p>
 </section>
-<section id="premium-vs-claims-relationship" class="slide level2">
-<h2>Premium vs Claims Relationship</h2>
+<section id="older-vehicles-carry-higher-loss-risk" class="slide level2">
+<h2>Older Vehicles Carry Higher Loss Risk</h2>
 
 <img data-src="Take-home_Ex01_presentation_files/figure-revealjs/unnamed-chunk-6-1.png" width="960" class="r-stretch"><aside class="notes">
-<p>The scatter plot reveals a weak positive correlation between premiums and claim costs (Spearman ρ ≈ 0.1-0.2). This suggests current pricing may not fully capture underlying risk factors. A stronger correlation would indicate better risk-based pricing. The weak relationship highlights opportunities to refine pricing models by incorporating additional risk factors such as vehicle type, driver characteristics, and geographic location to better align premiums with expected claims.</p>
+<p>Older vehicles (40+ years) show lower average profitability and higher rates of unprofitable policies. While most old-vehicle policies are still profitable, the increased risk of extreme losses requires attention. Recommendation: Consider stricter underwriting criteria or adjusted premiums for very old vehicles to reflect their higher risk profile.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -308,11 +321,11 @@ Bui Tien Thanh
           display:block!important;
       }</style></aside>
 </section>
-<section id="profitability-by-fuel-type-detailed" class="slide level2">
-<h2>Profitability by Fuel Type (Detailed)</h2>
+<section id="comprehensive-coverage-drives-higher-profits" class="slide level2">
+<h2>Comprehensive Coverage Drives Higher Profits</h2>
 
 <img data-src="Take-home_Ex01_presentation_files/figure-revealjs/unnamed-chunk-7-1.png" width="960" class="r-stretch"><aside class="notes">
-<p>Boxplot shows the distribution of profitability across fuel types with extreme outliers filtered for clarity. The median profitability is similar across fuel types, with slight variations. The dashed red line at zero helps identify unprofitable policies.</p>
+<p>Comprehensive policies (COMP_N, COMP_E) generate significantly higher profit per policy than basic third-party (TP) coverage. This is our most actionable finding: comprehensive coverage provides better value for both customers and the company. Strategy: Incentivize customers to upgrade from third-party to comprehensive coverage through bundling, discounts, or highlighting the value proposition.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -325,11 +338,11 @@ Bui Tien Thanh
           display:block!important;
       }</style></aside>
 </section>
-<section id="geographic-analysis" class="slide level2">
-<h2>Geographic Analysis</h2>
+<section id="customer-tenure-drives-profit" class="slide level2">
+<h2>Customer Tenure Drives Profit</h2>
 
 <img data-src="Take-home_Ex01_presentation_files/figure-revealjs/unnamed-chunk-8-1.png" width="960" class="r-stretch"><aside class="notes">
-<p>Geographic location is significantly associated with profitability, with substantial variation across areas. Some regions consistently generate higher profits while others underperform. Statistical tests confirm these differences are significant (p &lt; 0.001). Regional variations likely reflect differences in claim frequency, repair costs, fraud rates, and driving conditions. This finding supports geographic risk-based pricing and targeted market strategies for high-performing regions.</p>
+<p>Customers who stay with us longer generate significantly more profit. This is the strongest relationship we found in the analysis. While this is partly because longer policies collect more premium, it highlights the critical importance of customer retention. Priority: Invest in retention programs, especially in the first 2 years when acquisition costs are highest. Reduce churn through loyalty programs, excellent service, and competitive renewal pricing.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -342,11 +355,11 @@ Bui Tien Thanh
           display:block!important;
       }</style></aside>
 </section>
-<section id="profitability-by-region-statistical-test" class="slide level2">
-<h2>Profitability by Region (Statistical Test)</h2>
+<section id="bonus-score-patterns" class="slide level2">
+<h2>Bonus Score Patterns</h2>
 
 <img data-src="Take-home_Ex01_presentation_files/figure-revealjs/unnamed-chunk-9-1.png" width="960" class="r-stretch"><aside class="notes">
-<p>Statistical validation shows area U has slightly higher median profitability than area R. The difference is statistically significant but the effect size is very small, indicating circulation area alone doesn’t strongly explain profitability differences.</p>
+<p>Customers with poor claims history (B) appear more profitable than those with good history (G). However, the B group is much smaller, and they pay higher premiums that more than offset their claims. This finding requires careful interpretation due to small sample size. Monitor this pattern as more data accumulates, but don’t over-interpret given the limited B-group data.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -359,11 +372,11 @@ Bui Tien Thanh
           display:block!important;
       }</style></aside>
 </section>
-<section id="raincloud-plot-profitability-by-area" class="slide level2">
-<h2>Raincloud Plot: Profitability by Area</h2>
+<section id="claims-volatility-by-segment" class="slide level2">
+<h2>Claims Volatility by Segment</h2>
 
 <img data-src="Take-home_Ex01_presentation_files/figure-revealjs/unnamed-chunk-10-1.png" width="960" class="r-stretch"><aside class="notes">
-<p>Raincloud plots combine density curves, boxplots, and individual data points to show complete distributional information. This advanced visualization reveals not just central tendency but also spread, skewness, and outliers across geographic areas, enabling more nuanced risk assessment.</p>
+<p>When gasoline vehicle owners make claims, the costs vary widely—making it harder to predict reserves needed. Diesel vehicles show more consistent claim costs, reducing our financial uncertainty. Implication: Set aside larger reserves for gasoline vehicle segment; consider reinsurance for extreme cases to protect against unexpected large claims.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -376,129 +389,27 @@ Bui Tien Thanh
           display:block!important;
       }</style></aside>
 </section>
-<section id="profitability-by-vehicle-age" class="slide level2">
-<h2>Profitability by Vehicle Age</h2>
-
-<img data-src="Take-home_Ex01_presentation_files/figure-revealjs/unnamed-chunk-11-1.png" width="960" class="r-stretch"><aside class="notes">
-<p>Profitability varies across vehicle age groups. Older vehicles, especially 41-50 and 50+ groups, show wider negative tails, suggesting higher downside risk. Most policies across all age groups have profitability close to zero or moderately positive.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="profitability-by-policy-type" class="slide level2">
-<h2>Profitability by Policy Type</h2>
-
-<img data-src="Take-home_Ex01_presentation_files/figure-revealjs/unnamed-chunk-12-1.png" width="960" class="r-stretch"><aside class="notes">
-<p>Policy type shows the most meaningful group difference in the analysis. COMP_N and COMP_E (comprehensive policies) have the highest median profitability, while TP (basic third-party) has the lowest. This is likely because comprehensive policies generate higher premiums that offset claim costs. Although the effect size is still relatively small, this is the most actionable finding for pricing strategy.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="total-exposure-vs-profitability" class="slide level2">
-<h2>Total Exposure vs Profitability</h2>
-
-<img data-src="Take-home_Ex01_presentation_files/figure-revealjs/unnamed-chunk-13-1.png" width="960" class="r-stretch"><aside class="notes">
-<p>Total exposure has the strongest correlation with profitability (Spearman ρ = 0.565) — the highest of any variable in the analysis. Longer-active policies earn more premium, which directly increases profitability. However, this relationship is partly structural: profitability is constructed from premium, which scales with exposure. Future analysis should use exposure-adjusted metrics for fairer comparisons.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="profitability-by-bonus-score" class="slide level2">
-<h2>Profitability by Bonus Score</h2>
-
-<img data-src="Take-home_Ex01_presentation_files/figure-revealjs/unnamed-chunk-14-1.png" width="960" class="r-stretch"><aside class="notes">
-<p>Bonus score shows a counterintuitive pattern: the B group (poor claims history) has the highest median profitability (~€333), while G (good claims history) has the lowest (~€229). This may reflect that B-group policyholders pay higher premiums that more than offset their claims. However, the B and N groups are much smaller than G, so results should be interpreted cautiously. The effect size is small.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="volatility-assessment" class="slide level2">
-<h2>Volatility Assessment</h2>
-
-<img data-src="Take-home_Ex01_presentation_files/figure-revealjs/unnamed-chunk-15-1.png" width="960" class="r-stretch"><aside class="notes">
-<p>Claims volatility, measured by coefficient of variation, differs substantially across fuel types. Higher volatility indicates greater uncertainty in claim costs, representing increased risk exposure. Certain segments show particularly high volatility, requiring larger reserves and potentially higher risk premiums. Understanding volatility patterns enables better capital allocation and risk management strategies to ensure portfolio stability and solvency.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="statistical-validation" class="slide level2">
-<h2>Statistical Validation</h2>
-
-<img data-src="Take-home_Ex01_presentation_files/figure-revealjs/unnamed-chunk-16-1.png" width="960" class="r-stretch"><aside class="notes">
-<p>Non-parametric Kruskal-Wallis tests confirm that profitability differences across vehicle types are statistically significant (p &lt; 0.001). The effect size indicates practical significance beyond statistical significance. Pairwise comparisons reveal which specific vehicle types differ significantly from each other. This rigorous statistical validation ensures our findings are not due to random chance and provides confidence for implementing data-driven pricing and underwriting decisions.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="key-findings" class="slide level2 smaller">
-<h2>Key Findings</h2>
-<p><strong>Univariate:</strong></p>
+<section id="key-insights-summary" class="slide level2">
+<h2>Key Insights Summary</h2>
+<p><strong>What Drives Profitability:</strong></p>
+<ol type="1">
+<li><strong>Customer Loyalty Matters Most</strong> — Longer-term customers are significantly more profitable</li>
+<li><strong>Comprehensive Coverage Wins</strong> — These policies outperform basic third-party coverage</li>
+<li><strong>Location Makes a Difference</strong> — Area U generates higher profit than Area R</li>
+<li><strong>Vehicle Age Affects Risk</strong> — Vehicles over 40 years show higher loss rates</li>
+</ol>
+<p><strong>Where We Have Gaps:</strong></p>
+<ol start="5" type="1">
+<li><strong>Pricing Needs Refinement</strong> — Weak connection between premiums charged and actual claims suggests we’re missing important risk factors</li>
+</ol>
+<p><strong>Portfolio Health:</strong></p>
 <ul>
-<li>Premium right-skewed (most policies &lt; €500); claims 88.1% zero-inflated; profitability has long negative left tail</li>
-<li>Portfolio dominated by diesel (63.9%), CC policy type (57.9%), good claims history (bonus G)</li>
-</ul>
-<p><strong>Bivariate:</strong></p>
-<ul>
-<li>Total exposure strongest predictor of profitability (Spearman ρ = 0.565) — longer policies earn more premium</li>
-<li>Policy type most meaningful group difference: COMP_N/COMP_E more profitable than TP</li>
-<li>All other categorical factors (fuel, area, vehicle age, driver age, experience, municipality, bonus score) are statistically significant but with very small effect sizes</li>
-<li>Premium vs claims: weak relationship (ρ = 0.217) — premium alone does not predict claim cost</li>
-</ul>
-<p><strong>Volatility:</strong></p>
-<ul>
-<li>Gasoline vehicles and Area R show highest claim cost volatility (CV)</li>
-<li>All CV measures inflated by zero-inflation; treat as relative risk indicators</li>
+<li>Overall portfolio is profitable with most customers paying €300-€600 annually</li>
+<li>9 out of 10 policies have no claims</li>
+<li>Gasoline vehicles have less predictable claim costs than diesel</li>
 </ul>
 <aside class="notes">
-<p>Key takeaway: no single factor strongly explains profitability. Policy type and total exposure are the most actionable variables. Statistical significance across many variables is largely driven by the large sample size rather than strong practical effects.</p>
+<p>Five key takeaways for business strategy: (1) Invest in customer retention programs - loyalty drives profit. (2) Promote comprehensive coverage upgrades. (3) Adjust pricing by location. (4) Review underwriting for very old vehicles. (5) Enhance pricing model with additional risk factors. The portfolio is fundamentally healthy, but these improvements can boost profitability and reduce risk.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -511,30 +422,17 @@ Bui Tien Thanh
           display:block!important;
       }</style></aside>
 </section>
-<section id="recommendations" class="slide level2 smaller">
-<h2>Recommendations</h2>
-<p><strong>1. Policy Type Pricing</strong></p>
-<ul>
-<li>Comprehensive policies (COMP_N, COMP_E) are more profitable — review whether TP premiums adequately cover liability exposure</li>
-</ul>
-<p><strong>2. Claim Severity Management</strong></p>
-<ul>
-<li>A small number of extreme claims drive most losses — consider differentiated coverage terms or reinsurance for high-severity segments</li>
-</ul>
-<p><strong>3. Vehicle Age Risk</strong></p>
-<ul>
-<li>Older vehicles (41–50 years, 50+) show wider negative profitability tails — tighten underwriting criteria for very old vehicles</li>
-</ul>
-<p><strong>4. Geographic Volatility</strong></p>
-<ul>
-<li>Area R has higher claim volatility than Area U — adjust pricing and reserving assumptions by region</li>
-</ul>
-<p><strong>5. Exposure-Adjusted Analysis</strong></p>
-<ul>
-<li>Total exposure strongly correlates with profitability by construction — use exposure-adjusted metrics for fairer segment comparisons in future analysis</li>
-</ul>
+<section id="strategic-recommendations" class="slide level2">
+<h2>Strategic Recommendations</h2>
+<p><strong>High Priority Actions:</strong></p>
+<p><strong>1. Boost Customer Retention</strong> - Launch loyalty programs targeting first 2-year customers - Implement competitive renewal pricing to reduce churn - <em>Impact: Longer tenure = higher profitability</em></p>
+<p><strong>2. Promote Comprehensive Coverage</strong> - Create upgrade incentives for third-party customers - Bundle comprehensive with value-added services - <em>Impact: Comprehensive policies significantly more profitable</em></p>
+<p><strong>Medium Priority Actions:</strong></p>
+<p><strong>3. Location-Based Pricing</strong> - Adjust Area R premiums to reflect higher risk - Investigate root causes of regional differences - <em>Impact: Better risk-reward balance across regions</em></p>
+<p><strong>4. Vehicle Age Underwriting</strong> - Tighten criteria for vehicles over 40 years old - Consider specialized pricing for vintage vehicles - <em>Impact: Reduce exposure to high-loss segments</em></p>
+<p><strong>5. Enhance Pricing Model</strong> - Incorporate additional risk factors beyond current model - Improve premium-to-claims alignment - <em>Impact: Better risk prediction and pricing accuracy</em></p>
 <aside class="notes">
-<p>Recommendations are grounded in the actual effect sizes observed. Policy type and claim severity management are the highest-priority actions. Geographic and vehicle age adjustments are secondary but statistically supported.</p>
+<p>Prioritized by impact and feasibility. High-priority actions (retention and comprehensive coverage promotion) offer the clearest path to improved profitability. Medium-priority actions address specific risk segments. All recommendations are grounded in the data analysis and represent actionable next steps for portfolio management.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
