@@ -79,7 +79,7 @@ After doing data exploration, we can quickly see some issues with our dataset.
 
 **Missing Value Treatment:**
 
-- `fuel_type`: 1,287 missing values (0.2%) removed due to neglibile impact.
+- `fuel_type`: 1,287 missing values (0.2%) removed due to negligible impact.
 - `age_driving_licence`: 2 missing values (\<0.001%) removed due to negligible impact
 - `vehicle_age`: 2 missing values (\<0.001%) removed due to negligible impact
 - `vehicle_value`: 513 missing values (0.08%) removed due to negligible impact
@@ -281,7 +281,7 @@ p3_log / p4_log
 
 **Interpretation:** After applying the log transformation, the distribution of claim costs becomes easier to inspect, but a large spike remains at zero. This indicates that many policies have no incurred claims. Among policies with positive claim costs, the distribution is still right-skewed, although the log transformation reduces the influence of extreme claim values.
 
-Lets take a look at the distribution of positive claims only.
+Let's take a look at the distribution of positive claims only.
 
 ```{r}
 claims_positive <- insurance_clean %>%
@@ -367,51 +367,6 @@ ggplot(insurance_clean, aes(x = signed_log_profitability)) +
 ```
 
 **Interpretation:** The transformed distribution shows two distinct regions: a large cluster of profitable policies and a smaller group of loss-making policies. Most observations are concentrated on the positive side of zero, while the negative tail indicates policies where incurred claims exceed premiums. This confirms that profitability is not normally distributed and supports the use of non-parametric methods in subsequent analyses.
-
-#### Ridgeline Plot: Profitability by Fuel Type
-
-```{r}
-library(ggridges)
-library(scales)
-
-insurance_clean %>%
-  ggplot(aes(x = profitability, y = fuel_type, fill = fuel_type)) +
-  geom_density_ridges(scale = 0.9, alpha = 0.7) +
-  scale_x_continuous(labels = comma) +
-  coord_cartesian(xlim = c(-2000, 2000)) +
-  labs(
-    title = "Profitability Distribution by Fuel Type",
-    subtitle = "Ridgeline plot showing distribution overlap and differences",
-    x = "Profitability (€)",
-    y = "Fuel Type"
-  ) +
-  theme_minimal() +
-  theme(legend.position = "none")
-```
-
-**Interpretation:** The ridgeline plot compares the profitability distributions across different fuel types. Overall, the distributions largely overlap, suggesting that profitability patterns are broadly similar across fuel categories. Most policies are concentrated around slightly positive profitability values, while each fuel type also shows some negative-profitability cases. Diesel and gasoline vehicles appear to have similar central distributions.
-
-The below plot is restricted to the central profitability range to improve readability because extreme loss values distort the density estimation.
-
-```{r}
-library(ggridges)
-library(scales)
-library(dplyr)
-
-insurance_clean %>%
-  filter(profitability >= -2000, profitability <= 2000) %>%
-  ggplot(aes(x = profitability, y = fuel_type, fill = fuel_type)) +
-  geom_density_ridges(scale = 0.9, alpha = 0.7, rel_min_height = 0.01) +
-  scale_x_continuous(labels = comma) +
-  labs(
-    title = "Profitability Distribution by Fuel Type",
-    subtitle = "Zoomed view: profitability between -€2,000 and €2,000",
-    x = "Profitability (€)",
-    y = "Fuel Type"
-  ) +
-  theme_minimal() +
-  theme(legend.position = "none")
-```
 
 #### Distribution of Vehicle Age
 
@@ -548,7 +503,7 @@ insurance_clean <- insurance_clean %>%
   )
 ```
 
-#### Distribution of Power-to-Weight Ratio
+#### Distribution of Weight-to-Power Ratio
 
 ```{r}
 p_pwr1 <- ggplot(insurance_clean, aes(x = power_to_weight_ratio)) +
@@ -987,12 +942,9 @@ insurance_clean %>%
 
 **Interpretation:** Premium and claim cost have only a weak positive relationship. The Spearman correlation is 0.217, meaning higher-premium policies tend to have slightly higher claim costs, but the relationship is not strong.
 
-I will keep the postitve claims only, and take a look at the relationship. Still, the Spearman correlation is 0.14, quite weak.
+Filtering to positive claims only, the Spearman correlation remains weak at 0.14.
 
 ```{r}
-claims_positive <- insurance_clean %>%
-  filter(total_incurred > 0)
-
 cor_positive <- cor(
   claims_positive$total_premium,
   claims_positive$total_incurred,
@@ -1030,7 +982,7 @@ ggbetweenstats(
 )
 ```
 
-**Interpretation:** Claim occurrence shows the strongest relationship with profitability among all factors analyzed. The Mann-Whitney test reveals a highly significant difference (p \< 0.001) with a large effect size. Policies without claims (No) have a median profitability of approximately €248, while policies with at least one claim (Yes) have dramatically lower median profitability, often negative or near zero. This confirms that claim occurrence is the most critical driver of profitability in the portfolio.
+**Interpretation:** Claim occurrence shows the strongest relationship with profitability among all factors analyzed. The Mann-Whitney test reveals a highly significant difference (p \< 0.001) with a large effect size. Policies without claims (No) have a median profitability of approximately €248, while policies with at least one claim (Yes) have dramatically lower median profitability, often negative or near zero. This confirms that claim occurrence is the most critical driver of profitability in the portfolio. However, this relationship is partially definitional: since profitability = premium − claims, policies without claims will mechanically have profitability equal to their full premium. The large effect size reflects this structural dependency rather than an independent risk insight.
 
 The effect size is large, with r≈0.78, indicating that claim occurrence is one of the strongest factors associated with profitability. Unlike some previous variables where the statistical significance was mainly driven by the large sample size, the difference here is both statistically and practically meaningful.
 
@@ -1070,7 +1022,7 @@ ggbetweenstats(
 )
 ```
 
-**Interpretation:** The Mann-Whitney test shows a statistically significant difference in profitability between the two fuel types, with a very small p-value. Diesel (D) policies have a higher median profitability of approximately €240.75, compared with €216.22 for gasoline (G) policies. This suggests that diesel policies are typically slightly more profitable than gasoline policies.However, the effect size is small (r ≈ 0.08), meaning the practical difference between the two groups is limited despite being statistically significant. This is likely because the dataset is very large, so even small differences can become statistically significant.
+**Interpretation:** The Mann-Whitney test shows a statistically significant difference in profitability between the two fuel types, with a very small p-value. Diesel (D) policies have a higher median profitability of approximately €240.75, compared with €216.22 for gasoline (G) policies. This suggests that diesel policies are typically slightly more profitable than gasoline policies.However, the effect size is negligible (r ≈ 0.08), meaning the practical difference between the two groups is limited despite being statistically significant. This is likely because the dataset is very large, so even small differences can become statistically significant.
 
 =\> Fuel type is statistically associated with profitability, but the practical effect appears small.
 
@@ -1085,6 +1037,44 @@ insurance_clean %>%
     subtitle = "Filtered to profitability between -€2,000 and €2,000 for readability",
     x = "Fuel Type",
     y = "Profitability (€)"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+#### Ridgeline Plot: Profitability by Fuel Type
+
+```{r}
+insurance_clean %>%
+  ggplot(aes(x = profitability, y = fuel_type, fill = fuel_type)) +
+  geom_density_ridges(scale = 0.9, alpha = 0.7) +
+  scale_x_continuous(labels = comma) +
+  coord_cartesian(xlim = c(-2000, 2000)) +
+  labs(
+    title = "Profitability Distribution by Fuel Type",
+    subtitle = "Ridgeline plot showing distribution overlap and differences",
+    x = "Profitability (€)",
+    y = "Fuel Type"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+**Interpretation:** The ridgeline plot compares the profitability distributions across different fuel types. Overall, the distributions largely overlap, suggesting that profitability patterns are broadly similar across fuel categories. Most policies are concentrated around slightly positive profitability values, while each fuel type also shows some negative-profitability cases. Diesel and gasoline vehicles appear to have similar central distributions.
+
+The below plot is restricted to the central profitability range to improve readability because extreme loss values distort the density estimation.
+
+```{r}
+insurance_clean %>%
+  filter(profitability >= -2000, profitability <= 2000) %>%
+  ggplot(aes(x = profitability, y = fuel_type, fill = fuel_type)) +
+  geom_density_ridges(scale = 0.9, alpha = 0.7, rel_min_height = 0.01) +
+  scale_x_continuous(labels = comma) +
+  labs(
+    title = "Profitability Distribution by Fuel Type",
+    subtitle = "Zoomed view: profitability between -€2,000 and €2,000",
+    x = "Profitability (€)",
+    y = "Fuel Type"
   ) +
   theme_minimal() +
   theme(legend.position = "none")
@@ -1255,9 +1245,9 @@ insurance_clean %>%
   geom_smooth(method = "loess", color = "red", se = TRUE) +
   scale_y_continuous(labels = comma) +
   labs(
-    title = "Power-to-Weight Ratio vs Profitability",
+    title = "Weight-to-Power Ratio vs Profitability",
     subtitle = paste0("Spearman correlation: ", round(cor_pwr, 3)),
-    x = "Power-to-Weight Ratio",
+    x = "Weight-to-Power Ratio (kg per horsepower)",
     y = "Profitability (€)"
   ) +
   theme_minimal()
@@ -1294,11 +1284,6 @@ However, total_exposure should be interpreted carefully because it is not a norm
 #### Raincloud Plot: Profitability by Area
 
 ```{r}
-library(dplyr)
-library(ggplot2)
-library(ggdist)
-library(scales)
-
 # Data for plotting only
 plot_data <- insurance_clean %>%
   filter(profitability >= -2000, profitability <= 2000)
@@ -1378,25 +1363,9 @@ ggplot(plot_data, aes(x = circulation_area, y = profitability,
 
 This visual result is consistent with the Mann-Whitney test, which found a statistically significant difference between areas. However, the effect size was very small, so the difference is statistically detectable mainly because of the large sample size rather than because of a strong practical difference.
 
-## Limitations
-
-### Multiple Testing
-
-This analysis conducted numerous statistical tests (10+ bivariate comparisons) without applying a global family-wise error rate correction. While Bonferroni correction was applied within each `ggbetweenstats` analysis for pairwise comparisons, the overall multiple testing problem across all analyses was not addressed. This increases the risk of Type I errors (false positives). Readers should interpret p-values cautiously and focus on effect sizes and practical significance rather than statistical significance alone.
-
-### Small Sample Sizes
-
-Several subgroups have small sample sizes that limit the reliability of their results: - Driver age 18-25: Very small sample size compared to other age groups - Bonus score B and N: Only 1.3% and 2.2% of the portfolio respectively - Municipality type IS (Islands): Only 6.8% of observations - Policy type TP and COMP_N: 1.6% and 4.5% respectively - Driving experience 0-10 years: Only 15 observations
-
-Results for these groups should be interpreted with caution, as small samples can produce unstable estimates and may not be representative of the broader population.
-
-### Effect Size Interpretation
-
-Throughout the bivariate analysis, most statistically significant results showed very small effect sizes. This pattern is common in large datasets where even trivial differences become statistically significant. The practical importance of these findings should be evaluated based on effect sizes and business context rather than p-values alone.
-
 ### Factors Influencing Profitability
 
-#### Uncertainty Visualization: Mean Profitability with Confidence Intervals
+#### Profitability Spread by Fuel Type: Median with Interquartile Range
 
 ```{r}
 profit_summary <- insurance_clean %>%
@@ -1511,10 +1480,6 @@ ggplot(volatility_by_area, aes(
 
 **Interpretation:** Among policies with positive claims, claim cost volatility differs between circulation areas. Area `R` has a higher coefficient of variation than area `U`, indicating that claim amounts in area `R` are more variable relative to their average. This suggests that rural/regional areas may have less predictable claim severity compared to urban areas.
 
-### Factors Influencing Profitability
-
-#### Uncertainty Visualization: Mean Profitability with Confidence Intervals
-
 ### Key Findings
 
 **Univariate Insights:**
@@ -1539,7 +1504,23 @@ ggplot(volatility_by_area, aes(
 
 - Gasoline vehicles show the highest claim cost volatility (CV), followed by diesel, indicating greater unpredictability in claim amounts for these fuel types.
 - Area R has higher relative claim volatility than Area U, suggesting more dispersed or unpredictable claim costs in rural/regional areas.
-- All volatility measures are inflated by zero-inflation in claim costs and should be treated as relative risk indicators rather than absolute measures.
+- CV values are high (>3) for all groups, reflecting the heavy-tailed nature of insurance claim distributions. These should be treated as relative comparisons between groups rather than absolute measures of risk.
+
+## Limitations
+
+### Multiple Testing
+
+This analysis conducted numerous statistical tests (10+ bivariate comparisons) without applying a global family-wise error rate correction. While Bonferroni correction was applied within each `ggbetweenstats` analysis for pairwise comparisons, the overall multiple testing problem across all analyses was not addressed. This increases the risk of Type I errors (false positives). Readers should interpret p-values cautiously and focus on effect sizes and practical significance rather than statistical significance alone.
+
+### Small Sample Sizes
+
+Several subgroups have small sample sizes that limit the reliability of their results: - Driver age 18-25: Very small sample size compared to other age groups - Bonus score B and N: Only 1.3% and 2.2% of the portfolio respectively - Municipality type IS (Islands): Only 6.8% of observations - Policy type TP and COMP_N: 1.6% and 4.5% respectively - Driving experience 0-10 years: Only 15 observations
+
+Results for these groups should be interpreted with caution, as small samples can produce unstable estimates and may not be representative of the broader population.
+
+### Effect Size Interpretation
+
+Throughout the bivariate analysis, most statistically significant results showed very small effect sizes. This pattern is common in large datasets where even trivial differences become statistically significant. The practical importance of these findings should be evaluated based on effect sizes and business context rather than p-values alone.
 
 ### Recommendations
 

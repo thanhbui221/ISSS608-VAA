@@ -21,7 +21,7 @@ format:
 
 **Key Drivers of Profitability**
 
-4.  Customer Tenure Drives Profit
+4.  Longer Exposure Earns More
 5.  Comprehensive Coverage Outperforms
 6.  Location Matters
 7.  Older Vehicles Carry Higher Risk
@@ -208,19 +208,19 @@ ggplot(sample_data, aes(x = total_premium, y = total_incurred)) +
            label = "Perfect pricing\n(Premium = Claims)",
            color = "darkgreen", size = 3.5, hjust = 0) +
   annotate("text", x = 800, y = 200,
-           label = "Weak connection between\npremium and actual claims",
+           label = "Most policies cluster at zero claims\nregardless of premium level",
            color = "#C73E1D", size = 4, hjust = 0.5) +
   scale_x_continuous(labels = comma, limits = c(0, 2000)) +
   scale_y_continuous(labels = comma, limits = c(0, 2000)) +
-  labs(title = "Higher Premiums Don't Always Mean Higher Claims",
-       subtitle = "Our pricing model is missing important risk factors",
+  labs(title = "Premium vs Actual Claims: Individual-Level Correlation Is Weak",
+       subtitle = "Expected in insurance where 88% of policies have zero claims",
        x = "Premium Charged (€)", y = "Actual Claim Cost (€)") +
   theme_minimal(base_size = 13) +
   theme(plot.title = element_text(face = "bold"))
 ```
 
 ::: notes
-We charge higher premiums for policies we believe are riskier. However, the weak connection between premium and actual claims suggests we're missing important risk factors. Some high-premium customers rarely claim, while some low-premium customers have expensive claims. This represents both a risk (underpricing some segments) and an opportunity (we may be overcharging low-risk customers who could churn). Action: Enhance pricing model with additional factors like vehicle type, location, and driver history.
+A weak individual-level correlation between premium and claims is expected in any insurance portfolio where 88% of policies have zero claims. Even with perfect pricing, realized claims are stochastic rare events — most policyholders never claim regardless of their premium level. A better test of pricing adequacy would be to compare loss ratios (claims/premium) across risk segments to check for systematic underpricing.
 :::
 
 ## Fuel Type Shows Minimal Impact
@@ -232,7 +232,7 @@ We charge higher premiums for policies we believe are riskier. However, the weak
 insurance_clean %>%
   group_by(fuel_type) %>%
   summarise(
-    avg_profit = mean(profitability),
+    avg_profit = median(profitability),
     n = n(),
     .groups = "drop"
   ) %>%
@@ -246,8 +246,8 @@ insurance_clean %>%
   scale_y_continuous(labels = comma, expand = expansion(mult = c(0.05, 0.15))) +
   scale_fill_brewer(palette = "Set2") +
   labs(title = "Fuel Type Has Little Effect on Profitability",
-       subtitle = "Average profit per policy is similar across fuel types",
-       x = NULL, y = "Average Profit per Policy (€)") +
+       subtitle = "Median profit per policy is similar across fuel types",
+       x = NULL, y = "Median Profit per Policy (€)") +
   theme_minimal(base_size = 13) +
   theme(legend.position = "none",
         plot.title = element_text(face = "bold"))
@@ -266,21 +266,20 @@ Diesel, gasoline, and hybrid vehicles show similar average profitability (within
 area_summary <- insurance_clean %>%
   group_by(circulation_area) %>%
   summarise(
-    mean_profit = mean(profitability),
     median_profit = median(profitability),
     n = n(),
     .groups = "drop"
   )
 
-portfolio_avg <- mean(insurance_clean$profitability)
+portfolio_avg <- median(insurance_clean$profitability)
 
-ggplot(area_summary, aes(x = reorder(circulation_area, mean_profit),
-                         y = mean_profit, fill = circulation_area)) +
+ggplot(area_summary, aes(x = reorder(circulation_area, median_profit),
+                         y = median_profit, fill = circulation_area)) +
   geom_col(alpha = 0.85, width = 0.6) +
   geom_hline(yintercept = portfolio_avg, linetype = "dashed",
              color = "darkgray", linewidth = 1) +
   geom_hline(yintercept = 0, linetype = "solid", color = "red", linewidth = 0.5) +
-  geom_text(aes(label = paste0("€", round(mean_profit))),
+  geom_text(aes(label = paste0("€", round(median_profit))),
             hjust = -0.2, size = 4.5, fontface = "bold") +
   annotate("text", x = 1.5, y = portfolio_avg,
            label = "Portfolio Average", vjust = -0.5,
@@ -289,8 +288,8 @@ ggplot(area_summary, aes(x = reorder(circulation_area, mean_profit),
   scale_y_continuous(labels = comma, expand = expansion(mult = c(0.05, 0.15))) +
   scale_fill_manual(values = c("R" = "#F18F01", "U" = "#06A77D")) +
   labs(title = "Area U Generates Higher Profit Per Policy",
-       subtitle = paste0("Difference: €", round(area_summary$mean_profit[2] - area_summary$mean_profit[1]), " per policy"),
-       x = "Geographic Area", y = "Average Profit per Policy (€)") +
+       subtitle = paste0("Difference: €", round(area_summary$median_profit[2] - area_summary$median_profit[1]), " per policy"),
+       x = "Geographic Area", y = "Median Profit per Policy (€)") +
   theme_minimal(base_size = 13) +
   theme(legend.position = "none",
         plot.title = element_text(face = "bold"))
@@ -298,8 +297,6 @@ ggplot(area_summary, aes(x = reorder(circulation_area, mean_profit),
 
 ::: notes
 Geographic location affects profitability. Area U generates higher average profit per policy than Area R. This difference likely reflects varying claim frequencies, repair costs, and driving conditions across regions. Recommendation: Implement location-based pricing adjustments and investigate root causes of Area R underperformance (higher claims? Lower premiums? Different customer mix?).
-:::
-
 :::
 
 ## Older Vehicles Carry Higher Loss Risk
@@ -312,7 +309,7 @@ age_summary <- insurance_clean %>%
   filter(!is.na(vehicle_age_group), vehicle_age_group != "Invalid") %>%
   group_by(vehicle_age_group) %>%
   summarise(
-    avg_profit = mean(profitability),
+    avg_profit = median(profitability),
     pct_unprofitable = mean(profitability < 0) * 100,
     n = n(),
     .groups = "drop"
@@ -329,8 +326,8 @@ ggplot(age_summary, aes(x = vehicle_age_group, y = avg_profit, fill = avg_profit
                        midpoint = 250) +
   scale_y_continuous(labels = comma) +
   labs(title = "Vehicles Over 40 Years Show Higher Loss Rates",
-       subtitle = "Average profit and % of unprofitable policies by vehicle age",
-       x = "Vehicle Age", y = "Average Profit per Policy (€)") +
+       subtitle = "Median profit and % of unprofitable policies by vehicle age",
+       x = "Vehicle Age", y = "Median Profit per Policy (€)") +
   theme_minimal(base_size = 13) +
   theme(legend.position = "none",
         plot.title = element_text(face = "bold"),
@@ -350,7 +347,7 @@ Older vehicles (40+ years) show lower average profitability and higher rates of 
 policy_summary <- insurance_clean %>%
   group_by(policy_type) %>%
   summarise(
-    avg_profit = mean(profitability),
+    avg_profit = median(profitability),
     median_profit = median(profitability),
     n = n(),
     .groups = "drop"
@@ -366,8 +363,8 @@ ggplot(policy_summary, aes(x = reorder(policy_type, avg_profit),
   scale_y_continuous(labels = comma, expand = expansion(mult = c(0.05, 0.2))) +
   scale_fill_brewer(palette = "Set2") +
   labs(title = "Comprehensive Policies Are Most Profitable",
-       subtitle = "Average profit per policy by coverage type",
-       x = "Policy Type", y = "Average Profit per Policy (€)") +
+       subtitle = "Median profit per policy by coverage type",
+       x = "Policy Type", y = "Median Profit per Policy (€)") +
   theme_minimal(base_size = 13) +
   theme(legend.position = "none",
         plot.title = element_text(face = "bold"))
@@ -377,7 +374,7 @@ ggplot(policy_summary, aes(x = reorder(policy_type, avg_profit),
 Comprehensive policies (COMP_N, COMP_E) generate significantly higher profit per policy than basic third-party (TP) coverage. This is our most actionable finding: comprehensive coverage provides better value for both customers and the company. Strategy: Incentivize customers to upgrade from third-party to comprehensive coverage through bundling, discounts, or highlighting the value proposition.
 :::
 
-## Customer Tenure Drives Profit
+## Longer Exposure Earns More Premium
 
 ```{r}
 #| echo: false
@@ -392,19 +389,19 @@ ggplot(sample_data, aes(x = total_exposure, y = profitability)) +
   geom_smooth(method = "loess", color = "#06A77D", se = TRUE, linewidth = 1.5) +
   geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
   annotate("text", x = 0.7, y = 800,
-           label = "Longer-term customers\nare more profitable",
+           label = "Full-year policies\nearn full premium",
            color = "#06A77D", size = 4.5, hjust = 0, fontface = "bold") +
   scale_x_continuous(breaks = seq(0, 1, 0.2)) +
   scale_y_continuous(labels = comma) +
-  labs(title = "Longer-Term Customers Generate Significantly More Profit",
-       subtitle = "Each additional year of coverage adds to profitability",
-       x = "Years of Coverage", y = "Profit per Policy (€)") +
+  labs(title = "Policies Active Longer Earn More Premium",
+       subtitle = "Profitability increases with time-on-risk (mechanical relationship)",
+       x = "Total Exposure (fraction of policy year)", y = "Profit per Policy (€)") +
   theme_minimal(base_size = 13) +
   theme(plot.title = element_text(face = "bold"))
 ```
 
 ::: notes
-Customers who stay with us longer generate significantly more profit. This is the strongest relationship we found in the analysis. While this is partly because longer policies collect more premium, it highlights the critical importance of customer retention. Priority: Invest in retention programs, especially in the first 2 years when acquisition costs are highest. Reduce churn through loyalty programs, excellent service, and competitive renewal pricing.
+`total_exposure` measures the fraction of the policy year the policy was active (0 = inactive, 1 = full year). The positive relationship with profitability is mechanical: a full-year policy collects a full year's premium, while a partial-year policy collects less. This is not a customer loyalty insight — it reflects how profitability is constructed. Longer active periods earn more premium by definition.
 :::
 
 ## Bonus Score Patterns
@@ -416,7 +413,7 @@ Customers who stay with us longer generate significantly more profit. This is th
 bonus_summary <- insurance_clean %>%
   group_by(bonus_score) %>%
   summarise(
-    avg_profit = mean(profitability),
+    avg_profit = median(profitability),
     n = n(),
     .groups = "drop"
   )
@@ -466,7 +463,7 @@ ggplot(volatility_data, aes(x = reorder(fuel_type, cv), y = cv, fill = fuel_type
   scale_fill_brewer(palette = "Set2") +
   labs(title = "Claim Costs Are Most Unpredictable for Gasoline Vehicles",
        subtitle = "Higher values = more unpredictable claims (harder to forecast reserves)",
-       x = "Fuel Type", y = "Claim Cost Predictability Score") +
+       x = "Fuel Type", y = "Coefficient of Variation (SD / Mean)") +
   theme_minimal(base_size = 13) +
   theme(legend.position = "none",
         plot.title = element_text(face = "bold"))
@@ -480,14 +477,14 @@ When gasoline vehicle owners make claims, the costs vary widely—making it hard
 
 **What Drives Profitability:**
 
-1.  **Customer Loyalty Matters Most** — Longer-term customers are significantly more profitable
+1.  **Longer Exposure Earns More** — Full-year policies mechanically earn more premium than partial-year policies
 2.  **Comprehensive Coverage Wins** — These policies outperform basic third-party coverage
 3.  **Location Makes a Difference** — Area U generates higher profit than Area R
 4.  **Vehicle Age Affects Risk** — Vehicles over 40 years show higher loss rates
 
 **Where We Have Gaps:**
 
-5.  **Pricing Needs Refinement** — Weak connection between premiums charged and actual claims suggests we're missing important risk factors
+5.  **Pricing Needs Refinement** — Segment-level loss ratios should be examined to identify systematically underpriced risk groups
 
 **Portfolio Health:**
 
@@ -496,14 +493,14 @@ When gasoline vehicle owners make claims, the costs vary widely—making it hard
 - Gasoline vehicles have less predictable claim costs than diesel
 
 ::: notes
-Five key takeaways for business strategy: (1) Invest in customer retention programs - loyalty drives profit. (2) Promote comprehensive coverage upgrades. (3) Adjust pricing by location. (4) Review underwriting for very old vehicles. (5) Enhance pricing model with additional risk factors. The portfolio is fundamentally healthy, but these improvements can boost profitability and reduce risk.
+Five key takeaways for business strategy: (1) Minimize mid-term policy cancellations to maximize premium earned. (2) Promote comprehensive coverage upgrades. (3) Adjust pricing by location. (4) Review underwriting for very old vehicles. (5) Enhance pricing model with segment-level loss ratio analysis. The portfolio is fundamentally healthy, but these improvements can boost profitability and reduce risk.
 :::
 
 ## Strategic Recommendations
 
 **High Priority Actions:**
 
-**1. Boost Customer Retention** - Launch loyalty programs targeting first 2-year customers - Implement competitive renewal pricing to reduce churn - *Impact: Longer tenure = higher profitability*
+**1. Minimize Policy Cancellations** - Investigate what drives partial-year policy exits - Reduce mid-term cancellations to maximize premium earned per policy - *Note: total_exposure reflects time-on-risk within a policy period, not multi-year loyalty*
 
 **2. Promote Comprehensive Coverage** - Create upgrade incentives for third-party customers - Bundle comprehensive with value-added services - *Impact: Comprehensive policies significantly more profitable*
 
@@ -513,8 +510,8 @@ Five key takeaways for business strategy: (1) Invest in customer retention progr
 
 **4. Vehicle Age Underwriting** - Tighten criteria for vehicles over 40 years old - Consider specialized pricing for vintage vehicles - *Impact: Reduce exposure to high-loss segments*
 
-**5. Enhance Pricing Model** - Incorporate additional risk factors beyond current model - Improve premium-to-claims alignment - *Impact: Better risk prediction and pricing accuracy*
+**5. Enhance Pricing Model** - Examine segment-level loss ratios to identify systematically underpriced risk groups - Incorporate additional risk factors beyond current model - *Impact: Better risk prediction and pricing accuracy*
 
 ::: notes
-Prioritized by impact and feasibility. High-priority actions (retention and comprehensive coverage promotion) offer the clearest path to improved profitability. Medium-priority actions address specific risk segments. All recommendations are grounded in the data analysis and represent actionable next steps for portfolio management.
+Prioritized by impact and feasibility. High-priority actions (minimizing cancellations and comprehensive coverage promotion) offer the clearest path to improved profitability. Medium-priority actions address specific risk segments. All recommendations are grounded in the data analysis and represent actionable next steps for portfolio management.
 :::

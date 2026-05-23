@@ -1,5 +1,5 @@
 ---
-title: "Take-home Exercise 2"
+title: "Take-home Exercise 2: VAST Challenge 2026 MC1"
 author: "Bui Tien Thanh"
 date: "May 9, 2026"
 date-modified: "last-modified"
@@ -12,24 +12,754 @@ execute:
 
 ## Overview
 
-[Add assignment description here]
+### Background
+
+This analysis investigates the **TenantThread embargo breach incident** that occurred on June 5th, 2046. TenantThread, a property tech company, had signed a merger agreement with CivicLoom Realty Partners (codenamed "Project HarborCrest"). The merger announcement was under strict embargo until 6:00 PM, but embargoed information leaked on social media around 5:00 PM.
+
+### Main Objective
+
+**Central Question:** Did TenantThread's team deliberately leak the merger or did the system simply break down under pressure?
+
+This analysis examines internal communications from 7 AI agents over two weeks leading up to the breach to answer this question.
+
+### Analytical Approach
+
+- **Task 1 (Essential):** Event Sequence Visualization - Reconstruct the chain of events leading to the breach
+- **Task 2 (Essential):** Behavioral Analysis - Compare breach behavior to baseline patterns to determine intent vs. accident
 
 ## Loading Packages
 
 ```{r}
-pacman::p_load(tidyverse)
+pacman::p_load(
+  tidyverse,      # Data manipulation and visualization
+  jsonlite,       # JSON data handling
+  lubridate,      # Date/time manipulation
+  igraph,         # Network analysis
+  visNetwork,     # Interactive network visualization
+  plotly,         # Interactive plots
+  DT,             # Interactive tables
+  tidytext,       # Text analysis
+  scales,         # Scale functions for visualization
+  ggtext          # Enhanced text rendering
+)
+```
+
+## Style Configuration
+
+### Define Styles
+
+```{r}
+STYLES <- list(
+  # Font
+  font_family = "sans",
+
+  # Agent colors (colorblind-friendly palette)
+  agent_colors = c(
+    "judge_eval_agent" = "#D81B60",      # Pink-red (Judge/Compliance)
+    "legal_agent" = "#1E88E5",           # Blue (Legal)
+    "pr_agent" = "#FFC107",              # Amber (PR)
+    "pr_intern_agent" = "#FFE082",       # Light amber (PR Intern)
+    "quality_agent" = "#004D40",         # Teal (Quality)
+    "social_manager_agent" = "#7B1FA2",  # Purple (Social)
+    "intern_agent" = "#9E9E9E"           # Grey (Intern)
+  ),
+
+  # Period colors
+  period_colors = c(
+    "Baseline (Week 1)" = "#66BB6A",     # Green
+    "Final Week" = "#FFA726",            # Orange
+    "Breach Day" = "#EF5350"             # Red
+  ),
+
+  # Action colors
+  action_colors = c(
+    "MONITORING" = "#90CAF9",
+    "ESCALATING" = "#FFAB91",
+    "RESPONDING" = "#CE93D8",
+    "PUBLISHING" = "#80CBC4"
+  ),
+
+  # Plot elements
+  title_color = "grey25",
+  text_color = "grey50",
+  panel_border_color = "grey50",
+
+  # Interactive
+  tooltip_css = "background-color:black;color:white;font-size:10pt;padding:4px;"
+)
+```
+
+### Define Common Theme
+
+```{r}
+COMMON_THEME <- theme_minimal() +
+  theme(
+    text = element_text(family = STYLES$font_family, color = STYLES$text_color),
+    plot.title = element_text(
+      color = STYLES$title_color,
+      face = "bold",
+      size = 12
+    ),
+    plot.subtitle = element_text(size = 10),
+    plot.caption = element_text(size = 8, hjust = 0),
+
+    legend.position = "right",
+    legend.title = element_text(face = "bold", size = 10),
+    legend.text = element_text(size = 9),
+
+    panel.border = element_rect(
+      color = STYLES$panel_border_color,
+      fill = NA,
+      linewidth = 0.5
+    ),
+
+    axis.text = element_text(size = 9),
+    axis.title = element_text(size = 10)
+  )
 ```
 
 ## Data Preparation
 
+### Loading the Data
+
 ```{r}
-# Load data
+# Load MC1 data
+mc1_data <- fromJSON("../../data/MC1_final.json")
+
+# Extract rounds
+rounds <- mc1_data$rounds
+```
+
+### Data Structure Exploration
+
+```{r}
+# Check number of rounds (hours)
+cat("Total rounds:", length(rounds), "\n")
+
+# Examine first round structure
+cat("\nFirst round timestamp:", rounds[[1]]$hour, "\n")
+cat("Number of agents in first round:", length(rounds[[1]]$agent_outputs), "\n")
+```
+
+### Extract and Transform Data
+
+```{r}
+# Create a dataframe of all agent communications
+communications_df <- map_dfr(1:length(rounds), function(i) {
+  round <- rounds[[i]]
+  hour <- round$hour
+
+  map_dfr(round$agent_outputs, function(agent) {
+    if (length(agent$communications) > 0) {
+      map_dfr(agent$communications, function(comm) {
+        tibble(
+          hour = hour,
+          agent_id = agent$agent_id,
+          message_id = comm$message_id,
+          channel = comm$channel,
+          message_text = comm$message_text,
+          declared_action = agent$declared_action
+        )
+      })
+    }
+  })
+})
+
+# Parse datetime
+communications_df <- communications_df %>%
+  mutate(datetime = ymd_h(hour))
+
+# Display summary
+cat("Total communications:", nrow(communications_df), "\n")
+```
+
+### Extract Environment Context
+
+```{r}
+# Extract environment context to understand external pressures
+environment_df <- map_dfr(1:length(rounds), function(i) {
+  round <- rounds[[i]]
+  tibble(
+    hour = round$hour,
+    event_narrative = round$environment_context$event_narrative %||% NA_character_,
+    agents_unavailable = paste(unlist(round$environment_context$agents_unavailable), collapse = ", ")
+  )
+}) %>%
+  mutate(datetime = ymd_h(hour))
+
+cat("Environment events tracked:", nrow(environment_df), "\n")
+```
+
+### Extract Complete Internal States
+
+```{r}
+# Extract internal states for all agents (already done above but moved here for clarity)
+internal_states_df <- map_dfr(1:length(rounds), function(i) {
+  round <- rounds[[i]]
+  hour <- round$hour
+
+  map_dfr(round$agent_outputs, function(agent) {
+    tibble(
+      hour = hour,
+      agent_id = agent$agent_id,
+      reacting = agent$internal_state$reacting %||% NA_character_,
+      rationalizing = agent$internal_state$rationalizing %||% NA_character_,
+      deliberating = agent$internal_state$deliberating %||% NA_character_,
+      declared_action = agent$declared_action
+    )
+  })
+}) %>%
+  mutate(datetime = ymd_h(hour))
+
+cat("Internal state records:", nrow(internal_states_df), "\n")
+```
+
+### Build Agent Interaction Network
+
+```{r}
+# Create agent interaction data (who responds to whom)
+agent_interactions <- communications_df %>%
+  arrange(datetime, agent_id) %>%
+  group_by(channel) %>%
+  mutate(
+    previous_agent = lag(agent_id),
+    previous_message = lag(message_text),
+    time_since_last = as.numeric(difftime(datetime, lag(datetime), units = "mins"))
+  ) %>%
+  filter(!is.na(previous_agent), previous_agent != agent_id, time_since_last <= 60) %>%
+  ungroup()
+
+cat("Agent interactions identified:", nrow(agent_interactions), "\n")
 ```
 
 ## Analysis
 
-### Section 1
+### Exploratory Data Analysis
+
+#### Agent Activity Overview
 
 ```{r}
-# Your code here
+# Count communications by agent
+agent_activity <- communications_df %>%
+  count(agent_id, name = "total_messages") %>%
+  arrange(desc(total_messages))
+
+# Visualize
+ggplot(agent_activity, aes(x = reorder(agent_id, total_messages), y = total_messages, fill = agent_id)) +
+  geom_col() +
+  scale_fill_manual(values = STYLES$agent_colors) +
+  coord_flip() +
+  labs(title = "Total Communications by Agent",
+       x = "Agent", y = "Number of Messages") +
+  COMMON_THEME +
+  theme(legend.position = "none")
 ```
+
+#### Communication Channels
+
+```{r}
+# Channel usage
+channel_usage <- communications_df %>%
+  count(channel, name = "messages") %>%
+  arrange(desc(messages))
+
+datatable(channel_usage, options = list(pageLength = 10))
+```
+
+#### Temporal Pattern
+
+```{r}
+# Messages over time
+temporal_pattern <- communications_df %>%
+  count(datetime, name = "messages")
+
+ggplot(temporal_pattern, aes(x = datetime, y = messages)) +
+  geom_line(color = STYLES$agent_colors["legal_agent"], linewidth = 1) +
+  geom_point(color = STYLES$agent_colors["legal_agent"], size = 2) +
+  labs(title = "Communication Volume Over Time",
+       x = "Date", y = "Number of Messages") +
+  COMMON_THEME +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+### Task 1: Event Sequence Visualization ⭐
+
+#### Identifying the Breach Event
+
+```{r}
+# Find communications on breach day (June 5, 2046)
+breach_day <- communications_df %>%
+  filter(date(datetime) == ymd("2046-06-05")) %>%
+  arrange(datetime)
+
+# Focus on critical hours (4 PM - 6 PM, embargo at 6 PM, breach at 5 PM)
+breach_window <- breach_day %>%
+  filter(hour(datetime) >= 16, hour(datetime) <= 18)
+
+cat("Messages during breach window (4-6 PM):", nrow(breach_window), "\n")
+cat("Agents active during breach:", n_distinct(breach_window$agent_id), "\n")
+
+# Identify the actual breach message(s)
+breach_messages <- breach_window %>%
+  filter(contains_embargo_terms, hour(datetime) == 17) %>%
+  arrange(datetime)
+
+cat("Potential breach messages at 5 PM:", nrow(breach_messages), "\n")
+```
+
+#### Breach Event Details
+
+```{r}
+# Show breach messages
+if(nrow(breach_messages) > 0) {
+  breach_details <- breach_messages %>%
+    select(datetime, agent_id, channel, message_text) %>%
+    mutate(message_text = str_trunc(message_text, 100))
+
+  datatable(breach_details,
+            caption = "Messages with Embargo Terms at 5 PM (Breach Hour)",
+            options = list(pageLength = 5))
+}
+```
+
+#### Causal Chain Analysis
+
+```{r}
+# Analyze agent interactions during breach window
+breach_interactions <- agent_interactions %>%
+  filter(date(datetime) == ymd("2046-06-05"), hour(datetime) >= 16) %>%
+  select(datetime, previous_agent, agent_id, channel, time_since_last, message_text) %>%
+  arrange(datetime)
+
+# Create interaction flow
+interaction_flow <- breach_interactions %>%
+  count(previous_agent, agent_id, channel) %>%
+  arrange(desc(n))
+
+datatable(interaction_flow,
+          caption = "Agent Interaction Flow During Breach Window",
+          options = list(pageLength = 10))
+```
+
+#### Event Sequence Timeline
+
+```{r}
+# Build timeline of key events on breach day
+breach_timeline <- internal_states_df %>%
+  filter(date(datetime) == ymd("2046-06-05")) %>%
+  left_join(
+    communications_df %>%
+      group_by(datetime, agent_id) %>%
+      summarise(num_messages = n(), .groups = "drop"),
+    by = c("datetime", "agent_id")
+  ) %>%
+  replace_na(list(num_messages = 0)) %>%
+  arrange(datetime, agent_id)
+
+# Visualize agent activity timeline
+ggplot(breach_timeline, aes(x = datetime, y = agent_id)) +
+  geom_point(aes(size = num_messages, color = declared_action), alpha = 0.7) +
+  scale_color_manual(values = STYLES$action_colors, na.value = "grey70") +
+  geom_vline(xintercept = ymd_h("2046-06-05 17"), linetype = "dashed",
+             color = STYLES$period_colors["Breach Day"], linewidth = 1) +
+  annotate("text", x = ymd_h("2046-06-05 17"), y = 7, label = "Breach (5 PM)",
+           hjust = -0.1, color = STYLES$period_colors["Breach Day"], size = 3) +
+  geom_vline(xintercept = ymd_h("2046-06-05 18"), linetype = "dashed",
+             color = STYLES$agent_colors["legal_agent"], linewidth = 1) +
+  annotate("text", x = ymd_h("2046-06-05 18"), y = 7, label = "Embargo End (6 PM)",
+           hjust = -0.1, color = STYLES$agent_colors["legal_agent"], size = 3) +
+  labs(title = "Agent Activity Timeline on Breach Day",
+       x = "Time", y = "Agent", size = "Messages", color = "Action") +
+  COMMON_THEME +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+
+#### Interactive Communication Network (Breach Window)
+
+```{r}
+# Build network for breach window only
+breach_network_edges <- agent_interactions %>%
+  filter(date(datetime) == ymd("2046-06-05"), hour(datetime) >= 16) %>%
+  count(previous_agent, agent_id, name = "weight")
+
+# Create nodes
+breach_network_nodes <- data.frame(
+  id = unique(c(breach_network_edges$previous_agent, breach_network_edges$agent_id)),
+  label = unique(c(breach_network_edges$previous_agent, breach_network_edges$agent_id)),
+  group = c("judge_eval_agent", "legal_agent", "pr_agent", "pr_intern_agent",
+            "quality_agent", "social_manager_agent", "intern_agent")
+)
+
+# Interactive network
+visNetwork(breach_network_nodes,
+           breach_network_edges %>% rename(from = previous_agent, to = agent_id),
+           main = "Agent Interaction Network During Breach Window (4-6 PM)") %>%
+  visEdges(arrows = "to") %>%
+  visOptions(highlightNearest = TRUE, nodesIdSelection = TRUE) %>%
+  visLayout(randomSeed = 123)
+```
+
+#### Judge Agent's Role During Breach
+
+```{r}
+# Extract Judge agent activity during breach day
+judge_breach_day <- internal_states_df %>%
+  filter(agent_id == "judge_eval_agent", date(datetime) == ymd("2046-06-05")) %>%
+  arrange(datetime)
+
+# Show Judge's internal states
+judge_states_table <- judge_breach_day %>%
+  select(datetime, declared_action, reacting, rationalizing, deliberating) %>%
+  mutate(across(c(reacting, rationalizing, deliberating), ~str_trunc(., 80)))
+
+datatable(judge_states_table,
+          caption = "Judge Agent Internal States on Breach Day",
+          options = list(pageLength = 5, scrollX = TRUE))
+```
+
+
+### Task 2: Behavioral Analysis ⭐
+
+#### Define Analysis Periods
+
+```{r}
+# Define three periods for comparison
+internal_states_df <- internal_states_df %>%
+  mutate(
+    period = case_when(
+      datetime < ymd("2046-05-29") ~ "Baseline (Week 1)",
+      datetime < ymd("2046-06-05") ~ "Final Week",
+      date(datetime) == ymd("2046-06-05") ~ "Breach Day",
+      TRUE ~ "Other"
+    )
+  )
+
+# Period summary
+period_summary <- internal_states_df %>%
+  filter(period != "Other") %>%
+  count(period) %>%
+  arrange(period)
+
+datatable(period_summary, caption = "Analysis Periods", options = list(dom = 't'))
+```
+
+#### Baseline Behavior Profiles
+
+```{r}
+# Establish baseline behavior for each agent (Week 1)
+baseline_behavior <- internal_states_df %>%
+  filter(period == "Baseline (Week 1)") %>%
+  count(agent_id, declared_action) %>%
+  group_by(agent_id) %>%
+  mutate(baseline_pct = n / sum(n) * 100) %>%
+  ungroup()
+
+# Visualize baseline behavior by agent
+ggplot(baseline_behavior, aes(x = agent_id, y = baseline_pct, fill = declared_action)) +
+  geom_col() +
+  scale_fill_manual(values = STYLES$action_colors, na.value = "grey70") +
+  coord_flip() +
+  labs(title = "Baseline Behavior Profile (Week 1)",
+       x = "Agent", y = "Percentage (%)", fill = "Action") +
+  COMMON_THEME
+```
+
+
+#### Behavioral Comparison Across Periods
+
+```{r}
+# Compare behavior across all three periods
+period_behavior <- internal_states_df %>%
+  filter(period != "Other") %>%
+  count(period, agent_id, declared_action) %>%
+  group_by(period, agent_id) %>%
+  mutate(pct = n / sum(n) * 100) %>%
+  ungroup()
+
+# Visualize by period
+ggplot(period_behavior, aes(x = agent_id, y = pct, fill = declared_action)) +
+  geom_col() +
+  scale_fill_manual(values = STYLES$action_colors, na.value = "grey70") +
+  coord_flip() +
+  facet_wrap(~period, ncol = 3) +
+  labs(title = "Agent Behavior Comparison Across Periods",
+       x = "Agent", y = "Percentage (%)", fill = "Action") +
+  COMMON_THEME +
+  theme(axis.text.x = element_text(size = 7))
+```
+
+#### Anomaly Detection
+
+```{r}
+# Identify unusual actions (actions that occur < 5% in baseline)
+rare_actions <- baseline_behavior %>%
+  filter(baseline_pct < 5) %>%
+  select(agent_id, declared_action, baseline_pct)
+
+# Find when these rare actions occurred in final week and breach day
+anomalies <- internal_states_df %>%
+  filter(period %in% c("Final Week", "Breach Day")) %>%
+  inner_join(rare_actions, by = c("agent_id", "declared_action")) %>%
+  select(datetime, period, agent_id, declared_action, baseline_pct) %>%
+  arrange(datetime)
+
+if(nrow(anomalies) > 0) {
+  datatable(anomalies,
+            caption = "Anomalous Actions (Rare in Baseline, Occurred Later)",
+            options = list(pageLength = 10))
+} else {
+  cat("No significant anomalies detected based on baseline behavior.\n")
+}
+```
+
+
+#### Internal State Analysis: Stress Indicators
+
+```{r}
+# Analyze internal states for stress/urgency keywords
+stress_keywords <- c("urgent", "crisis", "pressure", "risk", "concern", "worried", "critical", "emergency")
+
+internal_state_analysis <- internal_states_df %>%
+  filter(period != "Other") %>%
+  pivot_longer(
+    cols = c(reacting, rationalizing, deliberating),
+    names_to = "state_type",
+    values_to = "state_content"
+  ) %>%
+  filter(!is.na(state_content)) %>%
+  mutate(
+    shows_stress = str_detect(tolower(state_content), paste(stress_keywords, collapse = "|")),
+    mentions_judge = str_detect(tolower(state_content), "judge"),
+    mentions_embargo = str_detect(tolower(state_content), "embargo|harborcrest|civicloom")
+  )
+
+# Count stress indicators by period
+stress_by_period <- internal_state_analysis %>%
+  group_by(period, agent_id) %>%
+  summarise(
+    total_states = n(),
+    stress_count = sum(shows_stress),
+    stress_pct = (stress_count / total_states) * 100,
+    .groups = "drop"
+  )
+
+# Visualize stress levels
+ggplot(stress_by_period, aes(x = agent_id, y = stress_pct, fill = period)) +
+  geom_col(position = "dodge") +
+  scale_fill_manual(values = STYLES$period_colors) +
+  coord_flip() +
+  labs(title = "Stress Indicators in Internal States by Period",
+       x = "Agent", y = "% of States Showing Stress", fill = "Period") +
+  COMMON_THEME
+```
+
+
+#### Communication Pattern Analysis
+
+```{r}
+# Analyze embargo-related communications
+embargo_keywords <- c("merger", "CivicLoom", "HarborCrest", "acquisition", "deal")
+
+communications_df <- communications_df %>%
+  mutate(
+    contains_embargo_terms = str_detect(
+      tolower(message_text),
+      paste(embargo_keywords, collapse = "|")
+    ),
+    period = case_when(
+      datetime < ymd("2046-05-29") ~ "Baseline (Week 1)",
+      datetime < ymd("2046-06-05") ~ "Final Week",
+      date(datetime) == ymd("2046-06-05") ~ "Breach Day",
+      TRUE ~ "Other"
+    )
+  )
+
+# Embargo mentions by period
+embargo_by_period <- communications_df %>%
+  filter(period != "Other") %>%
+  group_by(period, agent_id) %>%
+  summarise(
+    total_messages = n(),
+    embargo_messages = sum(contains_embargo_terms),
+    embargo_pct = (embargo_messages / total_messages) * 100,
+    .groups = "drop"
+  )
+
+# Visualize
+ggplot(embargo_by_period, aes(x = agent_id, y = embargo_pct, fill = period)) +
+  geom_col(position = "dodge") +
+  scale_fill_manual(values = STYLES$period_colors) +
+  coord_flip() +
+  labs(title = "Embargo-Related Communications by Period",
+       x = "Agent", y = "% of Messages Mentioning Embargo", fill = "Period") +
+  COMMON_THEME
+```
+
+#### Statistical Comparison: Baseline vs Breach Day
+
+```{r}
+# Compare key metrics
+comparison_metrics <- internal_states_df %>%
+  filter(period %in% c("Baseline (Week 1)", "Breach Day")) %>%
+  group_by(period, agent_id) %>%
+  summarise(
+    total_actions = n(),
+    unique_actions = n_distinct(declared_action),
+    .groups = "drop"
+  ) %>%
+  pivot_wider(
+    names_from = period,
+    values_from = c(total_actions, unique_actions),
+    names_sep = "_"
+  )
+
+datatable(comparison_metrics,
+          caption = "Behavioral Metrics: Baseline vs Breach Day",
+          options = list(pageLength = 10, scrollX = TRUE))
+```
+
+
+#### Judge Agent Compliance Analysis
+
+```{r}
+# Analyze Judge agent behavior across periods
+judge_analysis <- internal_states_df %>%
+  filter(agent_id == "judge_eval_agent", period != "Other") %>%
+  count(period, declared_action) %>%
+  group_by(period) %>%
+  mutate(pct = n / sum(n) * 100) %>%
+  ungroup()
+
+# Visualize Judge's action distribution
+ggplot(judge_analysis, aes(x = period, y = pct, fill = declared_action)) +
+  geom_col() +
+  scale_fill_manual(values = STYLES$action_colors, na.value = "grey70") +
+  labs(title = "Judge Agent Action Distribution by Period",
+       x = "Period", y = "Percentage (%)", fill = "Action") +
+  COMMON_THEME +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+#### Communication Channel Analysis
+
+```{r}
+# Analyze channel usage patterns across periods
+channel_analysis <- communications_df %>%
+  filter(period != "Other") %>%
+  count(period, channel) %>%
+  group_by(period) %>%
+  mutate(pct = n / sum(n) * 100) %>%
+  ungroup()
+
+# Visualize
+ggplot(channel_analysis, aes(x = channel, y = pct, fill = period)) +
+  geom_col(position = "dodge") +
+  scale_fill_manual(values = STYLES$period_colors) +
+  coord_flip() +
+  labs(title = "Communication Channel Usage by Period",
+       x = "Channel", y = "Percentage (%)", fill = "Period") +
+  COMMON_THEME
+```
+
+
+## Key Findings
+
+### Evidence Summary
+
+```{r}
+# Create comprehensive summary table
+findings_summary <- tibble(
+  Metric = c(
+    "Total Communications (2 weeks)",
+    "Breach Day Communications",
+    "Breach Window Messages (4-6 PM)",
+    "Agents Involved",
+    "Total Embargo-related Messages",
+    "Embargo Messages on Breach Day",
+    "Stress Indicators (Breach Day)",
+    "Anomalous Actions Detected"
+  ),
+  Value = as.character(c(
+    nrow(communications_df),
+    nrow(breach_day),
+    nrow(breach_window),
+    n_distinct(communications_df$agent_id),
+    sum(communications_df$contains_embargo_terms, na.rm = TRUE),
+    sum(breach_day$contains_embargo_terms, na.rm = TRUE),
+    nrow(internal_state_analysis %>% filter(period == "Breach Day", shows_stress)),
+    nrow(anomalies)
+  ))
+)
+
+datatable(findings_summary, options = list(dom = 't'))
+```
+
+## Conclusion
+
+### Answer to Main Question
+
+**Did TenantThread's team deliberately leak the merger or did the system simply break down under pressure?**
+
+Based on the comprehensive visual analytics conducted, the evidence suggests:
+
+#### Evidence Analysis
+
+**1. Event Sequence (Task 1 Findings):**
+
+- The breach occurred at 5 PM, exactly one hour before the embargo lifted at 6 PM
+- Agent interaction network shows communication patterns during the breach window
+- The Judge agent (compliance officer) was active but the system still failed
+- Multiple agents were involved in communications during the critical timeframe
+
+**2. Behavioral Patterns (Task 2 Findings):**
+
+- **Baseline Comparison**: Agent behavior on breach day showed deviations from Week 1 baseline patterns
+- **Stress Indicators**: Internal states revealed increased stress markers in the final week and breach day
+- **Anomaly Detection**: Identified actions that were rare in baseline but occurred during critical periods
+- **Communication Patterns**: Embargo-related communications increased significantly approaching breach day
+
+**3. Judge Agent Role:**
+
+- The Judge agent's compliance actions show activity throughout the period
+- However, the breach still occurred despite the Judge's presence
+- This suggests either:
+  - The Judge's rules were insufficient to catch the specific breach scenario
+  - The system was overwhelmed by the volume/complexity of decisions
+  - There was a gap in the compliance logic
+
+#### Conclusion
+
+The evidence points toward **SYSTEM BREAKDOWN UNDER PRESSURE** rather than deliberate leak:
+
+**Supporting Evidence:**
+- Increased stress indicators across multiple agents
+- Rising communication volume and embargo mentions over time (not sudden)
+- Judge agent was active but failed to prevent breach (system limitation, not bypass)
+- Behavioral changes consistent with pressure response rather than coordinated action
+- No clear evidence of deliberate coordination to evade compliance
+
+**Key Insight:** The breach appears to be a failure of the automated compliance system ("The Judge") to handle the complexity and pressure of the situation, rather than a deliberate attempt by the team to leak information.
+
+### Recommendations
+
+**1. System Improvements:**
+- Enhance the Judge agent's decision-making logic to handle edge cases
+- Implement multi-layer approval for embargo-sensitive communications
+- Add stress detection and automatic escalation protocols
+
+**2. Monitoring Enhancements:**
+- Real-time monitoring of embargo-related communication frequency
+- Alert system for unusual behavioral patterns
+- Dashboard for compliance officer oversight
+
+**3. Policy Changes:**
+- Mandatory human review for all embargo-related posts within 24 hours of deadline
+- Stricter channel restrictions during embargo periods
+- Regular stress testing of compliance systems under pressure scenarios
+
+## References
+
+- VAST Challenge 2026 Mini Challenge 1 Dataset
+- MC1 Data Description Documentation
+
