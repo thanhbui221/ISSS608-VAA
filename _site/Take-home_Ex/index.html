@@ -6,10 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="ISSS608 Visual Analytics and Applications">
-<meta name="dcterms.date" content="2026-05-09">
 
-<title>Take-home Exercise 1 - Requirements – ISSS608-VAA</title>
+<title>Take-home Exercises – ISSS608-VAA</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -28,23 +26,25 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
-<script src="../../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../../">
-<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../../site_libs/quarto-html/popper.min.js"></script>
-<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-158031087360bce0ff56dc785ce39e06.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-listing/list.min.js"></script>
+<script src="../site_libs/quarto-listing/quarto-listing.js"></script>
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-158031087360bce0ff56dc785ce39e06.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -72,9 +72,67 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
+<script>
 
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    const listingTargetEl = window.document.querySelector('#listing-listing .list');
+    if (!listingTargetEl) {
+      // No listing discovered, do not attach.
+      return; 
+    }
 
-<link rel="stylesheet" href="../../styles.css">
+    const options = {
+      valueNames: ['listing-date','listing-title','listing-description',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
+      
+      searchColumns: ["listing-date","listing-title","listing-author","listing-subtitle","listing-image","listing-description"],
+    };
+
+    window['quarto-listings'] = window['quarto-listings'] || {};
+    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
+
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  });
+
+  window.addEventListener('hashchange',() => {
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  })
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../styles.css">
 </head>
 
 <body class="nav-fixed quarto-light">
@@ -84,7 +142,7 @@ ul.task-list li input[type="checkbox"] {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="../../index.html">
+    <a class="navbar-brand" href="../index.html">
     <span class="navbar-title">ISSS608-VAA</span>
     </a>
   </div>
@@ -95,23 +153,23 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../../index.html"> 
+    <a class="nav-link" href="../index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../Hands-on_Ex/index.html"> 
+    <a class="nav-link" href="../Hands-on_Ex/index.html"> 
 <span class="menu-text">Hands-on Exercises</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../In-class_Ex/index.html"> 
+    <a class="nav-link" href="../In-class_Ex/index.html"> 
 <span class="menu-text">In-class Exercises</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../Take-home_Ex/index.html"> 
+    <a class="nav-link active" href="../Take-home_Ex/index.html" aria-current="page"> 
 <span class="menu-text">Take-home Exercises</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../about.html"> 
+    <a class="nav-link" href="../about.html"> 
 <span class="menu-text">About</span></a>
   </li>  
 </ul>
@@ -130,26 +188,7 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#the-data" id="toc-the-data" class="nav-link active" data-scroll-target="#the-data">The Data</a></li>
-  <li><a href="#the-tasks" id="toc-the-tasks" class="nav-link" data-scroll-target="#the-tasks">The Tasks</a></li>
-  <li><a href="#the-designing-tool" id="toc-the-designing-tool" class="nav-link" data-scroll-target="#the-designing-tool">The Designing Tool</a></li>
-  <li><a href="#deliverables" id="toc-deliverables" class="nav-link" data-scroll-target="#deliverables">Deliverables</a>
-  <ul class="collapse">
-  <li><a href="#executive-summary" id="toc-executive-summary" class="nav-link" data-scroll-target="#executive-summary">1. Executive Summary</a></li>
-  <li><a href="#reproducible-technical-report" id="toc-reproducible-technical-report" class="nav-link" data-scroll-target="#reproducible-technical-report">2. Reproducible Technical Report</a></li>
-  </ul></li>
-  <li><a href="#submission-instructions" id="toc-submission-instructions" class="nav-link" data-scroll-target="#submission-instructions">Submission Instructions</a>
-  <ul class="collapse">
-  <li><a href="#submission-date" id="toc-submission-date" class="nav-link" data-scroll-target="#submission-date">Submission Date</a></li>
-  </ul></li>
-  <li><a href="#grading-criteria" id="toc-grading-criteria" class="nav-link" data-scroll-target="#grading-criteria">Grading Criteria</a>
-  <ul class="collapse">
-  <li><a href="#data-wrangling-20-marks" id="toc-data-wrangling-20-marks" class="nav-link" data-scroll-target="#data-wrangling-20-marks">Data Wrangling (20 marks)</a></li>
-  <li><a href="#visual-analysis-30-marks" id="toc-visual-analysis-30-marks" class="nav-link" data-scroll-target="#visual-analysis-30-marks">Visual Analysis (30 marks)</a></li>
-  <li><a href="#visual-communication-20-marks" id="toc-visual-communication-20-marks" class="nav-link" data-scroll-target="#visual-communication-20-marks">Visual Communication (20 marks)</a></li>
-  <li><a href="#reproducibility-15-marks" id="toc-reproducibility-15-marks" class="nav-link" data-scroll-target="#reproducibility-15-marks">Reproducibility (15 marks)</a></li>
-  <li><a href="#bonus-15-marks" id="toc-bonus-15-marks" class="nav-link" data-scroll-target="#bonus-15-marks">Bonus (15 marks)</a></li>
-  </ul></li>
+  <li><a href="#assignments" id="toc-assignments" class="nav-link active" data-scroll-target="#assignments">Assignments</a></li>
   </ul>
 </nav>
     </div>
@@ -158,26 +197,14 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Take-home Exercise 1 - Requirements</h1>
+<h1 class="title">Take-home Exercises</h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>ISSS608 Visual Analytics and Applications </p>
-          </div>
-  </div>
     
-    <div>
-    <div class="quarto-title-meta-heading">Published</div>
-    <div class="quarto-title-meta-contents">
-      <p class="date">May 9, 2026</p>
-    </div>
-  </div>
   
     
   </div>
@@ -187,85 +214,74 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="the-data" class="level2">
-<h2 class="anchored" data-anchor-id="the-data">The Data</h2>
-<p>A real world motor vehicle insurance portfolio data set from a Spanish insurance company specialised in non-life insurance will be used in this study. The data set and its cookbook are available for download at <a href="https://data.mendeley.com/datasets/sw4jmdb2sm/1">Mendeley Data</a>.</p>
-<p><strong>Data Location:</strong></p>
-<p>All the data has been put under <code>data/</code> folder:</p>
+<p>This section contains take-home assignments for ISSS608.</p>
+<section id="assignments" class="level2">
+<h2 class="anchored" data-anchor-id="assignments">Assignments</h2>
 <ul>
-<li><code>Dataset of motor insurance portfolio.csv</code></li>
-<li><code>Descriptive of variables.xlsx</code></li>
+<li><a href="../Take-home_Ex/Take-home_Ex01/Take-home_Ex01.html">Take-home Exercise 1</a> | <a href="../Take-home_Ex/Take-home_Ex01/Take-home_Ex01_presentation.html">Presentation</a></li>
+<li><a href="../Take-home_Ex/Take-home_Ex02/Take-home_Ex02.html">Take-home Exercise 2</a></li>
 </ul>
-</section>
-<section id="the-tasks" class="level2">
-<h2 class="anchored" data-anchor-id="the-tasks">The Tasks</h2>
-<p>The specific tasks of this study are:</p>
-<ol type="1">
-<li><p><strong>Apply suitable univariate visual analytics techniques</strong> to explore the distributions and characteristics of numerical and categorical variables.</p></li>
-<li><p><strong>Apply suitable bivariate visual analytics techniques</strong> to investigate and statistically validate factors influencing the profitability and volatility of the insurance portfolio.</p></li>
-</ol>
-</section>
-<section id="the-designing-tool" class="level2">
-<h2 class="anchored" data-anchor-id="the-designing-tool">The Designing Tool</h2>
-<p>The data should be processed by using appropriate <strong>tidyverse</strong> family of packages and the visual analytics must be performed by using <strong>ggplot2</strong> and its extensions.</p>
-</section>
-<section id="deliverables" class="level2">
-<h2 class="anchored" data-anchor-id="deliverables">Deliverables</h2>
-<p>The deliverables for this assignment are as follows:</p>
-<section id="executive-summary" class="level3">
-<h3 class="anchored" data-anchor-id="executive-summary">1. Executive Summary</h3>
-<p><strong>Format:</strong> Quarto presentation format (revealjs)</p>
-<p><strong>Requirements:</strong> - Must contain between <strong>10 and 15 slides</strong>, inclusive of the cover page and contents page - Each slide must include <strong>Speaker Notes</strong> not exceeding 150 words - Speaker notes should provide interpretation and discussion of the patterns, distribution, and statistical insights revealed</p>
-</section>
-<section id="reproducible-technical-report" class="level3">
-<h3 class="anchored" data-anchor-id="reproducible-technical-report">2. Reproducible Technical Report</h3>
-<p><strong>Format:</strong> Quarto HTML format</p>
-<p><strong>Requirements:</strong> The report must:</p>
-<ul>
-<li>Document the procedures used to prepare the analytical sandbox</li>
-<li>Justify the selection of the visual analytics techniques employed</li>
-<li>Describe the implementation and application of the visual analytics methods</li>
-</ul>
-</section>
-</section>
-<section id="submission-instructions" class="level2">
-<h2 class="anchored" data-anchor-id="submission-instructions">Submission Instructions</h2>
-<ul>
-<li>The deliverable must be published on your <strong>coursework webpage</strong>. A separate tab should be used for Take-home Exercises.</li>
-</ul>
-<section id="submission-date" class="level3">
-<h3 class="anchored" data-anchor-id="submission-date">Submission Date</h3>
-<p><strong>Due:</strong> 24th May 2026 (Sunday) by 11:59pm mid-night</p>
-</section>
-</section>
-<section id="grading-criteria" class="level2">
-<h2 class="anchored" data-anchor-id="grading-criteria">Grading Criteria</h2>
-<p>This assignment will be graded using the following criteria:</p>
-<section id="data-wrangling-20-marks" class="level3">
-<h3 class="anchored" data-anchor-id="data-wrangling-20-marks">Data Wrangling (20 marks)</h3>
-<p>This is an important aspect of visual analytics. You will be assessed on your ability to employ appropriate tidyverse functions to import, extract, clean, transform and process data. Besides assessing your ability to use the tidyverse functions, this criterion also includes your ability to clean and derive appropriate variables to meet the visual analysis need.</p>
-</section>
-<section id="visual-analysis-30-marks" class="level3">
-<h3 class="anchored" data-anchor-id="visual-analysis-30-marks">Visual Analysis (30 marks)</h3>
-<p>In this exercise, you are expected to utilise the visual analytics methods introduced on lesson slides and readings materials included on the weekly course outlines, along with the R methods learned during the hands-on exercises, to perform your analysis. You will be assessed on your ability to apply these methods correctly and to provide accurate interpretations and discussions of the analysis results.</p>
-</section>
-<section id="visual-communication-20-marks" class="level3">
-<h3 class="anchored" data-anchor-id="visual-communication-20-marks">Visual Communication (20 marks)</h3>
-<p>In this section, your ability to effectively communicate visual analysis results through user-friendly visual representations will be assessed. Since this course is focused on visual analysis, it is crucial that you demonstrate proficiency in using appropriate visualization techniques, principles and best practices to clearly convey the findings of your analysis.</p>
-</section>
-<section id="reproducibility-15-marks" class="level3">
-<h3 class="anchored" data-anchor-id="reproducibility-15-marks">Reproducibility (15 marks)</h3>
-<p>This is a key learning outcome of this course. You will be assessed on your ability to thoroughly document the data preparation, visual analytics and visual design procedures.</p>
-</section>
-<section id="bonus-15-marks" class="level3">
-<h3 class="anchored" data-anchor-id="bonus-15-marks">Bonus (15 marks)</h3>
-<p>Demonstrate your ability to employ methods beyond what you had learned in class to gain insights from the data. The methods used must be visual analytics in nature.</p>
+
 
 
 </section>
-</section>
 
-</main> <!-- /main -->
+<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
+<div class="list quarto-listing-default">
+<div class="quarto-post image-right" data-index="0" data-listing-date-sort="1778256000000" data-listing-file-modified-sort="1779615227591" data-listing-date-modified-sort="1779615227000" data-listing-reading-time-sort="53" data-listing-word-count-sort="10516">
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../Take-home_Ex/Take-home_Ex01/Take-home_Ex01.html" class="no-external">Take-home Exercise 1 (Technical Report)</a>
+</h3>
+<div class="delink listing-description"><a href="../Take-home_Ex/Take-home_Ex01/Take-home_Ex01.html" class="no-external">
+This assignment focuses on analyzing a real-world motor vehicle insurance portfolio dataset from a Spanish insurance company using visual analytics techniques.
+</a></div>
+</div>
+<div class="metadata">
+<a href="../Take-home_Ex/Take-home_Ex01/Take-home_Ex01.html" class="no-external">
+<div class="listing-date">
+May 9, 2026
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="1" data-listing-date-sort="1778256000000" data-listing-file-modified-sort="1779602786711" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="20" data-listing-word-count-sort="3998">
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../Take-home_Ex/Take-home_Ex01/Take-home_Ex01_presentation.html" class="no-external">Take-home Exercise 1 (Presentation): Motor Insurance Portfolio Analysis</a>
+</h3>
+<div class="delink listing-description"><a href="../Take-home_Ex/Take-home_Ex01/Take-home_Ex01_presentation.html" class="no-external">
+
+</a></div>
+</div>
+<div class="metadata">
+<a href="../Take-home_Ex/Take-home_Ex01/Take-home_Ex01_presentation.html" class="no-external">
+<div class="listing-date">
+May 9, 2026
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="2" data-listing-date-sort="1778256000000" data-listing-file-modified-sort="1779615347696" data-listing-date-modified-sort="1779615347000" data-listing-reading-time-sort="38" data-listing-word-count-sort="7592">
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../Take-home_Ex/Take-home_Ex02/Take-home_Ex02.html" class="no-external">Take-home Exercise 2: VAST Challenge 2026 MC1</a>
+</h3>
+<div class="delink listing-description"><a href="../Take-home_Ex/Take-home_Ex02/Take-home_Ex02.html" class="no-external">
+This analysis investigates the <strong>TenantThread embargo breach incident</strong> that occurred on June 5th, 2046. TenantThread, a property tech company, had signed a merger agreement…
+</a></div>
+</div>
+<div class="metadata">
+<a href="../Take-home_Ex/Take-home_Ex02/Take-home_Ex02.html" class="no-external">
+<div class="listing-date">
+May 9, 2026
+</div>
+</a>
+</div>
+</div>
+</div>
+<div class="listing-no-matching d-none">No matching items</div>
+</div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";

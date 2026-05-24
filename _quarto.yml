@@ -1,5 +1,9 @@
 project:
   type: website
+  render:
+    - "**/*.qmd"
+    - "!Take-home_Ex/Example/*.qmd"
+    - "!Take-home_Ex/VAST_*/*.qmd"
 
 website:
   title: "ISSS608-VAA"
