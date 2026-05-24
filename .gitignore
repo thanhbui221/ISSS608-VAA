@@ -9,7 +9,8 @@
 /.quarto/
 **/*.quarto_ipynb
 data/
-run.bat.claude/
+run.bat
+.claude/
 Take-home_Ex/Example/
 Take-home_Ex/VAST_Challenge_2026_MC1/
 Take-home_Ex/VAST_Challenge_2026_MC2/
