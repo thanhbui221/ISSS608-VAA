@@ -190,6 +190,30 @@ p1 | p2 | p3
 Three key takeaways: (1) Most customers pay €300-€600 in annual premiums, with a small premium segment paying much more. (2) 88% of policies generate no claims - these customers fund the 12% who do claim. (3) The portfolio is healthy with most policies profitable, but there's significant variation. Our challenge is to identify what makes policies profitable and reduce the loss-making segment.
 :::
 
+## Claim Occurrence: The Strongest Profitability Driver
+
+```{r}
+#| echo: false
+#| fig-width: 10
+#| fig-height: 6
+#| message: false
+ggbetweenstats(
+  data = insurance_clean,
+  x = has_claim,
+  y = profitability,
+  type = "nonparametric",
+  pairwise.comparisons = TRUE,
+  p.adjust.method = "bonferroni",
+  title = "Profitability: Policies With vs Without Claims",
+  xlab = "Has Claim",
+  ylab = "Profitability (€)"
+)
+```
+
+::: notes
+Mann-Whitney test reveals claim occurrence is the strongest profitability driver (p\<0.001, effect size r≈0.78). Policies without claims have median profitability of €248, while policies with claims show dramatically lower profitability, often negative. This confirms claims are the primary determinant of policy-level profitability. Note: This relationship is partially definitional since profitability = premium - claims, but the large effect size demonstrates the critical importance of claims management and accurate risk pricing.
+:::
+
 ## Pricing Model Needs Enhancement
 
 ```{r}
@@ -198,6 +222,9 @@ Three key takeaways: (1) Most customers pay €300-€600 in annual premiums, wi
 #| fig-height: 5.5
 set.seed(123)
 sample_data <- insurance_clean %>% sample_n(min(5000, nrow(insurance_clean)))
+
+cor_value <- cor(insurance_clean$total_premium, insurance_clean$total_incurred,
+                 method = "spearman", use = "complete.obs")
 
 ggplot(sample_data, aes(x = total_premium, y = total_incurred)) +
   geom_point(alpha = 0.2, color = "#2E86AB", size = 1.5) +
@@ -210,6 +237,9 @@ ggplot(sample_data, aes(x = total_premium, y = total_incurred)) +
   annotate("text", x = 800, y = 200,
            label = "Most policies cluster at zero claims\nregardless of premium level",
            color = "#C73E1D", size = 4, hjust = 0.5) +
+  annotate("text", x = 200, y = 1800,
+           label = paste0("Spearman ρ = ", round(cor_value, 3)),
+           color = "black", size = 4.5, hjust = 0, fontface = "bold") +
   scale_x_continuous(labels = comma, limits = c(0, 2000)) +
   scale_y_continuous(labels = comma, limits = c(0, 2000)) +
   labs(title = "Premium vs Actual Claims: Individual-Level Correlation Is Weak",
@@ -372,6 +402,30 @@ ggplot(policy_summary, aes(x = reorder(policy_type, avg_profit),
 
 ::: notes
 Comprehensive policies (COMP_N, COMP_E) generate significantly higher profit per policy than basic third-party (TP) coverage. This is our most actionable finding: comprehensive coverage provides better value for both customers and the company. Strategy: Incentivize customers to upgrade from third-party to comprehensive coverage through bundling, discounts, or highlighting the value proposition.
+:::
+
+## Comprehensive Coverage: Statistical Evidence
+
+```{r}
+#| echo: false
+#| fig-width: 10
+#| fig-height: 6
+#| message: false
+ggbetweenstats(
+  data = insurance_clean,
+  x = policy_type,
+  y = profitability,
+  type = "nonparametric",
+  pairwise.comparisons = TRUE,
+  p.adjust.method = "bonferroni",
+  title = "Statistical Analysis: Profitability by Policy Type",
+  xlab = "Policy Type",
+  ylab = "Profitability (€)"
+)
+```
+
+::: notes
+Kruskal-Wallis test confirms statistically significant differences across policy types (p\<0.001). COMP_N shows highest median profitability (\~€405), followed by COMP_E (\~€307). Basic TP policies show lowest profitability (\~€150). The effect size, while small, indicates policy type has measurable impact on profitability. This statistical evidence supports the business recommendation to promote comprehensive coverage upgrades.
 :::
 
 ## Longer Exposure Earns More Premium

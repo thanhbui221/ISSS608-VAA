@@ -1504,7 +1504,7 @@ ggplot(volatility_by_area, aes(
 
 - Gasoline vehicles show the highest claim cost volatility (CV), followed by diesel, indicating greater unpredictability in claim amounts for these fuel types.
 - Area R has higher relative claim volatility than Area U, suggesting more dispersed or unpredictable claim costs in rural/regional areas.
-- CV values are high (>3) for all groups, reflecting the heavy-tailed nature of insurance claim distributions. These should be treated as relative comparisons between groups rather than absolute measures of risk.
+- CV values are high (\>3) for all groups, reflecting the heavy-tailed nature of insurance claim distributions. These should be treated as relative comparisons between groups rather than absolute measures of risk.
 
 ## Limitations
 
