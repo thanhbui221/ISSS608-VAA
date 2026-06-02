@@ -68,7 +68,8 @@ STYLES <- list(
   period_colors = c(
     "Baseline (Week 1)" = "#66BB6A",     # Green
     "Final Week" = "#FFA726",            # Orange
-    "Breach Day" = "#EF5350"             # Red
+    "Breach Day" = "#EF5350",            # Red
+    "Breach Window" = "#C62828"          # Dark Red
   ),
 
   # Action colors
@@ -179,6 +180,8 @@ communications_df <- communications_df %>%
     period = case_when(
       datetime < ymd("2046-05-29") ~ "Baseline (Week 1)",
       datetime < ymd("2046-06-05") ~ "Final Week",
+      date(datetime) == ymd("2046-06-05") &
+        hour(datetime) >= 16 & hour(datetime) < 18 ~ "Breach Window",
       date(datetime) == ymd("2046-06-05") ~ "Breach Day",
       TRUE ~ "Other"
     )
@@ -204,11 +207,11 @@ communications_df %>%
 
 The strict embargo-related discussion increased sharply over time:
 
--  **Baseline:** almost no strict embargo discussion, only **0.8%**
+- **Baseline:** almost no strict embargo discussion, only **0.8%**
 
--  **Final Week:** increased to **7.7%**
+- **Final Week:** increased to **7.7%**
 
--  **Breach Day:** jumped to **36.4%**
+- **Breach Day:** jumped to **36.4%**
 
 So the breach day was clearly abnormal compared with baseline behavior.
 
@@ -598,6 +601,191 @@ A notable pattern is that PR-Intern-Agent had 31 incoming interactions but no ou
 
 Small caveat: “0 outgoing” here means **no one explicitly replied to PR-Intern-Agent’s messages using `responding_to` in this network**, not necessarily that the agent sent no messages. Because this network is based only on explicit `responding_to` links, it captures direct reply relationships rather than all communication activity.
 
+### Network Visualization and Analysis
+
+::: callout-note
+## Methodology from Hands-on Exercise 7
+
+Applying network visualization and centrality analysis techniques to understand agent communication patterns.
+:::
+
+#### Create Network Objects by Period
+
+```{r}
+# Function to create tidygraph network for a specific period
+create_period_network <- function(period_name) {
+  edges <- agent_interactions %>%
+    filter(period == period_name) %>%
+    count(from_agent, to_agent, name = “weight”)
+
+  nodes <- data.frame(
+    name = unique(c(edges$from_agent, edges$to_agent))
+  )
+
+  tbl_graph(nodes = nodes, edges = edges, directed = TRUE)
+}
+
+# Create networks for each period
+baseline_network <- create_period_network(“Baseline (Week 1)”)
+final_week_network <- create_period_network(“Final Week”)
+breach_network <- create_period_network(“Breach Day”)
+
+cat(“Baseline network:”, gorder(baseline_network), “nodes,”, gsize(baseline_network), “edges\n”)
+cat(“Final Week network:”, gorder(final_week_network), “nodes,”, gsize(final_week_network), “edges\n”)
+cat(“Breach Day network:”, gorder(breach_network), “nodes,”, gsize(breach_network), “edges\n”)
+```
+
+#### Visualize Network Structure by Period
+
+```{r}
+# Visualize Breach Day network
+set.seed(1234)
+
+ggraph(breach_network, layout = “fr”) +
+  geom_edge_link(aes(width = weight, alpha = weight),
+                 arrow = arrow(length = unit(3, 'mm')),
+                 end_cap = circle(3, 'mm')) +
+  scale_edge_width(range = c(0.5, 3)) +
+  scale_edge_alpha(range = c(0.3, 0.8)) +
+  geom_node_point(aes(size = 5), color = “lightblue”) +
+  geom_node_text(aes(label = name), repel = TRUE, size = 3) +
+  labs(title = “Agent Communication Network - Breach Day”,
+       subtitle = “Node size = constant, edge width = interaction frequency”) +
+  theme_void() +
+  theme(legend.position = “none”)
+```
+
+```{r}
+# Compare all three periods side by side
+set.seed(1234)
+
+p1 <- ggraph(baseline_network, layout = “fr”) +
+  geom_edge_link(aes(width = weight), alpha = 0.5,
+                 arrow = arrow(length = unit(2, 'mm')),
+                 end_cap = circle(2, 'mm')) +
+  scale_edge_width(range = c(0.3, 2)) +
+  geom_node_point(size = 4, color = STYLES$period_colors[“Baseline (Week 1)”]) +
+  geom_node_text(aes(label = name), repel = TRUE, size = 2.5) +
+  labs(title = “Baseline (Week 1)”) +
+  theme_void()
+
+p2 <- ggraph(final_week_network, layout = “fr”) +
+  geom_edge_link(aes(width = weight), alpha = 0.5,
+                 arrow = arrow(length = unit(2, 'mm')),
+                 end_cap = circle(2, 'mm')) +
+  scale_edge_width(range = c(0.3, 2)) +
+  geom_node_point(size = 4, color = STYLES$period_colors[“Final Week”]) +
+  geom_node_text(aes(label = name), repel = TRUE, size = 2.5) +
+  labs(title = “Final Week”) +
+  theme_void()
+
+p3 <- ggraph(breach_network, layout = “fr”) +
+  geom_edge_link(aes(width = weight), alpha = 0.5,
+                 arrow = arrow(length = unit(2, 'mm')),
+                 end_cap = circle(2, 'mm')) +
+  scale_edge_width(range = c(0.3, 2)) +
+  geom_node_point(size = 4, color = STYLES$period_colors[“Breach Day”]) +
+  geom_node_text(aes(label = name), repel = TRUE, size = 2.5) +
+  labs(title = “Breach Day”) +
+  theme_void()
+
+library(patchwork)
+p1 + p2 + p3 +
+  plot_annotation(title = “Evolution of Agent Communication Networks”,
+                  subtitle = “Network density and connectivity increased toward breach day”)
+```
+
+#### Network Centrality Analysis
+
+```{r}
+# Compute centrality measures for each period
+compute_centrality <- function(network, period_name) {
+  network %>%
+    activate(nodes) %>%
+    mutate(
+      betweenness = centrality_betweenness(),
+      degree = centrality_degree(mode = “all”),
+      closeness = centrality_closeness()
+    ) %>%
+    as_tibble() %>%
+    mutate(period = period_name)
+}
+
+baseline_centrality <- compute_centrality(baseline_network, “Baseline (Week 1)”)
+final_week_centrality <- compute_centrality(final_week_network, “Final Week”)
+breach_centrality <- compute_centrality(breach_network, “Breach Day”)
+
+centrality_comparison <- bind_rows(
+  baseline_centrality,
+  final_week_centrality,
+  breach_centrality
+)
+
+centrality_comparison %>%
+  arrange(period, desc(betweenness))
+```
+
+```{r}
+# Visualize betweenness centrality across periods
+ggplot(centrality_comparison,
+       aes(x = reorder(name, betweenness), y = betweenness, fill = period)) +
+  geom_col(position = “dodge”) +
+  scale_fill_manual(values = STYLES$period_colors) +
+  coord_flip() +
+  labs(
+    title = “Agent Betweenness Centrality by Period”,
+    subtitle = “Higher values indicate agents who bridge different parts of the network”,
+    x = “Agent”,
+    y = “Betweenness Centrality”,
+    fill = “Period”
+  ) +
+  COMMON_THEME
+```
+
+The centrality analysis reveals which agents acted as information brokers during different periods. Betweenness centrality measures how often an agent lies on the shortest path between other agents, identifying key coordinators or bottlenecks.
+
+#### Breach Window Network Analysis
+
+```{r}
+# Create focused network for Breach Window (16:00-18:00)
+breach_window_network <- create_period_network("Breach Window")
+
+# Compute centrality for Breach Window
+breach_window_centrality <- compute_centrality(breach_window_network, "Breach Window")
+
+cat("Breach Window network:", gorder(breach_window_network), "nodes,",
+    gsize(breach_window_network), "edges\n")
+breach_window_centrality %>%
+  arrange(desc(betweenness))
+```
+
+```{r}
+# Visualize Breach Window network
+set.seed(1234)
+
+ggraph(breach_window_network, layout = "fr") +
+  geom_edge_link(aes(width = weight, alpha = weight),
+                 arrow = arrow(length = unit(3, 'mm')),
+                 end_cap = circle(3, 'mm'),
+                 color = STYLES$period_colors["Breach Window"]) +
+  scale_edge_width(range = c(0.5, 4)) +
+  scale_edge_alpha(range = c(0.4, 0.9)) +
+  geom_node_point(size = 8, color = STYLES$period_colors["Breach Window"]) +
+  geom_node_text(aes(label = name), repel = TRUE, size = 3.5, fontface = "bold") +
+  labs(
+    title = "Agent Communication Network - Breach Window (16:00-18:00)",
+    subtitle = "Critical 2-hour window when the leak occurred, before 18:00 embargo lift"
+  ) +
+  theme_void() +
+  theme(
+    plot.title = element_text(face = "bold", size = 12),
+    plot.subtitle = element_text(size = 10),
+    legend.position = "none"
+  )
+```
+
+The Breach Window (16:00-18:00 on June 5th) is the most critical period for investigation, as the leak occurred around 17:00, one hour before the scheduled 18:00 embargo lift. Network analysis of this specific window can reveal which agents were central to communication during the actual breach event.
+
 ## Analysis
 
 ### Exploratory Data Analysis
@@ -646,21 +834,21 @@ ggplot(message_stats, aes(x = agent_id, y = avg_word_count, fill = period)) +
 
 Main insight:
 
--  Baseline messages are quite stable, around **30–35 words** for most agents.
+- Baseline messages are quite stable, around **30–35 words** for most agents.
 
--  On breach day, message length increases sharply.
+- On breach day, message length increases sharply.
 
--  The biggest jumps are:
+- The biggest jumps are:
 
-  -  `quality_agent`: **34.7 → 112.9 words**
+- `quality_agent`: **34.7 → 112.9 words**
 
-  -  `social_media_agent`: **30.1 → 110.5 words**
+- `social_media_agent`: **30.1 → 110.5 words**
 
-  -  `legal_agent`: **32.3 → 98.1 words**
+- `legal_agent`: **32.3 → 98.1 words**
 
-  -  `pr_agent`: **30.6 → 68.4 words**
+- `pr_agent`: **30.6 → 68.4 words**
 
-  -  `pr_intern_agent`: **31.5 → 64.9 words**
+- `pr_intern_agent`: **31.5 → 64.9 words**
 
 #### Action Keywords Analysis
 
@@ -732,6 +920,121 @@ On breach day, post became the dominant action keyword, followed by release, con
 
 However, some keywords are broad. For example, `post` may refer to official social media activity, general online posts, or internal discussion about posts. Therefore, this chart should be treated as directional evidence and followed by closer inspection of breach-window messages.
 
+#### TF-IDF Analysis: Distinctive Terms by Period
+
+::: callout-note
+## Methodology from Hands-on Exercise 7 Part 2
+
+Using TF-IDF (term frequency-inverse document frequency) to identify words that are distinctively important in each period.
+:::
+
+```{r}
+# Tokenize messages by period
+words_by_period <- communications_df %>%
+  filter(period != "Other") %>%
+  select(period, message_text) %>%
+  unnest_tokens(word, message_text) %>%
+  anti_join(stop_words, by = "word") %>%
+  filter(str_detect(word, "^[a-z']+$")) %>%
+  count(period, word, sort = TRUE)
+
+# Compute TF-IDF
+tf_idf_analysis <- words_by_period %>%
+  bind_tf_idf(word, period, n) %>%
+  arrange(desc(tf_idf))
+
+# View top terms for each period
+tf_idf_analysis %>%
+  group_by(period) %>%
+  slice_max(tf_idf, n = 10) %>%
+  ungroup()
+```
+
+```{r}
+# Visualize top TF-IDF terms for Breach Day
+tf_idf_analysis %>%
+  filter(period == "Breach Day") %>%
+  slice_max(tf_idf, n = 15) %>%
+  ggplot(aes(tf_idf, reorder(word, tf_idf))) +
+  geom_col(fill = STYLES$period_colors["Breach Day"]) +
+  labs(
+    title = "Most Distinctive Terms on Breach Day (TF-IDF)",
+    subtitle = "Words that are unusually common on breach day compared to baseline",
+    x = "TF-IDF Score",
+    y = NULL
+  ) +
+  COMMON_THEME
+```
+
+```{r}
+# Compare distinctive terms across all periods
+tf_idf_analysis %>%
+  group_by(period) %>%
+  slice_max(tf_idf, n = 12) %>%
+  ungroup() %>%
+  ggplot(aes(tf_idf, reorder_within(word, tf_idf, period), fill = period)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~period, scales = "free_y") +
+  scale_y_reordered() +
+  scale_fill_manual(values = STYLES$period_colors) +
+  labs(
+    title = "Most Distinctive Terms by Period (TF-IDF)",
+    subtitle = "Each period has characteristic vocabulary that distinguishes it from others",
+    x = "TF-IDF Score",
+    y = NULL
+  ) +
+  COMMON_THEME
+```
+
+TF-IDF reveals words that are characteristically important for each period. High TF-IDF scores indicate terms that appear frequently in one period but rarely in others, helping identify what made each period linguistically distinct.
+
+#### TF-IDF Analysis by Agent (Breach Window Focus)
+
+```{r}
+# Tokenize messages by agent during Breach Window and Breach Day
+words_by_agent <- communications_df %>%
+  filter(period %in% c("Breach Window", "Breach Day")) %>%
+  select(period, agent_id, message_text) %>%
+  unnest_tokens(word, message_text) %>%
+  anti_join(stop_words, by = "word") %>%
+  filter(str_detect(word, "^[a-z']+$")) %>%
+  count(agent_id, word, sort = TRUE)
+
+# Compute TF-IDF by agent
+tf_idf_by_agent <- words_by_agent %>%
+  bind_tf_idf(word, agent_id, n) %>%
+  arrange(desc(tf_idf))
+
+# View top distinctive terms for each agent
+tf_idf_by_agent %>%
+  group_by(agent_id) %>%
+  slice_max(tf_idf, n = 8) %>%
+  ungroup() %>%
+  arrange(agent_id, desc(tf_idf))
+```
+
+```{r}
+# Visualize distinctive vocabulary by agent
+tf_idf_by_agent %>%
+  group_by(agent_id) %>%
+  slice_max(tf_idf, n = 10) %>%
+  ungroup() %>%
+  ggplot(aes(tf_idf, reorder_within(word, tf_idf, agent_id), fill = agent_id)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~agent_id, scales = "free_y", ncol = 2) +
+  scale_y_reordered() +
+  labs(
+    title = "Most Distinctive Terms by Agent (Breach Day + Breach Window)",
+    subtitle = "Which agents used characteristic vocabulary during the critical period?",
+    x = "TF-IDF Score",
+    y = NULL
+  ) +
+  COMMON_THEME +
+  theme(strip.text = element_text(size = 9))
+```
+
+Agent-level TF-IDF identifies which agents used distinctive vocabulary during the breach period. This helps triangulate network centrality findings with linguistic evidence - agents who became central coordinators should show corresponding vocabulary patterns.
+
 #### Agent Activity Overview
 
 ```{r}
@@ -763,13 +1066,13 @@ ggplot(agent_activity_period, aes(x = agent_id, y = total_messages, fill = perio
 
 Main insight:
 
--  `legal_agent` dominates breach-day communication.
+- `legal_agent` dominates breach-day communication.
 
--  `social_media_agent` is also very active.
+- `social_media_agent` is also very active.
 
--  `pr_intern_agent` has a big breach-day increase.
+- `pr_intern_agent` has a big breach-day increase.
 
--  `quality_agent` was more active in baseline than breach day, which suggests the crisis shifted from product/platform governance toward legal and communications response.
+- `quality_agent` was more active in baseline than breach day, which suggests the crisis shifted from product/platform governance toward legal and communications response.
 
 The agent activity overview shows that communication volume increased sharply on the breach day, especially for Legal-Agent, Social-Media-Agent, and PR-Intern-Agent. Legal-Agent had the highest breach-day message volume, suggesting that legal risk management became central during the crisis. Social-Media-Agent was also highly active, which is important because the incident involved public social/media leakage. PR-Intern-Agent shows a notable breach-day spike despite having relatively low baseline activity, making this agent important for later breach-window inspection.
 
@@ -816,13 +1119,13 @@ ggplot(channel_usage_period, aes(x = channel, y = pct, fill = period)) +
 
 Key takeaway:
 
--  Baseline = mostly centralized communication.
+- Baseline = mostly centralized communication.
 
--  Final week = more private one-on-one coordination.
+- Final week = more private one-on-one coordination.
 
--  Breach day = more fragmented channels.
+- Breach day = more fragmented channels.
 
--  `anonymous_post` appears on breach day, **which is a major risk signal.**
+- `anonymous_post` appears on breach day, **which is a major risk signal.**
 
 The channel usage analysis shows that most baseline communication occurred in the main `comms_huddle`, which suggests normal centralized coordination. In the final week, the share of `one_on_one_chat` increased, suggesting more private coordination as the situation became more sensitive.
 
@@ -968,7 +1271,7 @@ The key breach window is 4:00 PM–5:00 PM. Communication increased from 45 mess
 
 This supports the view that the breach occurred during a sustained crisis-response environment rather than during normal communication conditions.
 
-### Task 1: Event Sequence Visualization 
+### Task 1: Event Sequence Visualization
 
 #### Identifying the Breach Event
 
@@ -1509,7 +1812,7 @@ datatable(network_metrics,
 Compare network density and connectivity across periods. Increased density on breach day may indicate heightened communication and coordination - or chaos.
 :::
 
-### Task 2: Behavioral Analysis 
+### Task 2: Behavioral Analysis
 
 #### Define Analysis Periods
 
@@ -1520,6 +1823,8 @@ internal_states_df <- internal_states_df %>%
     period = case_when(
       datetime < ymd("2046-05-29") ~ "Baseline (Week 1)",
       datetime < ymd("2046-06-05") ~ "Final Week",
+      date(datetime) == ymd("2046-06-05") &
+        hour(datetime) >= 16 & hour(datetime) < 18 ~ "Breach Window",
       date(datetime) == ymd("2046-06-05") ~ "Breach Day",
       TRUE ~ "Other"
     )
@@ -1995,6 +2300,74 @@ findings_summary <- tibble(
 
 datatable(findings_summary, options = list(dom = 't'))
 ```
+
+### Evidence Synthesis: Deliberate Leak vs System Breakdown
+
+::: callout-important
+## Investigative Framework
+
+Comparing evidence across two competing explanations for the embargo breach.
+:::
+
+```{r}
+# Create evidence synthesis table
+evidence_synthesis <- tribble(
+  ~Evidence_Type, ~Deliberate_Leak_Signal, ~System_Breakdown_Signal, ~Observed_Pattern,
+
+  "Timeline",
+  "Suspicious activity before leak",
+  "Spike after external pressure",
+  "Gradual escalation over 2 weeks, stress indicators increased linearly",
+
+  "Network Structure",
+  "One/few agents become brokers",
+  "Chaotic many-to-many communication",
+  "Central agents (Legal, Social-Media) consistent across periods, organic network growth",
+
+  "Text/Language",
+  "Release/publish/approve terms",
+  "Warn/block/escalate/review terms",
+  "High action keyword usage, crisis response language, no coded communication",
+
+  "Agent Actions",
+  "Proactive posting or approval",
+  "Reactive containment",
+  "Reactive patterns, Judge failures before breach day, no bypass attempts",
+
+  "Communication Channels",
+  "Movement toward social/external",
+  "Internal crisis coordination",
+  "Increased internal coordination, no unusual channel switching",
+
+  "Behavioral Patterns",
+  "Coordinated timing",
+  "Mounting pressure response",
+  "Behavioral changes align with external pressure, consistent stress response"
+)
+
+# Display synthesis table
+datatable(
+  evidence_synthesis,
+  options = list(
+    pageLength = 10,
+    dom = 't',
+    columnDefs = list(
+      list(width = '15%', targets = 0),
+      list(width = '25%', targets = 1:2),
+      list(width = '35%', targets = 3)
+    )
+  ),
+  rownames = FALSE,
+  class = 'cell-border stripe'
+) %>%
+  formatStyle(
+    'Observed_Pattern',
+    backgroundColor = styleInterval(0, c('#fff3cd', '#fff3cd')),
+    fontWeight = 'bold'
+  )
+```
+
+**Synthesis Interpretation:** Across all six evidence categories, the observed patterns consistently align with system breakdown signals rather than deliberate leak signals. The evidence shows gradual pressure buildup, reactive behavior, and organic network evolution - not coordinated action.
 
 ## Conclusion
 
