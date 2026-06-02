@@ -35,12 +35,16 @@ pacman::p_load(
   jsonlite,       # JSON data handling
   lubridate,      # Date/time manipulation
   igraph,         # Network analysis
+  tidygraph,      # Tidy graph data structures
+  ggraph,         # Network visualization
+  widyr,          # Pairwise operations
   visNetwork,     # Interactive network visualization
   plotly,         # Interactive plots
   DT,             # Interactive tables
   tidytext,       # Text analysis
   scales,         # Scale functions for visualization
-  ggtext          # Enhanced text rendering
+  ggtext,         # Enhanced text rendering
+  patchwork       # Combining plots
 )
 ```
 
@@ -161,61 +165,9 @@ strict_keywords <- c(
   "harborcrest",
   "embargo"
 )
-
-communications_df <- communications_df %>%
-  mutate(
-    datetime = ymd_hms(timestamp),
-    message_text_lower = tolower(message_text),
-    
-    contains_embargo_terms = str_detect(
-      message_text_lower,
-      paste(broad_keywords, collapse = "|")
-    ),
-    
-    contains_strict_embargo_terms = str_detect(
-      message_text_lower,
-      paste(strict_keywords, collapse = "|")
-    ),
-    
-    period = case_when(
-      datetime < ymd("2046-05-29") ~ "Baseline (Week 1)",
-      datetime < ymd("2046-06-05") ~ "Final Week",
-      date(datetime) == ymd("2046-06-05") &
-        hour(datetime) >= 16 & hour(datetime) < 18 ~ "Breach Window",
-      date(datetime) == ymd("2046-06-05") ~ "Breach Day",
-      TRUE ~ "Other"
-    )
-  )
-
-cat("Total communications:", nrow(communications_df), "\n")
-cat("Broad embargo-related messages:", sum(communications_df$contains_embargo_terms, na.rm = TRUE), "\n")
-cat("Strict embargo-related messages:", sum(communications_df$contains_strict_embargo_terms, na.rm = TRUE), "\n")
 ```
 
 After flattening the nested communications data, the dataset contains 912 total messages. A broad keyword search identified 272 merger/embargo-related messages, while a stricter filter using high-confidence terms such as "CivicLoom", "HarborCrest", and "embargo" identified 194 messages. The stricter flag is used for the main behavioral analysis to reduce false positives.
-
-```{r}
-communications_df %>%
-  group_by(period) %>%
-  summarise(
-    total_messages = n(),
-    strict_embargo_messages = sum(contains_strict_embargo_terms, na.rm = TRUE),
-    strict_embargo_pct = round(strict_embargo_messages / total_messages * 100, 1),
-    .groups = "drop"
-  )
-```
-
-The strict embargo-related discussion increased sharply over time:
-
-- **Baseline:** almost no strict embargo discussion, only **0.8%**
-
-- **Final Week:** increased to **7.7%**
-
-- **Breach Day:** jumped to **36.4%**
-
-So the breach day was clearly abnormal compared with baseline behavior.
-
-Compared with baseline behavior, embargo-related communication increased substantially as the breach approached. In the baseline period, only 2 out of 261 messages (0.8%) contained strict embargo-related terms. This rose to 12 out of 156 messages (7.7%) in the final week, then surged to 180 out of 495 messages (36.4%) on the breach day. This suggests that June 5 was not a normal communication day; the team was heavily focused on the embargoed merger information.
 
 ### Extract Environment Context
 
@@ -325,6 +277,21 @@ internal_states_df %>%
 The internal-state fields are sparse. Out of 912 total messages, only 19 contain a `reacting` field, 6 contain a `rationalizing` field, and 61 contain a `deliberating` field. Therefore, internal states should not be treated as a complete behavioral record. Instead, they are used as qualitative evidence to understand selected moments where agents reveal private reasoning, pressure, defensiveness, or awareness of risk.
 
 ```{r}
+# Create cleaned internal states with combined field
+internal_states_clean <- internal_states_df %>%
+  filter(!is.na(internal_state_reacting) |
+         !is.na(internal_state_rationalizing) |
+         !is.na(internal_state_deliberating)) %>%
+  mutate(
+    internal_state_combined = coalesce(
+      internal_state_reacting,
+      internal_state_rationalizing,
+      internal_state_deliberating
+    )
+  )
+```
+
+```{r}
 internal_states_preview <- internal_states_clean %>%
   mutate(
     short_internal_state = str_trunc(internal_state_combined, width = 120)
@@ -351,79 +318,6 @@ internal_state_summary %>%
 ```
 
 The internal-state records are distributed across all three periods, but they become especially important on the breach day. Legal-Agent has the highest number of breach-day internal-state records, followed by Social-Media-Agent, PR-Intern-Agent, Intern-Agent, Quality-Agent, Judge-Agent, and PR-Agent. This suggests that the internal-state data can help explain how different agents were privately processing the crisis, but it should still be treated as qualitative evidence because these fields are sparse and not available for every message.
-
-### Text Data Cleaning and Analysis
-
-::: callout-note
-## Methodology from Example 2
-
-Using text processing techniques to clean and analyze message content for deeper insights.
-:::
-
-```{r}
-# Clean and enrich message text
-communications_df <- communications_df %>%
-  mutate(
-    # Keep original message_text unchanged
-    message_clean = str_to_lower(message_text),
-    message_clean = str_remove_all(message_clean, "[^[:alnum:][:space:]]"),
-    message_clean = str_squish(message_clean),
-    
-    word_count = str_count(message_text, "\\w+"),
-    char_count = nchar(message_text)
-  )
-
-# Define action keywords
-action_keywords <- c(
-  "post", "publish", "approve", "block", "flag", "escalate",
-  "review", "monitor", "alert", "warn", "stop", "allow",
-  "delay", "hold", "release", "confirm", "delete", "correct"
-)
-
-# Detect action keywords
-action_pattern <- paste0("\\b(", paste(action_keywords, collapse = "|"), ")\\b")
-
-communications_df <- communications_df %>%
-  mutate(
-    action_detected = str_extract(message_clean, action_pattern),
-    has_action_keyword = !is.na(action_detected)
-  )
-
-cat("Messages with detected actions:", sum(communications_df$has_action_keyword, na.rm = TRUE), "\n")
-```
-
-After cleaning and enriching the communication text, 387 out of 912 messages contained at least one action keyword. This suggests that a large share of the conversation involved operational decisions or crisis-response actions, such as publishing, reviewing, escalating, warning, delaying, confirming, or holding information. These action indicators will be useful for comparing normal communication patterns against breach-day behavior.
-
-```{r}
-communications_df %>%
-  group_by(period) %>%
-  summarise(
-    total_messages = n(),
-    action_messages = sum(has_action_keyword, na.rm = TRUE),
-    action_pct = round(action_messages / total_messages * 100, 1),
-    .groups = "drop"
-  )
-```
-
-Action-oriented communication increased sharply as the incident escalated. In the baseline period, only 18.0% of messages contained action keywords. This increased to 46.8% in the final week and 53.9% on the breach day.
-
-This suggests that the team shifted from normal discussion into a more operational, crisis-response mode. The breach day was especially action-heavy, with more than half of all messages involving actions such as publishing, reviewing, escalating, warning, delaying, confirming, or holding information.
-
-```{r}
-communications_df %>%
-  group_by(period, agent_id) %>%
-  summarise(
-    total_messages = n(),
-    action_messages = sum(has_action_keyword, na.rm = TRUE),
-    action_pct = round(action_messages / total_messages * 100, 1),
-    .groups = "drop"
-  ) %>%
-  arrange(period, desc(action_messages))
-```
-
-Action-keyword activity increased across most agents during the final week and breach day. Legal-Agent had the highest number of action-oriented messages on breach day, with 91 action messages out of 176 total messages. Social-Media-Agent was also highly active, with 83 action messages out of 144 total messages. PR-Intern-Agent had a particularly high action rate on breach day, with 62.3% of messages containing action keywords.\
-\
-Compared with the baseline, this suggests that the crisis response became more operational and decision-heavy. The activity was not isolated to one agent only; multiple agents became more action-oriented, which supports the idea of a system under pressure. However, PR-Intern-Agent and Social-Media-Agent deserve closer inspection because they had both high action rates and social-media-related responsibilities.
 
 ### Build Agent Interaction Network
 
@@ -498,6 +392,23 @@ communications_df <- communications_df %>%
       message_clean,
       paste(strict_keywords, collapse = "|")
     )
+  )
+```
+
+```{r}
+# Summary statistics for embargo-related communications
+cat("Total communications:", nrow(communications_df), "\n")
+cat("Broad embargo-related messages:", sum(communications_df$contains_embargo_terms, na.rm = TRUE), "\n")
+cat("Strict embargo-related messages:", sum(communications_df$contains_strict_embargo_terms, na.rm = TRUE), "\n")
+
+# Breakdown by period
+communications_df %>%
+  group_by(period) %>%
+  summarise(
+    total_messages = n(),
+    strict_embargo_messages = sum(contains_strict_embargo_terms, na.rm = TRUE),
+    strict_embargo_pct = round(strict_embargo_messages / total_messages * 100, 1),
+    .groups = "drop"
   )
 ```
 
@@ -616,7 +527,7 @@ Applying network visualization and centrality analysis techniques to understand 
 create_period_network <- function(period_name) {
   edges <- agent_interactions %>%
     filter(period == period_name) %>%
-    count(from_agent, to_agent, name = “weight”)
+    count(from_agent, to_agent, name = 'weight')
 
   nodes <- data.frame(
     name = unique(c(edges$from_agent, edges$to_agent))
@@ -626,13 +537,13 @@ create_period_network <- function(period_name) {
 }
 
 # Create networks for each period
-baseline_network <- create_period_network(“Baseline (Week 1)”)
-final_week_network <- create_period_network(“Final Week”)
-breach_network <- create_period_network(“Breach Day”)
+baseline_network <- create_period_network('Baseline (Week 1)')
+final_week_network <- create_period_network('Final Week')
+breach_network <- create_period_network('Breach Day')
 
-cat(“Baseline network:”, gorder(baseline_network), “nodes,”, gsize(baseline_network), “edges\n”)
-cat(“Final Week network:”, gorder(final_week_network), “nodes,”, gsize(final_week_network), “edges\n”)
-cat(“Breach Day network:”, gorder(breach_network), “nodes,”, gsize(breach_network), “edges\n”)
+cat('Baseline network:', gorder(baseline_network), 'nodes,', gsize(baseline_network), 'edges\n')
+cat('Final Week network:', gorder(final_week_network), 'nodes,', gsize(final_week_network), 'edges\n')
+cat('Breach Day network:', gorder(breach_network), 'nodes,', gsize(breach_network), 'edges\n')
 ```
 
 #### Visualize Network Structure by Period
@@ -641,58 +552,58 @@ cat(“Breach Day network:”, gorder(breach_network), “nodes,”, gsize(breac
 # Visualize Breach Day network
 set.seed(1234)
 
-ggraph(breach_network, layout = “fr”) +
+ggraph(breach_network, layout = 'fr') +
   geom_edge_link(aes(width = weight, alpha = weight),
                  arrow = arrow(length = unit(3, 'mm')),
                  end_cap = circle(3, 'mm')) +
   scale_edge_width(range = c(0.5, 3)) +
   scale_edge_alpha(range = c(0.3, 0.8)) +
-  geom_node_point(aes(size = 5), color = “lightblue”) +
+  geom_node_point(aes(size = 5), color = 'lightblue') +
   geom_node_text(aes(label = name), repel = TRUE, size = 3) +
-  labs(title = “Agent Communication Network - Breach Day”,
-       subtitle = “Node size = constant, edge width = interaction frequency”) +
+  labs(title = 'Agent Communication Network - Breach Day',
+       subtitle = 'Node size = constant, edge width = interaction frequency') +
   theme_void() +
-  theme(legend.position = “none”)
+  theme(legend.position = 'none')
 ```
 
 ```{r}
 # Compare all three periods side by side
 set.seed(1234)
 
-p1 <- ggraph(baseline_network, layout = “fr”) +
+p1 <- ggraph(baseline_network, layout = 'fr') +
   geom_edge_link(aes(width = weight), alpha = 0.5,
                  arrow = arrow(length = unit(2, 'mm')),
                  end_cap = circle(2, 'mm')) +
   scale_edge_width(range = c(0.3, 2)) +
-  geom_node_point(size = 4, color = STYLES$period_colors[“Baseline (Week 1)”]) +
+  geom_node_point(size = 4, color = STYLES$period_colors['Baseline (Week 1)']) +
   geom_node_text(aes(label = name), repel = TRUE, size = 2.5) +
-  labs(title = “Baseline (Week 1)”) +
+  labs(title = 'Baseline (Week 1)') +
   theme_void()
 
-p2 <- ggraph(final_week_network, layout = “fr”) +
+p2 <- ggraph(final_week_network, layout = 'fr') +
   geom_edge_link(aes(width = weight), alpha = 0.5,
                  arrow = arrow(length = unit(2, 'mm')),
                  end_cap = circle(2, 'mm')) +
   scale_edge_width(range = c(0.3, 2)) +
-  geom_node_point(size = 4, color = STYLES$period_colors[“Final Week”]) +
+  geom_node_point(size = 4, color = STYLES$period_colors['Final Week']) +
   geom_node_text(aes(label = name), repel = TRUE, size = 2.5) +
-  labs(title = “Final Week”) +
+  labs(title = 'Final Week') +
   theme_void()
 
-p3 <- ggraph(breach_network, layout = “fr”) +
+p3 <- ggraph(breach_network, layout = 'fr') +
   geom_edge_link(aes(width = weight), alpha = 0.5,
                  arrow = arrow(length = unit(2, 'mm')),
                  end_cap = circle(2, 'mm')) +
   scale_edge_width(range = c(0.3, 2)) +
-  geom_node_point(size = 4, color = STYLES$period_colors[“Breach Day”]) +
+  geom_node_point(size = 4, color = STYLES$period_colors['Breach Day']) +
   geom_node_text(aes(label = name), repel = TRUE, size = 2.5) +
-  labs(title = “Breach Day”) +
+  labs(title = 'Breach Day') +
   theme_void()
 
 library(patchwork)
 p1 + p2 + p3 +
-  plot_annotation(title = “Evolution of Agent Communication Networks”,
-                  subtitle = “Network density and connectivity increased toward breach day”)
+  plot_annotation(title = 'Evolution of Agent Communication Networks',
+                  subtitle = 'Network density and connectivity increased toward breach day')
 ```
 
 #### Network Centrality Analysis
@@ -704,16 +615,16 @@ compute_centrality <- function(network, period_name) {
     activate(nodes) %>%
     mutate(
       betweenness = centrality_betweenness(),
-      degree = centrality_degree(mode = “all”),
+      degree = centrality_degree(mode = 'all'),
       closeness = centrality_closeness()
     ) %>%
     as_tibble() %>%
     mutate(period = period_name)
 }
 
-baseline_centrality <- compute_centrality(baseline_network, “Baseline (Week 1)”)
-final_week_centrality <- compute_centrality(final_week_network, “Final Week”)
-breach_centrality <- compute_centrality(breach_network, “Breach Day”)
+baseline_centrality <- compute_centrality(baseline_network, 'Baseline (Week 1)')
+final_week_centrality <- compute_centrality(final_week_network, 'Final Week')
+breach_centrality <- compute_centrality(breach_network, 'Breach Day')
 
 centrality_comparison <- bind_rows(
   baseline_centrality,
@@ -729,15 +640,15 @@ centrality_comparison %>%
 # Visualize betweenness centrality across periods
 ggplot(centrality_comparison,
        aes(x = reorder(name, betweenness), y = betweenness, fill = period)) +
-  geom_col(position = “dodge”) +
+  geom_col(position = 'dodge') +
   scale_fill_manual(values = STYLES$period_colors) +
   coord_flip() +
   labs(
-    title = “Agent Betweenness Centrality by Period”,
-    subtitle = “Higher values indicate agents who bridge different parts of the network”,
-    x = “Agent”,
-    y = “Betweenness Centrality”,
-    fill = “Period”
+    title = 'Agent Betweenness Centrality by Period',
+    subtitle = 'Higher values indicate agents who bridge different parts of the network',
+    x = 'Agent',
+    y = 'Betweenness Centrality',
+    fill = 'Period'
   ) +
   COMMON_THEME
 ```
