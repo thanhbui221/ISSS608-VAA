@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Hands-on Exercises – ISSS608-VAA</title>
+<title>Group Project – ISSS608-VAA</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -33,8 +33,6 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<script src="../site_libs/quarto-listing/list.min.js"></script>
-<script src="../site_libs/quarto-listing/quarto-listing.js"></script>
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -72,65 +70,7 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
 
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-date','listing-title','listing-description',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-date","listing-title","listing-author","listing-image","listing-description"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
-
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 <link rel="stylesheet" href="../styles.css">
 </head>
@@ -157,7 +97,7 @@ window.Quarto = {
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="../Hands-on_Ex/index.html" aria-current="page"> 
+    <a class="nav-link" href="../Hands-on_Ex/index.html"> 
 <span class="menu-text">Hands-on Exercises</span></a>
   </li>  
   <li class="nav-item">
@@ -169,7 +109,7 @@ window.Quarto = {
 <span class="menu-text">Take-home Exercises</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../Group_Project/index.html"> 
+    <a class="nav-link active" href="../Group_Project/index.html" aria-current="page"> 
 <span class="menu-text">Group Project</span></a>
   </li>  
   <li class="nav-item">
@@ -187,15 +127,25 @@ window.Quarto = {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#vast-challenge-2026-mc1" id="toc-vast-challenge-2026-mc1" class="nav-link active" data-scroll-target="#vast-challenge-2026-mc1">VAST Challenge 2026 MC1</a>
+  <ul class="collapse">
+  <li><a href="#project-components" id="toc-project-components" class="nav-link" data-scroll-target="#project-components">Project Components</a></li>
+  <li><a href="#overview" id="toc-overview" class="nav-link" data-scroll-target="#overview">Overview</a></li>
+  </ul></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Hands-on Exercises</h1>
+<h1 class="title">Group Project</h1>
 </div>
 
 
@@ -212,270 +162,25 @@ window.Quarto = {
 </header>
 
 
+<section id="vast-challenge-2026-mc1" class="level2">
+<h2 class="anchored" data-anchor-id="vast-challenge-2026-mc1">VAST Challenge 2026 MC1</h2>
+<p>This section contains our group project analyzing the VAST Challenge 2026 Mini-Challenge 1.</p>
+<section id="project-components" class="level3">
+<h3 class="anchored" data-anchor-id="project-components">Project Components</h3>
+<ul>
+<li><a href="../Group_Project/proposal.html">Project Proposal</a></li>
+<li><a href="app.R">Shiny Dashboard</a></li>
+</ul>
+</section>
+<section id="overview" class="level3">
+<h3 class="anchored" data-anchor-id="overview">Overview</h3>
+<p>Our project investigates the information leak at TenantThread on June 5, 2046, analyzing whether it was a deliberate leak or system breakdown under pressure.</p>
 
 
+</section>
+</section>
 
-
-<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
-<div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-listing-date-sort="1778601600000" data-listing-file-modified-sort="1778655542805" data-listing-date-modified-sort="1778655542000" data-listing-reading-time-sort="12" data-listing-word-count-sort="2224">
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../Hands-on_Ex/Hands-on_Ex5_1.html" class="no-external">Hands-on Exercise 5 (Part 1)</a>
-</h3>
-<div class="delink listing-description"><a href="../Hands-on_Ex/Hands-on_Ex5_1.html" class="no-external">
-<p>Visual Correlation Analysis</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../Hands-on_Ex/Hands-on_Ex5_1.html" class="no-external">
-<div class="listing-date">
-May 13, 2026
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="1" data-listing-date-sort="1778601600000" data-listing-file-modified-sort="1778656225575" data-listing-date-modified-sort="1778656225000" data-listing-reading-time-sort="3" data-listing-word-count-sort="459">
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../Hands-on_Ex/Hands-on_Ex5_2.html" class="no-external">Hands-on Exercise 5 (Part 2)</a>
-</h3>
-<div class="delink listing-description"><a href="../Hands-on_Ex/Hands-on_Ex5_2.html" class="no-external">
-<p>Creating Ternary Plot with R</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../Hands-on_Ex/Hands-on_Ex5_2.html" class="no-external">
-<div class="listing-date">
-May 13, 2026
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="2" data-listing-date-sort="1778601600000" data-listing-file-modified-sort="1778656469905" data-listing-date-modified-sort="1778656469000" data-listing-reading-time-sort="10" data-listing-word-count-sort="1884">
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../Hands-on_Ex/Hands-on_Ex5_3.html" class="no-external">Hands-on Exercise 5 (Part 3)</a>
-</h3>
-<div class="delink listing-description"><a href="../Hands-on_Ex/Hands-on_Ex5_3.html" class="no-external">
-<p>Heatmap for Visualising and Analysing Multivariate Data</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../Hands-on_Ex/Hands-on_Ex5_3.html" class="no-external">
-<div class="listing-date">
-May 13, 2026
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="3" data-listing-date-sort="1778601600000" data-listing-file-modified-sort="1778658007567" data-listing-date-modified-sort="1778658007000" data-listing-reading-time-sort="7" data-listing-word-count-sort="1313">
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../Hands-on_Ex/Hands-on_Ex5_4.html" class="no-external">Hands-on Exercise 5 (Part 4)</a>
-</h3>
-<div class="delink listing-description"><a href="../Hands-on_Ex/Hands-on_Ex5_4.html" class="no-external">
-<p>Visual Multivariate Analysis with Parallel Coordinates Plot</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../Hands-on_Ex/Hands-on_Ex5_4.html" class="no-external">
-<div class="listing-date">
-May 13, 2026
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="4" data-listing-date-sort="1778601600000" data-listing-file-modified-sort="1780377650306" data-listing-date-modified-sort="1780377650000" data-listing-reading-time-sort="14" data-listing-word-count-sort="2611">
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../Hands-on_Ex/Hands-on_Ex5_5.html" class="no-external">Hands-on Exercise 5 (Part 5)</a>
-</h3>
-<div class="delink listing-description"><a href="../Hands-on_Ex/Hands-on_Ex5_5.html" class="no-external">
-<p>Treemap Visualisation with R</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../Hands-on_Ex/Hands-on_Ex5_5.html" class="no-external">
-<div class="listing-date">
-May 13, 2026
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="5" data-listing-date-sort="1778601600000" data-listing-file-modified-sort="1780378199612" data-listing-date-modified-sort="1780378199000" data-listing-reading-time-sort="17" data-listing-word-count-sort="3370">
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../Hands-on_Ex/Hands-on_Ex7_1.html" class="no-external">Hands-on Exercise 7 (Part 1)</a>
-</h3>
-<div class="delink listing-description"><a href="../Hands-on_Ex/Hands-on_Ex7_1.html" class="no-external">
-<p>Modelling, Visualising and Analysing Network Data with R</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../Hands-on_Ex/Hands-on_Ex7_1.html" class="no-external">
-<div class="listing-date">
-May 13, 2026
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="6" data-listing-date-sort="1778601600000" data-listing-file-modified-sort="1780378585940" data-listing-date-modified-sort="1780378585000" data-listing-reading-time-sort="11" data-listing-word-count-sort="2136">
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../Hands-on_Ex/Hands-on_Ex7_2.html" class="no-external">Hands-on Exercise 7 (Part 2)</a>
-</h3>
-<div class="delink listing-description"><a href="../Hands-on_Ex/Hands-on_Ex7_2.html" class="no-external">
-<p>Visualising and Analysing Text Data</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../Hands-on_Ex/Hands-on_Ex7_2.html" class="no-external">
-<div class="listing-date">
-May 13, 2026
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="7" data-listing-date-sort="1778083200000" data-listing-file-modified-sort="1778094849696" data-listing-date-modified-sort="1778094849000" data-listing-reading-time-sort="7" data-listing-word-count-sort="1244">
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../Hands-on_Ex/Hands-on_Ex4_1.html" class="no-external">Hands-on Exercise 4 (Part 1)</a>
-</h3>
-<div class="delink listing-description"><a href="../Hands-on_Ex/Hands-on_Ex4_1.html" class="no-external">
-<p>Funnel Plots for Fair Comparisons</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../Hands-on_Ex/Hands-on_Ex4_1.html" class="no-external">
-<div class="listing-date">
-May 7, 2026
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="8" data-listing-date-sort="1778083200000" data-listing-file-modified-sort="1778094923969" data-listing-date-modified-sort="1778094923000" data-listing-reading-time-sort="7" data-listing-word-count-sort="1217">
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../Hands-on_Ex/Hands-on_Ex4_2.html" class="no-external">Hands-on Exercise 4 (Part 2)</a>
-</h3>
-<div class="delink listing-description"><a href="../Hands-on_Ex/Hands-on_Ex4_2.html" class="no-external">
-<p>Visualising Distribution with R</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../Hands-on_Ex/Hands-on_Ex4_2.html" class="no-external">
-<div class="listing-date">
-May 7, 2026
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="9" data-listing-date-sort="1778083200000" data-listing-file-modified-sort="1778162410255" data-listing-date-modified-sort="1778162410000" data-listing-reading-time-sort="3" data-listing-word-count-sort="533">
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../Hands-on_Ex/Hands-on_Ex4_3.html" class="no-external">Hands-on Exercise 4 (Part 3)</a>
-</h3>
-<div class="delink listing-description"><a href="../Hands-on_Ex/Hands-on_Ex4_3.html" class="no-external">
-<p>Visual Statistical Analysis with R</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../Hands-on_Ex/Hands-on_Ex4_3.html" class="no-external">
-<div class="listing-date">
-May 7, 2026
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="10" data-listing-date-sort="1778083200000" data-listing-file-modified-sort="1778095120374" data-listing-date-modified-sort="1778095120000" data-listing-reading-time-sort="10" data-listing-word-count-sort="1975">
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../Hands-on_Ex/Hands-on_Ex4_4.html" class="no-external">Hands-on Exercise 4 (Part 4)</a>
-</h3>
-<div class="delink listing-description"><a href="../Hands-on_Ex/Hands-on_Ex4_4.html" class="no-external">
-<p>Visualising Uncertainty with R</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../Hands-on_Ex/Hands-on_Ex4_4.html" class="no-external">
-<div class="listing-date">
-May 7, 2026
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="11" data-listing-date-sort="1777219200000" data-listing-file-modified-sort="1777290605750" data-listing-date-modified-sort="1777290605000" data-listing-reading-time-sort="19" data-listing-word-count-sort="3769">
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../Hands-on_Ex/Hands-on_Ex3_1.html" class="no-external">Hands-on Exercise 3 (Part 1)</a>
-</h3>
-<div class="delink listing-description"><a href="../Hands-on_Ex/Hands-on_Ex3_1.html" class="no-external">
-<p>Programming Interactive Data Visualisation with R</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../Hands-on_Ex/Hands-on_Ex3_1.html" class="no-external">
-<div class="listing-date">
-Apr 27, 2026
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="12" data-listing-date-sort="1777219200000" data-listing-file-modified-sort="1777298190438" data-listing-date-modified-sort="1777298190000" data-listing-reading-time-sort="7" data-listing-word-count-sort="1392">
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../Hands-on_Ex/Hands-on_Ex3_2.html" class="no-external">Hands-on Exercise 3 (Part 2)</a>
-</h3>
-<div class="delink listing-description"><a href="../Hands-on_Ex/Hands-on_Ex3_2.html" class="no-external">
-<p>Programming Animated Statistical Graphics with R</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../Hands-on_Ex/Hands-on_Ex3_2.html" class="no-external">
-<div class="listing-date">
-Apr 27, 2026
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="13" data-listing-date-sort="1776960000000" data-listing-file-modified-sort="1777101473970" data-listing-date-modified-sort="1777101473000" data-listing-reading-time-sort="7" data-listing-word-count-sort="1271">
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../Hands-on_Ex/Hands-on_Ex2.html" class="no-external">Hands-on Exercise 2</a>
-</h3>
-<div class="delink listing-description"><a href="../Hands-on_Ex/Hands-on_Ex2.html" class="no-external">
-<p>Beyond ggplot2 Fundamentals</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../Hands-on_Ex/Hands-on_Ex2.html" class="no-external">
-<div class="listing-date">
-Apr 24, 2026
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="14" data-listing-date-sort="1776355200000" data-listing-file-modified-sort="1777294835612" data-listing-date-modified-sort="1777294835000" data-listing-reading-time-sort="14" data-listing-word-count-sort="2669">
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../Hands-on_Ex/Hands-on_Ex1.html" class="no-external">Hands-on Exercise 1</a>
-</h3>
-<div class="delink listing-description"><a href="../Hands-on_Ex/Hands-on_Ex1.html" class="no-external">
-<p>A Layered Grammar of Graphics: ggplot2 methods</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../Hands-on_Ex/Hands-on_Ex1.html" class="no-external">
-<div class="listing-date">
-Apr 17, 2026
-</div>
-</a>
-</div>
-</div>
-</div>
-<div class="listing-no-matching d-none">No matching items</div>
-</div></main> <!-- /main -->
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
