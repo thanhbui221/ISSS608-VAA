@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Group Members: [Add names here]">
+<meta name="author" content="Group Members: BUI Tien Thanh, HU Yue, WU Jiayan">
 <meta name="dcterms.date" content="2026-06-06">
 
 <title>Group Project Proposal: VAST Challenge 2026 MC1 – ISSS608-VAA</title>
@@ -44,7 +44,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-158031087360bce0ff56dc785ce39e06.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-a0f9fd0d421825b736dc1bbcbcba2219.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -143,15 +143,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#key-data-components" id="toc-key-data-components" class="nav-link" data-scroll-target="#key-data-components"><span class="header-section-number">4.2</span> Key Data Components</a></li>
   <li><a href="#important-variables" id="toc-important-variables" class="nav-link" data-scroll-target="#important-variables"><span class="header-section-number">4.3</span> Important Variables</a></li>
   </ul></li>
-  <li><a href="#methodology" id="toc-methodology" class="nav-link" data-scroll-target="#methodology"><span class="header-section-number">5</span> Methodology</a>
-  <ul class="collapse">
-  <li><a href="#analytical-framework" id="toc-analytical-framework" class="nav-link" data-scroll-target="#analytical-framework"><span class="header-section-number">5.1</span> Analytical Framework</a>
-  <ul class="collapse">
-  <li><a href="#task-1-event-sequence-reconstruction" id="toc-task-1-event-sequence-reconstruction" class="nav-link" data-scroll-target="#task-1-event-sequence-reconstruction"><span class="header-section-number">5.1.1</span> Task 1: Event Sequence Reconstruction</a></li>
-  <li><a href="#task-2-behavioral-pattern-analysis" id="toc-task-2-behavioral-pattern-analysis" class="nav-link" data-scroll-target="#task-2-behavioral-pattern-analysis"><span class="header-section-number">5.1.2</span> Task 2: Behavioral Pattern Analysis</a></li>
-  <li><a href="#competing-hypotheses-evaluation" id="toc-competing-hypotheses-evaluation" class="nav-link" data-scroll-target="#competing-hypotheses-evaluation"><span class="header-section-number">5.1.3</span> Competing Hypotheses Evaluation</a></li>
-  </ul></li>
-  </ul></li>
+  <li><a href="#methodology" id="toc-methodology" class="nav-link" data-scroll-target="#methodology"><span class="header-section-number">5</span> Methodology</a></li>
   <li><a href="#prototype-sketches" id="toc-prototype-sketches" class="nav-link" data-scroll-target="#prototype-sketches"><span class="header-section-number">6</span> Prototype Sketches</a>
   <ul class="collapse">
   <li><a href="#shiny-app-design" id="toc-shiny-app-design" class="nav-link" data-scroll-target="#shiny-app-design"><span class="header-section-number">6.1</span> Shiny App Design</a>
@@ -197,7 +189,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Author</div>
     <div class="quarto-title-meta-contents">
-             <p>Group Members: [Add names here] </p>
+             <p>Group Members: BUI Tien Thanh, HU Yue, WU Jiayan </p>
           </div>
   </div>
     
@@ -263,9 +255,9 @@ ul.task-list li input[type="checkbox"] {
 <h2 data-number="4.2" class="anchored" data-anchor-id="key-data-components"><span class="header-section-number">4.2</span> Key Data Components</h2>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 33%">
-<col style="width: 39%">
-<col style="width: 27%">
+<col style="width: 31%">
+<col style="width: 49%">
+<col style="width: 19%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -308,25 +300,233 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="methodology" class="level1" data-number="5">
 <h1 data-number="5"><span class="header-section-number">5</span> Methodology</h1>
-<section id="analytical-framework" class="level2" data-number="5.1">
-<h2 data-number="5.1" class="anchored" data-anchor-id="analytical-framework"><span class="header-section-number">5.1</span> Analytical Framework</h2>
-<section id="task-1-event-sequence-reconstruction" class="level3" data-number="5.1.1">
-<h3 data-number="5.1.1" class="anchored" data-anchor-id="task-1-event-sequence-reconstruction"><span class="header-section-number">5.1.1</span> Task 1: Event Sequence Reconstruction</h3>
-<p><strong>Network Analysis:</strong> - Build agent interaction network from explicit reply chains using <code>responding_to</code> field - Calculate centrality measures (degree, betweenness, closeness) to identify key coordinators - Compare network structure across baseline, final week, and breach day</p>
-<p><strong>Timeline Visualization:</strong> - Map communication flow during breach window (4:00-6:00 PM) - Identify critical decision points and information pathways - Visualize agent activity patterns over time</p>
+<p>The analysis follows a six-stage pipeline — from raw JSON ingestion through interactive Shiny delivery — structured around the three VAST Challenge tasks. Each task builds on the preceding one, culminating in an evidence-based verdict on whether the embargo breach was a system failure, a deliberate early announcement, or a combination of both.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">Diagram</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">Approach</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<div class="cell">
+<div id="fig-methodology" class="cell-output-display quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-methodology-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+
+<style>
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap");
+#mg-wrap{font-family:"DM Sans",system-ui,sans-serif;background:#f8fafc;padding:28px 24px 24px;border-radius:12px;border:1px solid #e2e8f0;}
+.mg-title{text-align:center;font-size:15px;font-weight:700;color:#1e293b;letter-spacing:.02em;margin-bottom:22px;}
+.mg-flow{display:flex;flex-direction:column;gap:0;align-items:center;width:100%;}
+/* INPUT */
+.mg-input{background:#1e293b;color:#f1f5f9;border-radius:8px;padding:10px 22px;font-size:12.5px;font-weight:600;text-align:center;width:260px;font-family:"DM Mono",monospace;letter-spacing:.04em;}
+/* CONNECTOR */
+.mg-arrow{display:flex;flex-direction:column;align-items:center;gap:0;margin:0;}
+.mg-arrow-line{width:2px;height:16px;background:#94a3b8;}
+.mg-arrow-head{width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:7px solid #94a3b8;}
+/* STAGES */
+.mg-stages{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;width:100%;margin:0;}
+.mg-stage{border-radius:10px;overflow:hidden;border:1.5px solid;box-shadow:0 1px 4px rgba(0,0,0,.06);}
+.mg-stage-hdr{padding:9px 14px;font-size:11.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;display:flex;align-items:center;gap:8px;}
+.mg-stage-num{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;background:rgba(255,255,255,0.35);flex-shrink:0;}
+.mg-stage-body{padding:10px 14px;display:flex;flex-direction:column;gap:5px;}
+.mg-item{font-size:11px;color:#334155;line-height:1.45;padding:5px 8px;border-radius:5px;background:rgba(255,255,255,0.7);border-left:3px solid;}
+.mg-item-label{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#64748b;margin-top:2px;}
+/* SHINY STRIP */
+.mg-shiny{width:100%;margin:0;}
+.mg-shiny-hdr{background:#7c3aed;border-radius:10px 10px 0 0;padding:10px 18px;font-size:11.5px;font-weight:700;color:#fff;letter-spacing:.04em;text-transform:uppercase;display:flex;align-items:center;gap:8px;}
+.mg-tabs{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;background:#f1f5f9;border:1.5px solid #7c3aed;border-top:none;border-radius:0 0 10px 10px;padding:10px 14px;}
+.mg-tab{background:#fff;border:1px solid #ddd6fe;border-radius:6px;padding:7px 8px;text-align:center;font-size:10px;color:#4c1d95;font-weight:600;line-height:1.3;}
+/* VERDICT */
+.mg-verdict{background:linear-gradient(135deg,#1e293b 0%,#0f172a 100%);border-radius:10px;padding:14px 22px;width:100%;text-align:center;color:#f1f5f9;}
+.mg-verdict-label{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#94a3b8;margin-bottom:5px;}
+.mg-verdict-text{font-size:13px;font-weight:600;line-height:1.5;color:#e2e8f0;}
+.mg-verdict-sub{font-size:11px;color:#64748b;margin-top:4px;}
+</style>
+
+<div id="mg-wrap">
+  <div class="mg-title">Analytical Pipeline — VAST Challenge 2026 MC1</div>
+  <div class="mg-flow">
+
+    <!-- INPUT -->
+    <div class="mg-input">MC1_final_00.json &nbsp;●&nbsp; 912 messages &nbsp;●&nbsp; 23 rounds</div>
+
+    <div class="mg-arrow"><div class="mg-arrow-line"></div><div class="mg-arrow-head"></div></div>
+
+    <!-- STAGE 0: DATA PREP -->
+    <div style="width:100%;margin-bottom:10px;">
+      <div class="mg-stage" style="border-color:#2563eb;width:100%;box-sizing:border-box;">
+        <div class="mg-stage-hdr" style="background:#2563eb;color:#fff;">
+          <div class="mg-stage-num">0</div> Data Preparation
+        </div>
+        <div class="mg-stage-body" style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;">
+          <div class="mg-item" style="border-color:#2563eb;">Rounds &amp; environment table<div class="mg-item-label">23 rounds · stock price · headlines</div></div>
+          <div class="mg-item" style="border-color:#2563eb;">Communications table<div class="mg-item-label">912 messages · channel · agent_id</div></div>
+          <div class="mg-item" style="border-color:#2563eb;">Internal-state table<div class="mg-item-label">deliberating · reacting · rationalizing</div></div>
+          <div class="mg-item" style="border-color:#2563eb;">Period classification<div class="mg-item-label">Normal · Escalation · Crisis</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mg-arrow"><div class="mg-arrow-line"></div><div class="mg-arrow-head"></div></div>
+
+    <!-- THREE TASKS -->
+    <div class="mg-stages" style="margin-bottom:10px;">
+
+      <!-- TASK 1 -->
+      <div class="mg-stage" style="border-color:#0d9488;">
+        <div class="mg-stage-hdr" style="background:#0d9488;color:#fff;">
+          <div class="mg-stage-num">1</div> Task 1: Events &amp; Causal Chain
+        </div>
+        <div class="mg-stage-body">
+          <div class="mg-item" style="border-color:#0d9488;">28-node causal graph<div class="mg-item-label">Cytoscape.js · preset layout · 37 edges · hover tooltips</div></div>
+          <div class="mg-item" style="border-color:#0d9488;">Communication networks<div class="mg-item-label">Pre-crisis vs crisis-day · oval nodes · edge weight by volume</div></div>
+          <div class="mg-item" style="border-color:#0d9488;">Evidence timeline — 45 items<div class="mg-item-label">System Failure / Deliberate / Both · chronological dot chart</div></div>
+        </div>
+      </div>
+
+      <!-- TASK 2 -->
+      <div class="mg-stage" style="border-color:#d97706;">
+        <div class="mg-stage-hdr" style="background:#d97706;color:#fff;">
+          <div class="mg-stage-num">2</div> Task 2: Typical vs. Evasive Behaviour
+        </div>
+        <div class="mg-stage-body">
+          <div class="mg-item" style="border-color:#d97706;">Channel usage &amp; monitoring scope<div class="mg-item-label">Judge-Agent visibility · private vs monitored · 19× side_huddle rise</div></div>
+          <div class="mg-item" style="border-color:#d97706;">Behavioural escalation metrics<div class="mg-item-label">4 measures · Normal/Escalation/Crisis · animated dot chart</div></div>
+          <div class="mg-item" style="border-color:#d97706;">Internal state analysis — 6 phases<div class="mg-item-label">deliberating / reacting / rationalizing · temporal inversion at 4PM→5PM</div></div>
+        </div>
+      </div>
+
+      <!-- TASK 3 -->
+      <div class="mg-stage" style="border-color:#9333ea;">
+        <div class="mg-stage-hdr" style="background:#9333ea;color:#fff;">
+          <div class="mg-stage-num">3</div> Task 3: Leading Indicators &amp; Control Gaps
+        </div>
+        <div class="mg-stage-body">
+          <div class="mg-item" style="border-color:#9333ea;">Private channel sensitivity score<div class="mg-item-label">Embargo-vocabulary proportion per round · divergence from monitored</div></div>
+          <div class="mg-item" style="border-color:#9333ea;">Near-miss classification — 11 events<div class="mg-item-label">4 root causes: scope · enforcement · escalation · timing</div></div>
+          <div class="mg-item" style="border-color:#9333ea;">Why no action — root cause chart<div class="mg-item-label">Structural gap analysis · prior anomaly count per gap</div></div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="mg-arrow"><div class="mg-arrow-line"></div><div class="mg-arrow-head"></div></div>
+
+    <!-- SHINY APP -->
+    <div class="mg-shiny" style="margin-bottom:10px;">
+      <div class="mg-shiny-hdr">
+        <div class="mg-stage-num" style="background:rgba(255,255,255,0.25);">4</div>
+        Integrated Shiny Application — 6-Tab Interactive Dashboard
+      </div>
+      <div class="mg-tabs">
+        <div class="mg-tab">Causal Chain &amp;<br>Evidence Timeline</div>
+        <div class="mg-tab">Communication<br>Networks</div>
+        <div class="mg-tab">Channel Behaviour<br>&amp; Sensitivity</div>
+        <div class="mg-tab">Internal State<br>Analysis</div>
+        <div class="mg-tab">Near Misses<br>&amp; Control Gaps</div>
+        <div class="mg-tab">Competing<br>Hypotheses</div>
+      </div>
+    </div>
+
+    <div class="mg-arrow"><div class="mg-arrow-line"></div><div class="mg-arrow-head"></div></div>
+
+    <!-- VERDICT -->
+    <div class="mg-verdict">
+      <div class="mg-verdict-label">Analytical Outcome</div>
+      <div class="mg-verdict-text">System breakdown enabled deliberate early announcement</div>
+      <div class="mg-verdict-sub">The compliance architecture failed first — then senior agents engineered a pre-planned release under Section 4.3(c) with bilateral consent, one hour before the contractual 6 PM lift.</div>
+    </div>
+
+  </div>
+</div>
+
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-methodology-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Analytical Pipeline
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<section id="stage-0-data-preparation" class="level3" data-number="5.0.1">
+<h3 data-number="5.0.1" class="anchored" data-anchor-id="stage-0-data-preparation"><span class="header-section-number">5.0.1</span> Stage 0 — Data Preparation</h3>
+<p>The raw <code>MC1_final_00.json</code> file is parsed with <code>jsonlite::fromJSON()</code> into four normalised tables: a <strong>rounds/environment table</strong> (23 rows, one per hourly round, carrying stock price, external headline, and sentiment rating); a <strong>communications table</strong> (912 rows, one per message, carrying <code>agent_id</code>, <code>channel</code>, <code>responding_to</code>, and message content); an <strong>internal-state table</strong> extracting the three private-reasoning fields (<code>deliberating</code>, <code>reacting</code>, <code>rationalizing</code>) where present; and an <strong>agent metadata table</strong>. A common <code>period</code> classification (Normal: May 17–21; Escalation: May 22–Jun 4; Crisis: Jun 5) is applied across all tables to support period-stratified analysis throughout.</p>
 </section>
-<section id="task-2-behavioral-pattern-analysis" class="level3" data-number="5.1.2">
-<h3 data-number="5.1.2" class="anchored" data-anchor-id="task-2-behavioral-pattern-analysis"><span class="header-section-number">5.1.2</span> Task 2: Behavioral Pattern Analysis</h3>
-<p><strong>Baseline Comparison:</strong> - Define periods: Baseline (Week 1), Final Week, Breach Day, Breach Window - Compare message volume, length, and channel usage across periods - Statistical testing for significant behavioral changes</p>
-<p><strong>Text Analysis:</strong> - TF-IDF analysis to identify distinctive vocabulary by period and agent - Action keyword extraction (post, publish, approve, block, escalate, etc.) - Sentiment and urgency pattern detection</p>
-<p><strong>Internal States Analysis:</strong> - Examine sparse psychological evidence (reacting, rationalizing, deliberating) - Identify pressure indicators and decision justification patterns</p>
+<section id="stage-1-task-1-key-events-relationships-and-causal-chain" class="level3" data-number="5.0.2">
+<h3 data-number="5.0.2" class="anchored" data-anchor-id="stage-1-task-1-key-events-relationships-and-causal-chain"><span class="header-section-number">5.0.2</span> Stage 1 — Task 1: Key Events, Relationships, and Causal Chain</h3>
+<p>Three linked visualisations reconstruct the event sequence:</p>
+<p><strong>Causal chain graph.</strong> A 28-node directed graph (built in R as a <code>tribble</code>, serialised with <code>jsonlite::toJSON</code>, and rendered via Cytoscape.js embedded through <code>htmltools</code>) traces the full sequence from embargo establishment (May 17) through formal lift (Jun 5 6PM). Nodes are positioned manually on a preset layout grouped by phase — pre-crisis (blue), crisis escalation (amber), breach sequence (red), and resolution (green) — to minimise edge crossings between long-range causal links. Hover on any node reveals the event’s datetime, actors, and verbatim dataset quote; hover on any edge reveals the causal relationship with its evidencing quote.</p>
+<p><strong>Communication networks.</strong> Two <code>plotly</code>-based directed networks compare the pre-crisis and crisis-day agent communication graphs. Nodes use flat oval shapes positioned on a spread layout matching the actual network topology; edges are colour-coded by channel (<code>comms_huddle</code> = blue, <code>side_huddle</code> = red, <code>one_on_one_chat</code> = gold), sized by message volume, and offset perpendicularly for parallel edges between the same pair. Midpoint hover markers report the message count per edge.</p>
+<p><strong>Evidence timeline.</strong> All 45 key evidence items are plotted chronologically on three horizontal tracks — System Failure (blue), Both (amber), Deliberate (red) — using <code>ggplot2</code> and <code>ggplotly</code>. A vertical dashed line at Jun 5 4PM marks the Phase 1/Phase 2 boundary. The visual shift from mixed-blue to dense-red after this boundary makes the sequential nature of the breach directly visible.</p>
 </section>
-<section id="competing-hypotheses-evaluation" class="level3" data-number="5.1.3">
-<h3 data-number="5.1.3" class="anchored" data-anchor-id="competing-hypotheses-evaluation"><span class="header-section-number">5.1.3</span> Competing Hypotheses Evaluation</h3>
-<p><strong>Deliberate Leak Indicators:</strong> - Pre-positioning before external threat - Coordination patterns across agents - Proactive behavior - Bypass attempts</p>
-<p><strong>System Breakdown Indicators:</strong> - Reactive surge after warnings - Escalating failures under time pressure - Confusion in communication - CEO override and fragmented decisions</p>
+<section id="stage-2-task-2-typical-vs.-evasive-behaviour" class="level3" data-number="5.0.3">
+<h3 data-number="5.0.3" class="anchored" data-anchor-id="stage-2-task-2-typical-vs.-evasive-behaviour"><span class="header-section-number">5.0.3</span> Stage 2 — Task 2: Typical vs.&nbsp;Evasive Behaviour</h3>
+<p>Four analytical layers characterise how agent behaviour deviated from baseline:</p>
+<p><strong>Channel usage and monitoring scope.</strong> A faceted bar chart shows message volume per channel across the three periods, with channels annotated by Judge-Agent visibility (monitored vs.&nbsp;outside scope). The key finding — side_huddle and one_on_one_chat usage rising 19× in the Escalation period while remaining invisible to the compliance monitor — is made explicit through pink background shading and scope labels on each facet.</p>
+<p><strong>Private channel sensitivity score.</strong> A custom sensitivity metric (proportion of messages in each channel type containing embargo-sensitive vocabulary per round) is plotted as two time-series lines: private channels (solid red) vs.&nbsp;comms_huddle (dashed blue), with a divergence ribbon. Four annotated events (May 23 first spike, May 29 reversal, May 30 structural reset, Jun 5·11AM peak) mark the key moments where the gap between monitored and unmonitored channel content widened.</p>
+<p><strong>Behavioural escalation metrics.</strong> Four measures — side_huddle message average, personal posting rate, anonymous posting rate, and private-channel share — are computed across the three periods and displayed as an animated <code>plot_ly</code> dot chart. All four rise monotonically from Normal through Escalation to Crisis, ruling out reactive stress as the primary driver (a step-change at crisis onset would be expected if behaviour were purely reactive).</p>
+<p><strong>Internal state analysis.</strong> Six phases of private reasoning are identified from the <code>deliberating</code>, <code>reacting</code>, and <code>rationalizing</code> fields and presented as an interactive accordion widget (built with <code>glue</code> + <code>htmltools</code>). Each phase card shows the verbatim field text, the agent, and the field type (colour-coded: deliberating = blue, reacting = amber, rationalizing = purple). The decisive finding — Legal-Agent’s 4PM deliberating field showing the 4:30 PM plan fully formed, followed by the 5PM rationalizing field presenting SaltWind as the cause — constitutes the temporal inversion at the core of the deliberate leakage finding.</p>
 </section>
+<section id="stage-3-task-3-leading-indicators-and-control-gaps" class="level3" data-number="5.0.4">
+<h3 data-number="5.0.4" class="anchored" data-anchor-id="stage-3-task-3-leading-indicators-and-control-gaps"><span class="header-section-number">5.0.4</span> Stage 3 — Task 3: Leading Indicators and Control Gaps</h3>
+<p>Three analyses address why prior warning signals did not result in action:</p>
+<p><strong>Private channel sensitivity timeline.</strong> The sensitivity score chart from Task 2 doubles as a leading indicator analysis: the first meaningful divergence between private and monitored channels appears on May 23, two weeks before the breach. Three subsequent signal points (May 30 comms_huddle drop to zero, Jun 5·11AM private peak at 0.93) constitute a quantifiable advance warning that any real-time monitoring of channel routing would have detected.</p>
+<p><strong>Near-miss event classification.</strong> Eleven prior anomalous events are catalogued and classified by the structural root cause that prevented corrective action: scope limitation (5 events — side_huddle and 1-on-1 invisible to Judge-Agent), enforcement limitation (3 events — COMPLIANCE_WARNINGs advisory only), no escalation protocol (2 events — CivicLoom never alerted), and timing gap (1 event — Judge not yet deployed). A horizontal bar chart shows anomaly count per root cause.</p>
+<p><strong>Root cause detail table.</strong> Each of the 11 events is mapped to its specific root cause and a detailed explanation of why no action was possible, formatted as a colour-coded <code>kable</code> table.</p>
 </section>
+<section id="stage-4-integrated-shiny-application" class="level3" data-number="5.0.5">
+<h3 data-number="5.0.5" class="anchored" data-anchor-id="stage-4-integrated-shiny-application"><span class="header-section-number">5.0.5</span> Stage 4 — Integrated Shiny Application</h3>
+<p>The six analytical outputs are delivered through a <code>shiny</code> + <code>shinydashboard</code> application with six linked tabs:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Tab</th>
+<th>Content</th>
+<th>Primary interactivity</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Causal Chain</td>
+<td>28-node graph + 45-item evidence timeline</td>
+<td>Click node to highlight subgraph; hover for quotes</td>
+</tr>
+<tr class="even">
+<td>Communication Networks</td>
+<td>Pre-crisis and crisis-day plotly networks</td>
+<td>Hover edges for message count; click to filter</td>
+</tr>
+<tr class="odd">
+<td>Channel Behaviour</td>
+<td>Channel usage + sensitivity timeline</td>
+<td>Period selector; scroll to zoom</td>
+</tr>
+<tr class="even">
+<td>Internal State</td>
+<td>6-phase accordion widget</td>
+<td>Click phase to expand; click card for full quote</td>
+</tr>
+<tr class="odd">
+<td>Near Misses</td>
+<td>Root cause bar chart + detail table</td>
+<td>Hover bar for count; click for event detail</td>
+</tr>
+<tr class="even">
+<td>Competing Hypotheses</td>
+<td>Evidence classification + verdict</td>
+<td>Evidence filtered by label (SF/Both/Deliberate)</td>
+</tr>
+</tbody>
+</table>
+<p>Reactive filtering across tabs is implemented via <code>shiny::reactiveValues</code> — selecting a time period, agent, or channel in any tab propagates through to all others, enabling simultaneous investigation across analytical dimensions.</p>
+</section>
+</div>
+</div>
+</div>
 </section>
 <section id="prototype-sketches" class="level1" data-number="6">
 <h1 data-number="6"><span class="header-section-number">6</span> Prototype Sketches</h1>
@@ -470,10 +670,10 @@ ul.task-list li input[type="checkbox"] {
 </div>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 15%">
-<col style="width: 28%">
-<col style="width: 36%">
-<col style="width: 18%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
 </colgroup>
 <thead>
 <tr class="header">
