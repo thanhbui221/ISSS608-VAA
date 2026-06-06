@@ -17,6 +17,8 @@ website:
         text: In-class Exercises
       - href: Take-home_Ex/index.qmd
         text: Take-home Exercises
+      - href: Group_Project/index.qmd
+        text: Group Project
       - about.qmd
 
 format:

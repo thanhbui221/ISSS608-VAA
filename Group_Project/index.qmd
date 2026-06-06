@@ -1,0 +1,16 @@
+---
+title: "Group Project"
+---
+
+## VAST Challenge 2026 MC1
+
+This section contains our group project analyzing the VAST Challenge 2026 Mini-Challenge 1.
+
+### Project Components
+
+- [Project Proposal](proposal.qmd)
+- [Shiny Dashboard](app.R)
+
+### Overview
+
+Our project investigates the information leak at TenantThread on June 5, 2046, analyzing whether it was a deliberate leak or system breakdown under pressure.
