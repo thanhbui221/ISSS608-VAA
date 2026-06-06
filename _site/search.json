@@ -1013,5 +1013,89 @@
     "title": "Hands-on Exercise 7 (Part 2)",
     "section": "",
     "text": "tf–idf, short for term frequency–inverse document frequency, is a numerical statistic that is intended to reflect how important a word is to a document in a collection of corpus.\n\n\nThe code chunk below uses bind_tf_idf() of tidytext to compute and bind the term frequency, inverse document frequency and tf-idf of a tidy text dataset to the dataset.\n\ntf_idf &lt;- words_by_newsgroup %&gt;%\n  bind_tf_idf(word, newsgroup, n) %&gt;%\n  arrange(desc(tf_idf))\n\n\n\n\nThe code chunk below uses datatable() of DT package to create an html table that allows pagination of rows and columns.\n\nDT::datatable(tf_idf, filter = 'top') %&gt;%\n  formatRound(columns = c('tf', 'idf',\n                          'tf_idf'),\n              digits = 3) %&gt;%\n  formatStyle(0,\n              target = 'row',\n              lineHeight='25%')\n\n\n\n\n\nThings to learn from the code chunk above:\n\nfilter() argument is used to control the filter UI.\nformatRound() is used to customise the values format. The argument digits defines the number of decimal places.\nformatStyle() is used to customise the output table. In this example, the arguments target and lineHeight are used to reduce the line height by 25%.\n\n\n\n\nFacet bar charts technique is used to visualise the tf-idf values of science related newsgroups.\n\ntf_idf %&gt;%\n  filter(str_detect(newsgroup, \"^sci\\\\.\")) %&gt;%\n  group_by(newsgroup) %&gt;%\n  slice_max(tf_idf,\n            n = 12) %&gt;%\n  ungroup() %&gt;%\n  mutate(word = reorder(word,\n                        tf_idf)) %&gt;%\n  ggplot(aes(tf_idf,\n             word,\n             fill = newsgroup)) +\n  geom_col(show.legend = FALSE) +\n  facet_wrap(~ newsgroup,\n             scales = \"free\") +\n  labs(x = \"tf-idf\",\n       y = NULL)\n\n\n\n\n\n\n\n\n\n\n\nTo count the number of times that two words appear within the same document, or to see how correlated they are:\n\nMost operations for finding pairwise counts or correlations need to turn the data into a wide matrix first.\nwidyr package first ‘casts’ a tidy dataset into a wide matrix, performs an operation such as a correlation on it, then re-tidies the result.\n\nIn this code chunk below, pairwise_cor() of widyr package is used to compute the correlation between newsgroups based on the common words found.\n\nnewsgroup_cors &lt;- words_by_newsgroup %&gt;%\n  pairwise_cor(newsgroup,\n               word,\n               n,\n               sort = TRUE)\n\n\n\n\nNow, we can visualise the relationship between newsgroups in network graph as shown below.\n\nset.seed(2017)\n\nnewsgroup_cors %&gt;%\n  filter(correlation &gt; .025) %&gt;%\n  graph_from_data_frame() %&gt;%\n  ggraph(layout = \"fr\") +\n  geom_edge_link(aes(alpha = correlation,\n                     width = correlation)) +\n  geom_node_point(size = 6,\n                  color = \"lightblue\") +\n  geom_node_text(aes(label = name),\n                 color = \"red\",\n                 repel = TRUE) +\n  theme_void()\n\n\n\n\n\n\n\n\n\n\n\nIn this code chunk below, a bigram data frame is created by using unnest_tokens() of tidytext.\n\nbigrams &lt;- cleaned_text %&gt;%\n  unnest_tokens(bigram,\n                text,\n                token = \"ngrams\",\n                n = 2)\n\n\nbigrams\n\n# A tibble: 28,824 × 3\n   newsgroup   id    bigram    \n   &lt;chr&gt;       &lt;chr&gt; &lt;chr&gt;     \n 1 alt.atheism 54256 &lt;NA&gt;      \n 2 alt.atheism 54256 &lt;NA&gt;      \n 3 alt.atheism 54256 as i      \n 4 alt.atheism 54256 i don't   \n 5 alt.atheism 54256 don't know\n 6 alt.atheism 54256 know this \n 7 alt.atheism 54256 this book \n 8 alt.atheism 54256 book i    \n 9 alt.atheism 54256 i will    \n10 alt.atheism 54256 will use  \n# ℹ 28,814 more rows\n\n\n\n\n\nThe code chunk is used to count and sort the bigram data frame in descending order.\n\nbigrams_count &lt;- bigrams %&gt;%\n  filter(bigram != 'NA') %&gt;%\n  count(bigram, sort = TRUE)\n\n\nbigrams_count\n\n# A tibble: 19,885 × 2\n   bigram       n\n   &lt;chr&gt;    &lt;int&gt;\n 1 of the     169\n 2 in the     113\n 3 to the      74\n 4 to be       59\n 5 for the     52\n 6 i have      48\n 7 that the    47\n 8 if you      40\n 9 on the      39\n10 it is       38\n# ℹ 19,875 more rows\n\n\n\n\n\nThe code chunk below is used to separate the bigram into two words.\n\nbigrams_separated &lt;- bigrams %&gt;%\n  filter(bigram != 'NA') %&gt;%\n  separate(bigram, c(\"word1\", \"word2\"),\n           sep = \" \")\n\nbigrams_filtered &lt;- bigrams_separated %&gt;%\n  filter(!word1 %in% stop_words$word) %&gt;%\n  filter(!word2 %in% stop_words$word)\n\n\nbigrams_filtered\n\n# A tibble: 4,604 × 4\n   newsgroup   id    word1        word2        \n   &lt;chr&gt;       &lt;chr&gt; &lt;chr&gt;        &lt;chr&gt;        \n 1 alt.atheism 54256 defines      god          \n 2 alt.atheism 54256 term         preclues     \n 3 alt.atheism 54256 science      ideas        \n 4 alt.atheism 54256 ideas        drawn        \n 5 alt.atheism 54256 supernatural precludes    \n 6 alt.atheism 54256 scientific   assertions   \n 7 alt.atheism 54256 religious    dogma        \n 8 alt.atheism 54256 religion     involves     \n 9 alt.atheism 54256 involves     circumventing\n10 alt.atheism 54256 gain         absolute     \n# ℹ 4,594 more rows\n\n\n\n\n\n\nbigram_counts &lt;- bigrams_filtered %&gt;%\n  count(word1, word2, sort = TRUE)\n\n\n\n\nIn the code chunk below, a network graph is created by using graph_from_data_frame() of igraph package.\n\nbigram_graph &lt;- bigram_counts %&gt;%\n  filter(n &gt; 3) %&gt;%\n  graph_from_data_frame()\nbigram_graph\n\nIGRAPH 9dec691 DN-- 40 24 -- \n+ attr: name (v/c), n (e/n)\n+ edges from 9dec691 (vertex names):\n [1] 1          -&gt;2           1          -&gt;3           static     -&gt;void       \n [4] time       -&gt;pad         1          -&gt;4           infield    -&gt;fly        \n [7] mat        -&gt;28          vv         -&gt;vv          1          -&gt;5          \n[10] cock       -&gt;crow        noticeshell-&gt;widget      27         -&gt;1993       \n[13] 3          -&gt;4           child      -&gt;molestation cock       -&gt;crew       \n[16] gun        -&gt;violence    heat       -&gt;sink        homosexual -&gt;male       \n[19] homosexual -&gt;women       include    -&gt;xol         mary       -&gt;magdalene  \n[22] read       -&gt;write       rev        -&gt;20          tt         -&gt;ee         \n\n\n\n\n\nIn this code chunk below, ggraph package is used to plot the bigram.\n\nset.seed(1234)\n\nggraph(bigram_graph, layout = \"fr\") +\n  geom_edge_link() +\n  geom_node_point() +\n  geom_node_text(aes(label = name),\n                 vjust = 1,\n                 hjust = 1)\n\n\n\n\n\n\n\n\n\n\n\n\nset.seed(1234)\n\na &lt;- grid::arrow(type = \"closed\",\n                 length = unit(.15,\n                               \"inches\"))\n\nggraph(bigram_graph,\n       layout = \"fr\") +\n  geom_edge_link(aes(edge_alpha = n),\n                 show.legend = FALSE,\n                 arrow = a,\n                 end_cap = circle(.07,\n                                  'inches')) +\n  geom_node_point(color = \"lightblue\",\n                  size = 5) +\n  geom_node_text(aes(label = name),\n                 vjust = 1,\n                 hjust = 1) +\n  theme_void()"
+  },
+  {
+    "objectID": "Group_Project/proposal.html",
+    "href": "Group_Project/proposal.html",
+    "title": "Group Project Proposal: VAST Challenge 2026 MC1",
+    "section": "",
+    "text": "On June 5th, 2046, confidential merger information between TenantThread and CivicLoom Realty Partners (codenamed “Project HarborCrest”) was leaked on social media at 5:00 PM—exactly one hour before the official 6:00 PM embargo lift. This premature disclosure triggered an investigation into whether the leak was deliberate sabotage or an organizational failure under extreme pressure.\nTenantThread operated with 7 AI agents managing communications, compliance, and social media during the critical two-week period leading to the announcement. The breach raises fundamental questions about AI-driven organizational systems: when they fail, is it by design or by overload?\nCentral Investigative Question: Did TenantThread’s team deliberately leak the merger information, or did the compliance system simply break down under pressure?\nThis project will use visual analytics, network analysis, and text mining to examine 912 internal communications across 14 days to distinguish between these competing explanations."
+  },
+  {
+    "objectID": "Group_Project/proposal.html#dataset-description",
+    "href": "Group_Project/proposal.html#dataset-description",
+    "title": "Group Project Proposal: VAST Challenge 2026 MC1",
+    "section": "4.1 Dataset Description",
+    "text": "4.1 Dataset Description\n\nSource: VAST Challenge 2026 Mini-Challenge 1 (MC1)\nFile: MC1_final.json\nFormat: Nested JSON structure\nSize: 912 communications across 23 time-stamped rounds\nAgents: 7 AI agents (Legal, PR, Social Media, Quality, Judge, PR Intern, Intern)\nTime Period: May 23, 2046 - June 5, 2046 (14 days)\nCritical Window: June 5, 2046, 4:00 PM - 6:00 PM"
+  },
+  {
+    "objectID": "Group_Project/proposal.html#key-data-components",
+    "href": "Group_Project/proposal.html#key-data-components",
+    "title": "Group Project Proposal: VAST Challenge 2026 MC1",
+    "section": "4.2 Key Data Components",
+    "text": "4.2 Key Data Components\n\n\n\n\n\n\n\n\nComponent\nDescription\nRecords\n\n\n\n\ncommunications\nAgent messages with metadata\n912 messages\n\n\nenvironment_context\nExternal events and media pressure\n23 rounds\n\n\ninternal_state\nAgent private reasoning (sparse)\n86 records\n\n\nrounds\nTime-stamped system snapshots\n23 rounds"
+  },
+  {
+    "objectID": "Group_Project/proposal.html#important-variables",
+    "href": "Group_Project/proposal.html#important-variables",
+    "title": "Group Project Proposal: VAST Challenge 2026 MC1",
+    "section": "4.3 Important Variables",
+    "text": "4.3 Important Variables\nNetwork Construction: - agent_id: Agent identifier for nodes - responding_to: Reply reference for building edges - channel: Communication channel (comms_huddle, one_on_one_chat, side_huddle, etc.)\nText Analysis: - message_text: Full message content - internal_state: Private agent reasoning (reacting, rationalizing, deliberating)\nTemporal Analysis: - timestamp: Message datetime - round_hour: Round time marker\nContext: - environment_context: External events, media pressure, critical deadlines - message_type: Type of communication"
+  },
+  {
+    "objectID": "Group_Project/proposal.html#analytical-framework",
+    "href": "Group_Project/proposal.html#analytical-framework",
+    "title": "Group Project Proposal: VAST Challenge 2026 MC1",
+    "section": "5.1 Analytical Framework",
+    "text": "5.1 Analytical Framework\n\n5.1.1 Task 1: Event Sequence Reconstruction\nNetwork Analysis: - Build agent interaction network from explicit reply chains using responding_to field - Calculate centrality measures (degree, betweenness, closeness) to identify key coordinators - Compare network structure across baseline, final week, and breach day\nTimeline Visualization: - Map communication flow during breach window (4:00-6:00 PM) - Identify critical decision points and information pathways - Visualize agent activity patterns over time\n\n\n5.1.2 Task 2: Behavioral Pattern Analysis\nBaseline Comparison: - Define periods: Baseline (Week 1), Final Week, Breach Day, Breach Window - Compare message volume, length, and channel usage across periods - Statistical testing for significant behavioral changes\nText Analysis: - TF-IDF analysis to identify distinctive vocabulary by period and agent - Action keyword extraction (post, publish, approve, block, escalate, etc.) - Sentiment and urgency pattern detection\nInternal States Analysis: - Examine sparse psychological evidence (reacting, rationalizing, deliberating) - Identify pressure indicators and decision justification patterns\n\n\n5.1.3 Competing Hypotheses Evaluation\nDeliberate Leak Indicators: - Pre-positioning before external threat - Coordination patterns across agents - Proactive behavior - Bypass attempts\nSystem Breakdown Indicators: - Reactive surge after warnings - Escalating failures under time pressure - Confusion in communication - CEO override and fragmented decisions"
+  },
+  {
+    "objectID": "Group_Project/proposal.html#shiny-app-design",
+    "href": "Group_Project/proposal.html#shiny-app-design",
+    "title": "Group Project Proposal: VAST Challenge 2026 MC1",
+    "section": "6.1 Shiny App Design",
+    "text": "6.1 Shiny App Design\nThe interactive dashboard will have a multi-tab structure to support different investigative perspectives:\n\n6.1.1 Tab 1: Proposal\n\nProject background and research question\nAnalytical framework overview\nTeam information\n\n\n\n6.1.2 Tab 2: Overview Dashboard\n\nKey Metrics Panel: Total messages, agents involved, time period\nBreach Timeline: Visual timeline showing critical events on June 5\nAgent Activity Summary: Bar chart of communication volume by agent and period\nChannel Distribution: Pie/bar chart showing channel usage patterns\n\n\n\n6.1.3 Tab 3: Network Analysis\n\nPeriod Selector: Dropdown to choose Baseline, Final Week, Breach Day, or Breach Window\nInteractive Network Graph: visNetwork visualization with:\n\nNodes sized by centrality\nEdges weighted by interaction frequency\nColor-coded by agent role\nClick for agent details\n\nCentrality Metrics Table: Sortable table showing degree, betweenness, closeness\nNetwork Evolution: Side-by-side comparison of network structure across periods\n\n\n\n6.1.4 Tab 4: Timeline Explorer\n\nTime Range Slider: Focus on specific hours/days\nEvent Sequence Visualization: Gantt-style timeline showing:\n\nAgent activities\nCritical events marked\nBreach window highlighted (4-6 PM)\n\nMessage Inspector: Click on timeline events to view message details\nChannel Filter: Filter by communication channel\n\n\n\n6.1.5 Tab 5: Text Analysis\n\nTF-IDF Visualization: Bar charts of distinctive terms by period/agent\nWord Cloud: Interactive word cloud with period filtering\nAction Keywords: Time series of action-related terms (post, publish, escalate)\nMessage Search: Text search with context display\n\n\n\n6.1.6 Tab 6: Agent Deep Dive\n\nAgent Selector: Dropdown to choose specific agent\nActivity Profile: Message volume, average length, channels used\nNetwork Position: Centrality metrics and key connections\nDistinctive Vocabulary: TF-IDF terms for selected agent\nInternal States: Display sparse internal state records if available\n\n\n\n6.1.7 Tab 7: Competing Hypotheses\n\nEvidence Table: Structured table showing evidence for/against each hypothesis\nSignal Dashboard: Visual indicators of deliberate vs. breakdown patterns\nCritical Decision Points: Timeline of key decisions with annotations"
+  },
+  {
+    "objectID": "Group_Project/proposal.html#data-processing",
+    "href": "Group_Project/proposal.html#data-processing",
+    "title": "Group Project Proposal: VAST Challenge 2026 MC1",
+    "section": "7.1 Data Processing",
+    "text": "7.1 Data Processing\n\ntidyverse: Data manipulation and transformation\njsonlite: JSON data import and parsing\nlubridate: Date and time handling\npacman: Package management"
+  },
+  {
+    "objectID": "Group_Project/proposal.html#network-analysis",
+    "href": "Group_Project/proposal.html#network-analysis",
+    "title": "Group Project Proposal: VAST Challenge 2026 MC1",
+    "section": "7.2 Network Analysis",
+    "text": "7.2 Network Analysis\n\nigraph: Network construction and metrics\ntidygraph: Tidy graph data structures\nggraph: Network visualization with ggplot2 syntax\nvisNetwork: Interactive network graphs\nwidyr: Pairwise operations for network building"
+  },
+  {
+    "objectID": "Group_Project/proposal.html#text-analysis",
+    "href": "Group_Project/proposal.html#text-analysis",
+    "title": "Group Project Proposal: VAST Challenge 2026 MC1",
+    "section": "7.3 Text Analysis",
+    "text": "7.3 Text Analysis\n\ntidytext: Text mining and tidy text principles\ntm: Text mining framework\nwordcloud: Word cloud generation"
+  },
+  {
+    "objectID": "Group_Project/proposal.html#visualization",
+    "href": "Group_Project/proposal.html#visualization",
+    "title": "Group Project Proposal: VAST Challenge 2026 MC1",
+    "section": "7.4 Visualization",
+    "text": "7.4 Visualization\n\nggplot2: Static visualizations\nplotly: Interactive plots\nggtext: Enhanced text rendering\npatchwork: Combining multiple plots\nscales: Scale functions"
+  },
+  {
+    "objectID": "Group_Project/proposal.html#interactive-dashboard",
+    "href": "Group_Project/proposal.html#interactive-dashboard",
+    "title": "Group Project Proposal: VAST Challenge 2026 MC1",
+    "section": "7.5 Interactive Dashboard",
+    "text": "7.5 Interactive Dashboard\n\nshiny: Web application framework\nshinydashboard: Dashboard layout components\nDT: Interactive data tables\nshinyWidgets: Additional UI widgets"
+  },
+  {
+    "objectID": "Group_Project/proposal.html#key-milestones",
+    "href": "Group_Project/proposal.html#key-milestones",
+    "title": "Group Project Proposal: VAST Challenge 2026 MC1",
+    "section": "8.1 Key Milestones",
+    "text": "8.1 Key Milestones\n\nEnd of Week 2: Complete all static analyses (network, text, timeline)\nEnd of Week 4: Working Shiny dashboard with all major features\nEnd of Week 5: Final deliverables ready for presentation"
   }
 ]

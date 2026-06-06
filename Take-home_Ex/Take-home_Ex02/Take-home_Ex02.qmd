@@ -2500,7 +2500,7 @@ To distinguish between deliberate leak and system breakdown, we established test
 All five independent lines of evidence point to the same conclusion. There is **no ambiguity**:
 
 | Evidence Dimension | Deliberate Leak Signal | System Breakdown Signal | Observed Pattern |
-|-----------------|-------------------|--------------------|-----------------|
+|----|----|----|----|
 | **Temporal** | Pre-positioning before threat | Reactive spike after threat | Reactive |
 | **Network** | New coalitions form | Stable roles, increasing load | Stable roles |
 | **Compliance** | Bypass attempts | Systematic failures | Systematic failures |

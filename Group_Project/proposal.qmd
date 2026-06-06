@@ -1,0 +1,277 @@
+---
+title: "Group Project Proposal: VAST Challenge 2026 MC1"
+subtitle: "Investigating Information Leak at TenantThread"
+author: "Group Members: [Add names here]"
+date: "`r Sys.Date()`"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    code-fold: true
+execute:
+  echo: true
+  eval: true
+  warning: false
+---
+
+# Project Proposal
+
+On June 5th, 2046, confidential merger information between TenantThread and CivicLoom Realty Partners (codenamed "Project HarborCrest") was leaked on social media at 5:00 PM—exactly one hour before the official 6:00 PM embargo lift. This premature disclosure triggered an investigation into whether the leak was deliberate sabotage or an organizational failure under extreme pressure.
+
+TenantThread operated with 7 AI agents managing communications, compliance, and social media during the critical two-week period leading to the announcement. The breach raises fundamental questions about AI-driven organizational systems: when they fail, is it by design or by overload?
+
+**Central Investigative Question:** Did TenantThread's team deliberately leak the merger information, or did the compliance system simply break down under pressure?
+
+This project will use visual analytics, network analysis, and text mining to examine 912 internal communications across 14 days to distinguish between these competing explanations.
+
+# Motivation
+
+This project addresses several critical analytical and practical challenges:
+
+1. **AI System Accountability**: As organizations increasingly rely on AI agents for critical functions, understanding how these systems fail under pressure has direct implications for governance, risk management, and regulatory compliance.
+
+2. **Visual Analytics for Investigation**: This project demonstrates how network analysis, text mining, and interactive visualization can support complex investigative work—skills applicable to fraud detection, security incidents, and organizational audits.
+
+3. **Competing Hypotheses Framework**: By systematically evaluating evidence that supports or refutes each explanation, we apply rigorous analytical reasoning rather than confirmation bias—a critical skill for data-driven decision making.
+
+4. **Real-world Data Complexity**: Working with multi-layered data (communications, internal states, environmental context) mirrors actual organizational investigations and builds skills in handling nested, unstructured data.
+
+5. **Practical Impact**: The distinction between deliberate misconduct and system failure determines whether the response should be disciplinary action or process improvement—a decision with significant organizational and legal consequences.
+
+# Objectives
+
+The main objectives of this project are:
+
+1. **Reconstruct the event sequence** during the breach window (4:00-6:00 PM, June 5) using network analysis and timeline visualization to identify who communicated what, when, and through which channels.
+
+2. **Analyze behavioral patterns** by comparing breach-day behavior against baseline patterns using statistical tests, text analysis, and network metrics to detect anomalies consistent with either deliberate action or system strain.
+
+3. **Identify key actors and information flow** through centrality analysis (betweenness, degree, closeness) to determine which agents were critical coordinators or bottlenecks.
+
+4. **Apply competing hypotheses framework** to systematically evaluate evidence supporting deliberate leak vs. system breakdown explanations.
+
+5. **Develop an interactive Shiny dashboard** that enables exploratory investigation of the data through multiple analytical lenses (network, timeline, text, agent behavior).
+
+# Data
+
+## Dataset Description
+
+- **Source:** VAST Challenge 2026 Mini-Challenge 1 (MC1)
+- **File:** `MC1_final.json`
+- **Format:** Nested JSON structure
+- **Size:** 912 communications across 23 time-stamped rounds
+- **Agents:** 7 AI agents (Legal, PR, Social Media, Quality, Judge, PR Intern, Intern)
+- **Time Period:** May 23, 2046 - June 5, 2046 (14 days)
+- **Critical Window:** June 5, 2046, 4:00 PM - 6:00 PM
+
+## Key Data Components
+
+| Component | Description | Records |
+|-----------|-------------|---------|
+| `communications` | Agent messages with metadata | 912 messages |
+| `environment_context` | External events and media pressure | 23 rounds |
+| `internal_state` | Agent private reasoning (sparse) | 86 records |
+| `rounds` | Time-stamped system snapshots | 23 rounds |
+
+## Important Variables
+
+**Network Construction:**
+- `agent_id`: Agent identifier for nodes
+- `responding_to`: Reply reference for building edges
+- `channel`: Communication channel (comms_huddle, one_on_one_chat, side_huddle, etc.)
+
+**Text Analysis:**
+- `message_text`: Full message content
+- `internal_state`: Private agent reasoning (reacting, rationalizing, deliberating)
+
+**Temporal Analysis:**
+- `timestamp`: Message datetime
+- `round_hour`: Round time marker
+
+**Context:**
+- `environment_context`: External events, media pressure, critical deadlines
+- `message_type`: Type of communication
+
+# Methodology
+
+## Analytical Framework
+
+### Task 1: Event Sequence Reconstruction
+
+**Network Analysis:**
+- Build agent interaction network from explicit reply chains using `responding_to` field
+- Calculate centrality measures (degree, betweenness, closeness) to identify key coordinators
+- Compare network structure across baseline, final week, and breach day
+
+**Timeline Visualization:**
+- Map communication flow during breach window (4:00-6:00 PM)
+- Identify critical decision points and information pathways
+- Visualize agent activity patterns over time
+
+### Task 2: Behavioral Pattern Analysis
+
+**Baseline Comparison:**
+- Define periods: Baseline (Week 1), Final Week, Breach Day, Breach Window
+- Compare message volume, length, and channel usage across periods
+- Statistical testing for significant behavioral changes
+
+**Text Analysis:**
+- TF-IDF analysis to identify distinctive vocabulary by period and agent
+- Action keyword extraction (post, publish, approve, block, escalate, etc.)
+- Sentiment and urgency pattern detection
+
+**Internal States Analysis:**
+- Examine sparse psychological evidence (reacting, rationalizing, deliberating)
+- Identify pressure indicators and decision justification patterns
+
+### Competing Hypotheses Evaluation
+
+**Deliberate Leak Indicators:**
+- Pre-positioning before external threat
+- Coordination patterns across agents
+- Proactive behavior
+- Bypass attempts
+
+**System Breakdown Indicators:**
+- Reactive surge after warnings
+- Escalating failures under time pressure
+- Confusion in communication
+- CEO override and fragmented decisions
+
+# Prototype Sketches
+
+## Shiny App Design
+
+The interactive dashboard will have a multi-tab structure to support different investigative perspectives:
+
+### Tab 1: Proposal
+- Project background and research question
+- Analytical framework overview
+- Team information
+
+### Tab 2: Overview Dashboard
+- **Key Metrics Panel**: Total messages, agents involved, time period
+- **Breach Timeline**: Visual timeline showing critical events on June 5
+- **Agent Activity Summary**: Bar chart of communication volume by agent and period
+- **Channel Distribution**: Pie/bar chart showing channel usage patterns
+
+### Tab 3: Network Analysis
+- **Period Selector**: Dropdown to choose Baseline, Final Week, Breach Day, or Breach Window
+- **Interactive Network Graph**: visNetwork visualization with:
+  - Nodes sized by centrality
+  - Edges weighted by interaction frequency
+  - Color-coded by agent role
+  - Click for agent details
+- **Centrality Metrics Table**: Sortable table showing degree, betweenness, closeness
+- **Network Evolution**: Side-by-side comparison of network structure across periods
+
+### Tab 4: Timeline Explorer
+- **Time Range Slider**: Focus on specific hours/days
+- **Event Sequence Visualization**: Gantt-style timeline showing:
+  - Agent activities
+  - Critical events marked
+  - Breach window highlighted (4-6 PM)
+- **Message Inspector**: Click on timeline events to view message details
+- **Channel Filter**: Filter by communication channel
+
+### Tab 5: Text Analysis
+- **TF-IDF Visualization**: Bar charts of distinctive terms by period/agent
+- **Word Cloud**: Interactive word cloud with period filtering
+- **Action Keywords**: Time series of action-related terms (post, publish, escalate)
+- **Message Search**: Text search with context display
+
+### Tab 6: Agent Deep Dive
+- **Agent Selector**: Dropdown to choose specific agent
+- **Activity Profile**: Message volume, average length, channels used
+- **Network Position**: Centrality metrics and key connections
+- **Distinctive Vocabulary**: TF-IDF terms for selected agent
+- **Internal States**: Display sparse internal state records if available
+
+### Tab 7: Competing Hypotheses
+- **Evidence Table**: Structured table showing evidence for/against each hypothesis
+- **Signal Dashboard**: Visual indicators of deliberate vs. breakdown patterns
+- **Critical Decision Points**: Timeline of key decisions with annotations
+
+# R Packages
+
+## Data Processing
+- `tidyverse`: Data manipulation and transformation
+- `jsonlite`: JSON data import and parsing
+- `lubridate`: Date and time handling
+- `pacman`: Package management
+
+## Network Analysis
+- `igraph`: Network construction and metrics
+- `tidygraph`: Tidy graph data structures
+- `ggraph`: Network visualization with ggplot2 syntax
+- `visNetwork`: Interactive network graphs
+- `widyr`: Pairwise operations for network building
+
+## Text Analysis
+- `tidytext`: Text mining and tidy text principles
+- `tm`: Text mining framework
+- `wordcloud`: Word cloud generation
+
+## Visualization
+- `ggplot2`: Static visualizations
+- `plotly`: Interactive plots
+- `ggtext`: Enhanced text rendering
+- `patchwork`: Combining multiple plots
+- `scales`: Scale functions
+
+## Interactive Dashboard
+- `shiny`: Web application framework
+- `shinydashboard`: Dashboard layout components
+- `DT`: Interactive data tables
+- `shinyWidgets`: Additional UI widgets
+
+# Project Schedule
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+pacman::p_load(vistime, ggplot2)
+
+data <- read.csv(text="event,group,start,end,color
+                       ,Project Proposal,2026-06-06,2026-06-13,#a5d6a7
+                       ,Exploratory Data Analysis,2026-06-06,2026-06-13,#a5d6a7
+                       ,Network Analysis,2026-06-13,2026-06-20,#81c784
+                       ,Text & Timeline Analysis,2026-06-20,2026-06-27,#66bb6a
+                       ,Shiny Dashboard Development,2026-06-27,2026-07-11,#DD4B39
+                       ,Refinement & Documentation,2026-07-04,2026-07-11,#D32F2F
+                       ,Final Presentation,2026-07-11,2026-07-11,#B71C1C")
+
+proposal_deadline <- as.Date("2026-06-13")
+dashboard_deadline <- as.Date("2026-07-11")
+
+p <- gg_vistime(data, title = "Project Timeline")
+p +
+  geom_vline(xintercept = as.numeric(as.POSIXct("2026-06-13")),
+             color = "orange", linewidth = 1, linetype = "dashed") +
+  geom_vline(xintercept = as.numeric(as.POSIXct("2026-07-11")),
+             color = "red", linewidth = 1, linetype = "dashed") +
+  labs(caption = "Orange line: Proposal deadline | Red line: Final deadline")
+```
+
+| Week | Milestone | Deliverables | Tasks |
+|------|-----------|--------------|-------|
+| **Week 1** | Data Preparation & EDA | - Data cleaning script<br>- Initial exploratory analysis<br>- Data structure documentation | - Extract communications from JSON<br>- Build interaction network<br>- Calculate basic statistics<br>- Identify breach window |
+| **Week 2** | Network Analysis | - Network graphs by period<br>- Centrality metrics<br>- Baseline comparison | - Create period networks<br>- Calculate centrality measures<br>- Visualize network evolution<br>- Identify key actors |
+| **Week 3** | Text & Timeline Analysis | - TF-IDF results<br>- Event sequence visualization<br>- Action keyword analysis | - Text preprocessing<br>- TF-IDF by period/agent<br>- Timeline reconstruction<br>- Internal states analysis |
+| **Week 4** | Shiny Dashboard Development | - Interactive dashboard prototype<br>- Core functionality implemented | - Build tab structure<br>- Implement network viz<br>- Add timeline explorer<br>- Integrate text analysis |
+| **Week 5** | Refinement & Documentation | - Final dashboard<br>- Project report<br>- Presentation materials | - Polish UI/UX<br>- Add competing hypotheses tab<br>- Write analysis narrative<br>- Prepare presentation |
+
+## Key Milestones
+
+- **End of Week 2**: Complete all static analyses (network, text, timeline)
+- **End of Week 4**: Working Shiny dashboard with all major features
+- **End of Week 5**: Final deliverables ready for presentation
+
+# References
+
+- VAST Challenge 2026 MC1: https://vast-challenge.github.io/2026/MC1
+- Hands-on Exercise 7: Network Data Visualisation and Analysis
+- Take-home Exercise 2: VAST Challenge 2026 MC1 Analysis Framework
