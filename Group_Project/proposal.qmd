@@ -290,62 +290,41 @@ Reactive filtering across tabs is implemented via `shiny::reactiveValues` — se
 
 ## Shiny App Design
 
-The interactive dashboard will have a multi-tab structure to support different investigative perspectives:
+The proposed Shiny app is designed as an interactive dashboard for investigating whether the TenantThread merger exposure was a deliberate leak or a system-control failure. The prototype contains four main tabs:
 
-### Tab 1: Proposal
+```{r}
+#| label: fig-shiny-prototype
+#| fig-cap: "Low-fidelity Shiny App prototype design."
+#| out-width: "90%"
+#| fig-align: "center"
+#| echo: false
 
-- Project background and research question
-- Analytical framework overview
-- Team information
+knitr::include_graphics("./image.jpg")
+```
 
-### Tab 2: Overview Dashboard
+### Tab 1: Overview
 
-- **Key Metrics Panel**: Total messages, agents involved, time period
-- **Breach Timeline**: Visual timeline showing critical events on June 5
-- **Agent Activity Summary**: Bar chart of communication volume by agent and period
-- **Channel Distribution**: Pie/bar chart showing channel usage patterns
+- Provides a high-level summary of the crisis.
+- Shows key indicators such as total messages, merger-related messages, leak/exposure signals, and pre-embargo public exposure.
+- Presents the final interpretation: internal confidentiality leak enabled by system-level control failure.
 
-### Tab 3: Network Analysis
+### Tab 2: Timeline & Slack Leak
 
-- **Period Selector**: Dropdown to choose Baseline, Final Week, Breach Day, or Breach Window
-- **Interactive Network Graph**: visNetwork visualization with:
-  - Nodes sized by centrality
-  - Edges weighted by interaction frequency
-  - Color-coded by agent role
-  - Click for agent details
-- **Centrality Metrics Table**: Sortable table showing degree, betweenness, closeness
-- **Network Evolution**: Side-by-side comparison of network structure across periods
+- Focuses on how the crisis developed over time.
+- Displays communication volume, pressure signal heatmap, and the Slack screenshot escalation timeline.
+- Highlights the turning point from market inference to direct internal leakage.
 
-### Tab 4: Timeline Explorer
+### Tab 3: Agent & Communication Flow
 
-- **Time Range Slider**: Focus on specific hours/days
-- **Event Sequence Visualization**: Gantt-style timeline showing:
-  - Agent activities
-  - Critical events marked
-  - Breach window highlighted (4-6 PM)
-- **Message Inspector**: Click on timeline events to view message details
-- **Channel Filter**: Filter by communication channel
+- Shows which agents were most involved in the communication and pressure patterns.
+- Includes agent-level pressure exposure and communication-flow visuals.
+- Helps users understand why the system failed to contain sensitive information.
 
-### Tab 5: Text Analysis
+### Tab 4: Evidence & Judgment
 
-- **TF-IDF Visualization**: Bar charts of distinctive terms by period/agent
-- **Word Cloud**: Interactive word cloud with period filtering
-- **Action Keywords**: Time series of action-related terms (post, publish, escalate)
-- **Message Search**: Text search with context display
-
-### Tab 6: Agent Deep Dive
-
-- **Agent Selector**: Dropdown to choose specific agent
-- **Activity Profile**: Message volume, average length, channels used
-- **Network Position**: Centrality metrics and key connections
-- **Distinctive Vocabulary**: TF-IDF terms for selected agent
-- **Internal States**: Display sparse internal state records if available
-
-### Tab 7: Competing Hypotheses
-
-- **Evidence Table**: Structured table showing evidence for/against each hypothesis
-- **Signal Dashboard**: Visual indicators of deliberate vs. breakdown patterns
-- **Critical Decision Points**: Timeline of key decisions with annotations
+- Summarises the final evidence used to classify the incident.
+- Displays the evidence interpretation matrix comparing internal leak, system breakdown, and senior-orchestrated leak.
+- Provides the final judgment that the incident was an internal leak amplified by weak multi-agent controls, not a proven senior-level deliberate leak.
 
 # R Packages
 

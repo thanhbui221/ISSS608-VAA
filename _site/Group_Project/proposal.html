@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Group Members: BUI Tien Thanh, HU Yue, WU Jiayan">
-<meta name="dcterms.date" content="2026-06-06">
+<meta name="dcterms.date" content="2026-06-07">
 
 <title>Group Project Proposal: VAST Challenge 2026 MC1 – ISSS608-VAA</title>
 <style>
@@ -44,7 +44,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-a0f9fd0d421825b736dc1bbcbcba2219.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-158031087360bce0ff56dc785ce39e06.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -148,13 +148,10 @@ ul.task-list li input[type="checkbox"] {
   <ul class="collapse">
   <li><a href="#shiny-app-design" id="toc-shiny-app-design" class="nav-link" data-scroll-target="#shiny-app-design"><span class="header-section-number">6.1</span> Shiny App Design</a>
   <ul class="collapse">
-  <li><a href="#tab-1-proposal" id="toc-tab-1-proposal" class="nav-link" data-scroll-target="#tab-1-proposal"><span class="header-section-number">6.1.1</span> Tab 1: Proposal</a></li>
-  <li><a href="#tab-2-overview-dashboard" id="toc-tab-2-overview-dashboard" class="nav-link" data-scroll-target="#tab-2-overview-dashboard"><span class="header-section-number">6.1.2</span> Tab 2: Overview Dashboard</a></li>
-  <li><a href="#tab-3-network-analysis" id="toc-tab-3-network-analysis" class="nav-link" data-scroll-target="#tab-3-network-analysis"><span class="header-section-number">6.1.3</span> Tab 3: Network Analysis</a></li>
-  <li><a href="#tab-4-timeline-explorer" id="toc-tab-4-timeline-explorer" class="nav-link" data-scroll-target="#tab-4-timeline-explorer"><span class="header-section-number">6.1.4</span> Tab 4: Timeline Explorer</a></li>
-  <li><a href="#tab-5-text-analysis" id="toc-tab-5-text-analysis" class="nav-link" data-scroll-target="#tab-5-text-analysis"><span class="header-section-number">6.1.5</span> Tab 5: Text Analysis</a></li>
-  <li><a href="#tab-6-agent-deep-dive" id="toc-tab-6-agent-deep-dive" class="nav-link" data-scroll-target="#tab-6-agent-deep-dive"><span class="header-section-number">6.1.6</span> Tab 6: Agent Deep Dive</a></li>
-  <li><a href="#tab-7-competing-hypotheses" id="toc-tab-7-competing-hypotheses" class="nav-link" data-scroll-target="#tab-7-competing-hypotheses"><span class="header-section-number">6.1.7</span> Tab 7: Competing Hypotheses</a></li>
+  <li><a href="#tab-1-overview" id="toc-tab-1-overview" class="nav-link" data-scroll-target="#tab-1-overview"><span class="header-section-number">6.1.1</span> Tab 1: Overview</a></li>
+  <li><a href="#tab-2-timeline-slack-leak" id="toc-tab-2-timeline-slack-leak" class="nav-link" data-scroll-target="#tab-2-timeline-slack-leak"><span class="header-section-number">6.1.2</span> Tab 2: Timeline &amp; Slack Leak</a></li>
+  <li><a href="#tab-3-agent-communication-flow" id="toc-tab-3-agent-communication-flow" class="nav-link" data-scroll-target="#tab-3-agent-communication-flow"><span class="header-section-number">6.1.3</span> Tab 3: Agent &amp; Communication Flow</a></li>
+  <li><a href="#tab-4-evidence-judgment" id="toc-tab-4-evidence-judgment" class="nav-link" data-scroll-target="#tab-4-evidence-judgment"><span class="header-section-number">6.1.4</span> Tab 4: Evidence &amp; Judgment</a></li>
   </ul></li>
   </ul></li>
   <li><a href="#r-packages" id="toc-r-packages" class="nav-link" data-scroll-target="#r-packages"><span class="header-section-number">7</span> R Packages</a>
@@ -196,7 +193,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">June 6, 2026</p>
+      <p class="date">June 7, 2026</p>
     </div>
   </div>
   
@@ -532,78 +529,51 @@ Figure&nbsp;1: Analytical Pipeline
 <h1 data-number="6"><span class="header-section-number">6</span> Prototype Sketches</h1>
 <section id="shiny-app-design" class="level2" data-number="6.1">
 <h2 data-number="6.1" class="anchored" data-anchor-id="shiny-app-design"><span class="header-section-number">6.1</span> Shiny App Design</h2>
-<p>The interactive dashboard will have a multi-tab structure to support different investigative perspectives:</p>
-<section id="tab-1-proposal" class="level3" data-number="6.1.1">
-<h3 data-number="6.1.1" class="anchored" data-anchor-id="tab-1-proposal"><span class="header-section-number">6.1.1</span> Tab 1: Proposal</h3>
+<p>The proposed Shiny app is designed as an interactive dashboard for investigating whether the TenantThread merger exposure was a deliberate leak or a system-control failure. The prototype contains four main tabs:</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-shiny-prototype" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-shiny-prototype-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="./image.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-shiny-prototype-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Low-fidelity Shiny App prototype design.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<section id="tab-1-overview" class="level3" data-number="6.1.1">
+<h3 data-number="6.1.1" class="anchored" data-anchor-id="tab-1-overview"><span class="header-section-number">6.1.1</span> Tab 1: Overview</h3>
 <ul>
-<li>Project background and research question</li>
-<li>Analytical framework overview</li>
-<li>Team information</li>
+<li>Provides a high-level summary of the crisis.</li>
+<li>Shows key indicators such as total messages, merger-related messages, leak/exposure signals, and pre-embargo public exposure.</li>
+<li>Presents the final interpretation: internal confidentiality leak enabled by system-level control failure.</li>
 </ul>
 </section>
-<section id="tab-2-overview-dashboard" class="level3" data-number="6.1.2">
-<h3 data-number="6.1.2" class="anchored" data-anchor-id="tab-2-overview-dashboard"><span class="header-section-number">6.1.2</span> Tab 2: Overview Dashboard</h3>
+<section id="tab-2-timeline-slack-leak" class="level3" data-number="6.1.2">
+<h3 data-number="6.1.2" class="anchored" data-anchor-id="tab-2-timeline-slack-leak"><span class="header-section-number">6.1.2</span> Tab 2: Timeline &amp; Slack Leak</h3>
 <ul>
-<li><strong>Key Metrics Panel</strong>: Total messages, agents involved, time period</li>
-<li><strong>Breach Timeline</strong>: Visual timeline showing critical events on June 5</li>
-<li><strong>Agent Activity Summary</strong>: Bar chart of communication volume by agent and period</li>
-<li><strong>Channel Distribution</strong>: Pie/bar chart showing channel usage patterns</li>
+<li>Focuses on how the crisis developed over time.</li>
+<li>Displays communication volume, pressure signal heatmap, and the Slack screenshot escalation timeline.</li>
+<li>Highlights the turning point from market inference to direct internal leakage.</li>
 </ul>
 </section>
-<section id="tab-3-network-analysis" class="level3" data-number="6.1.3">
-<h3 data-number="6.1.3" class="anchored" data-anchor-id="tab-3-network-analysis"><span class="header-section-number">6.1.3</span> Tab 3: Network Analysis</h3>
+<section id="tab-3-agent-communication-flow" class="level3" data-number="6.1.3">
+<h3 data-number="6.1.3" class="anchored" data-anchor-id="tab-3-agent-communication-flow"><span class="header-section-number">6.1.3</span> Tab 3: Agent &amp; Communication Flow</h3>
 <ul>
-<li><strong>Period Selector</strong>: Dropdown to choose Baseline, Final Week, Breach Day, or Breach Window</li>
-<li><strong>Interactive Network Graph</strong>: visNetwork visualization with:
-<ul>
-<li>Nodes sized by centrality</li>
-<li>Edges weighted by interaction frequency</li>
-<li>Color-coded by agent role</li>
-<li>Click for agent details</li>
-</ul></li>
-<li><strong>Centrality Metrics Table</strong>: Sortable table showing degree, betweenness, closeness</li>
-<li><strong>Network Evolution</strong>: Side-by-side comparison of network structure across periods</li>
+<li>Shows which agents were most involved in the communication and pressure patterns.</li>
+<li>Includes agent-level pressure exposure and communication-flow visuals.</li>
+<li>Helps users understand why the system failed to contain sensitive information.</li>
 </ul>
 </section>
-<section id="tab-4-timeline-explorer" class="level3" data-number="6.1.4">
-<h3 data-number="6.1.4" class="anchored" data-anchor-id="tab-4-timeline-explorer"><span class="header-section-number">6.1.4</span> Tab 4: Timeline Explorer</h3>
+<section id="tab-4-evidence-judgment" class="level3" data-number="6.1.4">
+<h3 data-number="6.1.4" class="anchored" data-anchor-id="tab-4-evidence-judgment"><span class="header-section-number">6.1.4</span> Tab 4: Evidence &amp; Judgment</h3>
 <ul>
-<li><strong>Time Range Slider</strong>: Focus on specific hours/days</li>
-<li><strong>Event Sequence Visualization</strong>: Gantt-style timeline showing:
-<ul>
-<li>Agent activities</li>
-<li>Critical events marked</li>
-<li>Breach window highlighted (4-6 PM)</li>
-</ul></li>
-<li><strong>Message Inspector</strong>: Click on timeline events to view message details</li>
-<li><strong>Channel Filter</strong>: Filter by communication channel</li>
-</ul>
-</section>
-<section id="tab-5-text-analysis" class="level3" data-number="6.1.5">
-<h3 data-number="6.1.5" class="anchored" data-anchor-id="tab-5-text-analysis"><span class="header-section-number">6.1.5</span> Tab 5: Text Analysis</h3>
-<ul>
-<li><strong>TF-IDF Visualization</strong>: Bar charts of distinctive terms by period/agent</li>
-<li><strong>Word Cloud</strong>: Interactive word cloud with period filtering</li>
-<li><strong>Action Keywords</strong>: Time series of action-related terms (post, publish, escalate)</li>
-<li><strong>Message Search</strong>: Text search with context display</li>
-</ul>
-</section>
-<section id="tab-6-agent-deep-dive" class="level3" data-number="6.1.6">
-<h3 data-number="6.1.6" class="anchored" data-anchor-id="tab-6-agent-deep-dive"><span class="header-section-number">6.1.6</span> Tab 6: Agent Deep Dive</h3>
-<ul>
-<li><strong>Agent Selector</strong>: Dropdown to choose specific agent</li>
-<li><strong>Activity Profile</strong>: Message volume, average length, channels used</li>
-<li><strong>Network Position</strong>: Centrality metrics and key connections</li>
-<li><strong>Distinctive Vocabulary</strong>: TF-IDF terms for selected agent</li>
-<li><strong>Internal States</strong>: Display sparse internal state records if available</li>
-</ul>
-</section>
-<section id="tab-7-competing-hypotheses" class="level3" data-number="6.1.7">
-<h3 data-number="6.1.7" class="anchored" data-anchor-id="tab-7-competing-hypotheses"><span class="header-section-number">6.1.7</span> Tab 7: Competing Hypotheses</h3>
-<ul>
-<li><strong>Evidence Table</strong>: Structured table showing evidence for/against each hypothesis</li>
-<li><strong>Signal Dashboard</strong>: Visual indicators of deliberate vs.&nbsp;breakdown patterns</li>
-<li><strong>Critical Decision Points</strong>: Timeline of key decisions with annotations</li>
+<li>Summarises the final evidence used to classify the incident.</li>
+<li>Displays the evidence interpretation matrix comparing internal leak, system breakdown, and senior-orchestrated leak.</li>
+<li>Provides the final judgment that the incident was an internal leak amplified by weak multi-agent controls, not a proven senior-level deliberate leak.</li>
 </ul>
 </section>
 </section>
