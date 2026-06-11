@@ -10,7 +10,9 @@
       "Bash(git add *)",
       "Bash(git commit *)",
       "Bash(md5 *)",
-      "Bash(quarto render *)"
+      "Bash(quarto render *)",
+      "Bash(gh api *)",
+      "WebFetch(domain:github.com)"
     ]
   }
 }

@@ -76,13 +76,22 @@ The main objectives of this project are:
 
 ## Important Variables
 
-**Network Construction:** - `agent_id`: Agent identifier for nodes - `responding_to`: Reply reference for building edges - `channel`: Communication channel (comms_huddle, one_on_one_chat, side_huddle, etc.)
+**Network Construction:** 
+- `agent_id`: Agent identifier for nodes 
+- `responding_to`: Reply reference for building edges 
+- `channel`: Communication channel (comms_huddle, one_on_one_chat, side_huddle, etc.)
 
-**Text Analysis:** - `message_text`: Full message content - `internal_state`: Private agent reasoning (reacting, rationalizing, deliberating)
+**Text Analysis:** 
+- `message_text`: Full message content 
+- `internal_state`: Private agent reasoning (reacting, rationalizing, deliberating)
 
-**Temporal Analysis:** - `timestamp`: Message datetime - `round_hour`: Round time marker
+**Temporal Analysis:** 
+- `timestamp`: Message datetime 
+- `round_hour`: Round time marker
 
-**Context:** - `environment_context`: External events, media pressure, critical deadlines - `message_type`: Type of communication
+**Context:** 
+- `environment_context`: External events, media pressure, critical deadlines 
+- `message_type`: Type of communication
 
 # Methodology
 
