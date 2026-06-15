@@ -1,7 +1,7 @@
 ---
 title: "Hands-on Exercise 7 (Part 2)"
 author: "Bui Tien Thanh (tt.bui.2025@mitb.smu.edu.sg)"
-date: "2026-05-13"
+date: "2026-06-01"
 date-modified: "last-modified"
 description: "Visualising and Analysing Text Data"
 format: html

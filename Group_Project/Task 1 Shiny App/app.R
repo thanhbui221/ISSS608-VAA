@@ -1835,33 +1835,33 @@ body { background: var(--surface); color: var(--text); font-size: 0.9rem; }
 "
 
 # ── 13. UI ────────────────────────────────────────────────────────────────────
-ui <- page_navbar(
-  title = tags$span(
-    style = "display:flex; align-items:center; gap:10px;",
-    tags$span(
-      style = paste0(
-        "background:linear-gradient(135deg,#3b82f6,#60a5fa);",
-        "color:#fff; font-weight:800; font-size:0.78rem;",
-        "padding:3px 9px; border-radius:5px; letter-spacing:0.04em;"
-      ),
-      "MC1"
-    ),
-    tags$span(
-      style = "color:#fff; font-weight:600; font-size:0.9rem; letter-spacing:-0.01em;",
-      "TenantThread Embargo Breach"
-    )
-  ),
-  theme = bs_theme(
-    version    = 5,
-    bootswatch = "flatly",
-    primary    = "#3b82f6",
-    base_font  = font_google("Inter")
-  ),
-  header          = tags$head(tags$style(HTML(mc1_css))),
-  navbar_options  = navbar_options(bg = "#0d1b2a", theme = "dark"),
 
-  # ── Tab 1: Data Exploration ──────────────────────────────────────────────
-  nav_panel(
+# Shared navbar config — also used by Group_Project/app.R
+mc1_title <- tags$span(
+  style = "display:flex; align-items:center; gap:10px;",
+  tags$span(
+    style = paste0(
+      "background:linear-gradient(135deg,#3b82f6,#60a5fa);",
+      "color:#fff; font-weight:800; font-size:0.78rem;",
+      "padding:3px 9px; border-radius:5px; letter-spacing:0.04em;"
+    ),
+    "MC1"
+  ),
+  tags$span(
+    style = "color:#fff; font-weight:600; font-size:0.9rem; letter-spacing:-0.01em;",
+    "TenantThread Embargo Breach"
+  )
+)
+mc1_theme <- bs_theme(
+  version    = 5,
+  bootswatch = "flatly",
+  primary    = "#3b82f6",
+  base_font  = font_google("Inter")
+)
+mc1_navbar_opts <- navbar_options(bg = "#0d1b2a", theme = "dark")
+
+# ── Tab 1: Data Exploration ──────────────────────────────────────────────────
+task1_panel_explore <- nav_panel(
     "Data Exploration",
     div(class = "container-fluid py-3",
       navset_tab(
@@ -2050,11 +2050,11 @@ ui <- page_navbar(
         )
       )
     )
-  ),
+)
 
-  # ── Tab 2: Task 1 ────────────────────────────────────────────────────────
-  nav_panel(
-    "Task 1: Key Events & Causal Chain",
+# ── Tab 2: Task 1 Key Events & Causal Chain ──────────────────────────────────
+task1_panel_task <- nav_panel(
+  "Task 1: Key Events & Causal Chain",
     div(class = "container-fluid py-3",
       navset_tab(
 
@@ -2220,8 +2220,16 @@ ui <- page_navbar(
         )
       )
     )
-  ),
+)
 
+# Standalone UI — used when running Task 1 independently
+ui <- page_navbar(
+  title          = mc1_title,
+  theme          = mc1_theme,
+  header         = tags$head(tags$style(HTML(mc1_css))),
+  navbar_options = mc1_navbar_opts,
+  task1_panel_explore,
+  task1_panel_task,
   nav_spacer(),
   nav_item(
     tags$span(
@@ -2232,7 +2240,7 @@ ui <- page_navbar(
 )
 
 # ── 14. Server ────────────────────────────────────────────────────────────────
-server <- function(input, output, session) {
+task1_server <- function(input, output, session) {
 
   # ── KPI Tiles ──────────────────────────────────────────────────────────────
   kpi_tile <- function(value, label, sub = NULL, color = "blue", icon_char = NULL) {
@@ -2561,4 +2569,4 @@ server <- function(input, output, session) {
 }
 
 # ── 15. Run ───────────────────────────────────────────────────────────────────
-shinyApp(ui = ui, server = server)
+if (!exists("COMBINED_APP")) shinyApp(ui = ui, server = task1_server)

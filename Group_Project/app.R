@@ -1,105 +1,53 @@
-library(shiny)
-library(shinydashboard)
+# ─────────────────────────────────────────────────────────────────────────────
+# Group Project — VAST Challenge 2026 MC1
+# Combined Shiny App: sources Task 1 + Task 2 (+ Task 3 when ready)
+# ─────────────────────────────────────────────────────────────────────────────
 
-ui <- navbarPage(
-  title = "Group Project - Visual Analytics",
+# Prevent Task 1 from auto-launching when sourced
+COMBINED_APP <- TRUE
 
-  # Proposal Tab
-  tabPanel("Proposal",
-           fluidPage(
-             titlePanel("Project Proposal"),
+# ── Source task files ─────────────────────────────────────────────────────────
+# chdir = TRUE so Task 1's relative data path resolves from its own folder
+source("Task 1 Shiny App/app.R", chdir = TRUE)
+# Exports: mc1_title, mc1_theme, mc1_navbar_opts, mc1_css,
+#          task1_panel_explore, task1_panel_task, task1_server
+# Globals: df, rs, edges_raw, net_pre, net_crisis,
+#          period_pal, ch_colours, agent_pal
 
-             fluidRow(
-               column(12,
-                      h3("Project Overview"),
-                      p("Add your project overview here..."),
+source("Task 2 Shiny App/app.R", chdir = TRUE)
+# Exports: task2_ui, task2_server
 
-                      h3("Objectives"),
-                      tags$ul(
-                        tags$li("Objective 1"),
-                        tags$li("Objective 2"),
-                        tags$li("Objective 3")
-                      ),
+# ── Combined UI ───────────────────────────────────────────────────────────────
+ui <- page_navbar(
+  title          = mc1_title,
+  theme          = mc1_theme,
+  header         = tags$head(tags$style(HTML(mc1_css))),
+  navbar_options = mc1_navbar_opts,
 
-                      h3("Data Source"),
-                      p("Describe your data source here..."),
+  # Task 1: Data Exploration + Event Sequence / Causal Chain
+  task1_panel_explore,
+  task1_panel_task,
 
-                      h3("Methodology"),
-                      p("Describe your methodology here..."),
+  # Task 2: Behavioral Analysis
+  task2_ui,
 
-                      h3("Expected Outcomes"),
-                      p("Describe expected outcomes here...")
-               )
-             )
-           )
-  ),
+  # Task 3: Leading Indicators (add when ready)
+  # task3_ui,
 
-  # Data Exploration Tab
-  tabPanel("Data Exploration",
-           fluidPage(
-             titlePanel("Data Exploration"),
-             sidebarLayout(
-               sidebarPanel(
-                 h4("Upload Data"),
-                 fileInput("file1", "Choose CSV File",
-                          accept = c("text/csv", "text/comma-separated-values,text/plain", ".csv")),
-                 hr(),
-                 p("Data exploration tools will appear here...")
-               ),
-               mainPanel(
-                 h4("Data Preview"),
-                 tableOutput("contents")
-               )
-             )
-           )
-  ),
-
-  # Visualization Tab
-  tabPanel("Visualization",
-           fluidPage(
-             titlePanel("Data Visualization"),
-             p("Add your visualizations here...")
-           )
-  ),
-
-  # Analysis Tab
-  tabPanel("Analysis",
-           fluidPage(
-             titlePanel("Statistical Analysis"),
-             p("Add your analysis here...")
-           )
-  ),
-
-  # About Tab
-  tabPanel("About",
-           fluidPage(
-             titlePanel("About This Project"),
-             fluidRow(
-               column(12,
-                      h3("Team Members"),
-                      tags$ul(
-                        tags$li("Member 1"),
-                        tags$li("Member 2"),
-                        tags$li("Member 3")
-                      ),
-
-                      h3("Contact Information"),
-                      p("Add contact information here...")
-               )
-             )
-           )
+  nav_spacer(),
+  nav_item(
+    tags$span(
+      style = "color:rgba(255,255,255,0.45); font-size:0.76rem; font-weight:500;",
+      "VAST Challenge 2026 MC1", tags$span(style = "margin:0 6px;", "·"), "ISSS608"
+    )
   )
 )
 
+# ── Combined Server ───────────────────────────────────────────────────────────
 server <- function(input, output, session) {
-
-  # Data upload handling
-  output$contents <- renderTable({
-    req(input$file1)
-    df <- read.csv(input$file1$datapath)
-    head(df, 10)
-  })
-
+  task1_server(input, output, session)
+  task2_server(input, output, session)
+  # task3_server(input, output, session)  # uncomment when Task 3 is ready
 }
 
 shinyApp(ui = ui, server = server)
