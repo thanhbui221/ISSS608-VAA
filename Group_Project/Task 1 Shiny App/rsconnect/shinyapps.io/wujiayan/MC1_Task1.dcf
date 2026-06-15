@@ -1,0 +1,12 @@
+name: MC1_Task1
+title: MC1_Task1
+username: wujiayan
+account: wujiayan
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 17501912
+bundleId: 12125262
+url: https://wujiayan.shinyapps.io/MC1_Task1/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
