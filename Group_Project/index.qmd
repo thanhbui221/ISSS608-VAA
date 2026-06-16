@@ -9,7 +9,7 @@ This section contains our group project analyzing the VAST Challenge 2026 Mini-C
 ### Project Components
 
 - [Project Proposal](proposal.qmd)
-- [Shiny Dashboard](app.R)
+- [Shiny Dashboard](https://ttbui2025.shinyapps.io/Group_Project/){target="_blank"}
 
 ### Overview
 

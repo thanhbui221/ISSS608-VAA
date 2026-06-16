@@ -29,4 +29,5 @@ Assignments and projects for independent work.
 
 [Go to Take-home Exercises →](Take-home_Ex/index.qmd)
 :::
+
 ::::::
