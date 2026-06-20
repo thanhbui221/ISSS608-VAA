@@ -17,6 +17,9 @@ source("Task 1 Shiny App/app.R", chdir = TRUE)
 source("Task 2 Shiny App/app.R", chdir = TRUE)
 # Exports: task2_ui, task2_server
 
+source("Task 3 Shiny App/app.R", chdir = TRUE)
+# Exports: task3_ui, task3_server
+
 # ── Combined UI ───────────────────────────────────────────────────────────────
 ui <- page_navbar(
   title          = mc1_title,
@@ -31,8 +34,8 @@ ui <- page_navbar(
   # Task 2: Behavioral Analysis
   task2_ui,
 
-  # Task 3: Leading Indicators (add when ready)
-  # task3_ui,
+  # Task 3: Leading Indicators
+  task3_ui,
 
   nav_spacer(),
   nav_item(
@@ -47,7 +50,7 @@ ui <- page_navbar(
 server <- function(input, output, session) {
   task1_server(input, output, session)
   task2_server(input, output, session)
-  # task3_server(input, output, session)  # uncomment when Task 3 is ready
+  task3_server(input, output, session)
 }
 
 shinyApp(ui = ui, server = server)
