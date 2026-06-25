@@ -214,36 +214,39 @@ theme_mc1 <- function(base = 11) {
 }
 
 # ── 8. Causal Graph Data ──────────────────────────────────────────────────────
+# Landscape grid layout (6 columns x 5 rows) so the full 28-node chain fits a
+# wide viewport. Columns advance left -> right in time; phase colour forms a
+# left (pre, blue) -> middle (crisis, amber) -> right (breach red / resolve green) gradient.
 nodes <- tribble(
-  ~id,   ~px,  ~py,   ~label,                                              ~dt,              ~phase,
-  "n1",  540,   60,  "1. Embargo\nEstablished",                           "May 17 - 9AM",   "pre",
-  "n2",  160,  200,  "2. Data Governance\nDebate",                        "May 21 - 9AM",   "pre",
-  "n3",  538,  194,  "3. NHPI Report +\nMerger Inferred",                  "May 22 - 9AM",   "pre",
-  "n4",  900,  200,  "4. side_huddle\nIntroduced",                        "May 22 - 9AM",   "pre",
-  "n7",  160,  340,  "7. Major\nSLA Breach",                              "May 28 - 9AM",   "pre",
-  "n8",  540,  340,  "8. @ElenaMarquez\nFaux Pas",                        "May 29 - 9AM",   "pre",
-  "n5",  900,  340,  "5. Merger Briefed\nto Senior Team",                 "May 23 - 9AM",   "pre",
-  "n11", 159,  496,  "11. SaltWind\nPiece #1",                            "May 31 - 9AM",   "pre",
-  "n9",  540,  480,  "9. Legal Moves\nDeliberations Off\nMonitored Channel","May 29 - 9AM", "pre",
-  "n6",  900,  480,  "6. Bad Q2 +\nFormal Briefing",                      "May 25 - 9AM",   "pre",
-  "n12", 160,  620,  "12. Damage Control\n+ ResidentIQ Attacks",          "Jun 1 - 9AM",    "pre",
-  "n10", 540,  620,  "10. Judge-Agent\nDeployed",                         "May 30 - 9AM",   "pre",
-  "n13", 160,  760,  "13. SaltWind\nPiece #2",                            "Jun 4 - 9AM",    "pre",
-  "n14", 350,  960,  "14. SaltWind Expose\n#AlgorithmicEviction",         "Jun 5 - 9AM",    "crisis",
-  "n15", 760,  960,  "15. 7 Governance\nReforms Published",               "Jun 5 - 9AM",    "crisis",
-  "n16", 540, 1100,  "16. #AlgorithmicEviction\nTrends + Intern Slip",    "Jun 5 - 10AM",   "crisis",
-  "n17", 200, 1100,  "17. SaltWind Wrong\nStory: ResidentIQ",             "Jun 5 - 11AM",   "crisis",
-  "n18", 720, 1240,  "18. Legal Begins\nSection 4.3 Argument",            "Jun 5 - 11AM",   "crisis",
-  "n19", 200, 1240,  "19. SaltWind\nThreatens Update",                    "Jun 5 - 12PM",   "crisis",
-  "n20", 200, 1360,  "20. CivicLoom\nFormal Notice",                      "Jun 5 - 1PM",    "crisis",
-  "n21", 540, 1360,  "21. Stock $18\nAjay Signals Delay",                 "Jun 5 - 2PM",    "crisis",
-  "n22", 880, 1360,  "22. OceanCrunch\nCrisis of Silence\n+ Horizon MAC", "Jun 5 - 3PM",    "crisis",
-  "n23", 385, 1476,  "23. COMPLIANCE_WARNING\nJudge Leaves",              "Jun 5 - 3PM",    "crisis",
-  "n24", 540, 1620,  "24. Section 4.3(c)\nIdentified + Press\nRelease Staged","Jun 5 - 4PM","breach",
-  "n25", 720, 1760,  "25. Early Release\nPre-Positioned",                 "Jun 5 - 4-5PM",  "breach",
-  "n26", 320, 1760,  "26. SaltWind Publishes\nCorrect Merger Story",      "Jun 5 - 5PM",    "breach",
-  "n27", 540, 1900,  "27. GO Signal\nCompany Release",                    "Jun 5 - 5PM round","breach",
-  "n28", 540, 2040,  "28. Formal\nEmbargo Lift",                          "Jun 5 - 6PM",    "resolve"
+  ~id,   ~px,   ~py,   ~label,                                              ~dt,              ~phase,
+  "n1",  120,   120,  "1. Embargo\nEstablished",                           "May 17 - 9AM",   "pre",
+  "n2",  120,   330,  "2. Data Governance\nDebate",                        "May 21 - 9AM",   "pre",
+  "n3",  120,   540,  "3. NHPI Report +\nMerger Inferred",                  "May 22 - 9AM",   "pre",
+  "n4",  120,   750,  "4. side_huddle\nIntroduced",                        "May 22 - 9AM",   "pre",
+  "n7",  400,   330,  "7. Major\nSLA Breach",                              "May 28 - 9AM",   "pre",
+  "n8",  400,   540,  "8. @ElenaMarquez\nFaux Pas",                        "May 29 - 9AM",   "pre",
+  "n5",  120,   960,  "5. Merger Briefed\nto Senior Team",                 "May 23 - 9AM",   "pre",
+  "n11", 680,   120,  "11. SaltWind\nPiece #1",                            "May 31 - 9AM",   "pre",
+  "n9",  400,   750,  "9. Legal Moves\nDeliberations Off\nMonitored Channel","May 29 - 9AM", "pre",
+  "n6",  400,   120,  "6. Bad Q2 +\nFormal Briefing",                      "May 25 - 9AM",   "pre",
+  "n12", 680,   330,  "12. Damage Control\n+ ResidentIQ Attacks",          "Jun 1 - 9AM",    "pre",
+  "n10", 400,   960,  "10. Judge-Agent\nDeployed",                         "May 30 - 9AM",   "pre",
+  "n13", 680,   540,  "13. SaltWind\nPiece #2",                            "Jun 4 - 9AM",    "pre",
+  "n14", 680,   750,  "14. SaltWind Expose\n#AlgorithmicEviction",         "Jun 5 - 9AM",    "crisis",
+  "n15", 680,   960,  "15. 7 Governance\nReforms Published",               "Jun 5 - 9AM",    "crisis",
+  "n16", 960,   120,  "16. #AlgorithmicEviction\nTrends + Intern Slip",    "Jun 5 - 10AM",   "crisis",
+  "n17", 960,   330,  "17. SaltWind Wrong\nStory: ResidentIQ",             "Jun 5 - 11AM",   "crisis",
+  "n18", 960,   540,  "18. Legal Begins\nSection 4.3 Argument",            "Jun 5 - 11AM",   "crisis",
+  "n19", 960,   750,  "19. SaltWind\nThreatens Update",                    "Jun 5 - 12PM",   "crisis",
+  "n20", 960,   960,  "20. CivicLoom\nFormal Notice",                      "Jun 5 - 1PM",    "crisis",
+  "n21", 1240,  120,  "21. Stock $18\nAjay Signals Delay",                 "Jun 5 - 2PM",    "crisis",
+  "n22", 1240,  330,  "22. OceanCrunch\nCrisis of Silence\n+ Horizon MAC", "Jun 5 - 3PM",    "crisis",
+  "n23", 1240,  540,  "23. COMPLIANCE_WARNING\nJudge Leaves",              "Jun 5 - 3PM",    "crisis",
+  "n24", 1240,  750,  "24. Section 4.3(c)\nIdentified + Press\nRelease Staged","Jun 5 - 4PM","breach",
+  "n25", 1240,  960,  "25. Early Release\nPre-Positioned",                 "Jun 5 - 4-5PM",  "breach",
+  "n26", 1520,  120,  "26. SaltWind Publishes\nCorrect Merger Story",      "Jun 5 - 5PM",    "breach",
+  "n27", 1520,  330,  "27. GO Signal\nCompany Release",                    "Jun 5 - 5PM round","breach",
+  "n28", 1520,  540,  "28. Formal\nEmbargo Lift",                          "Jun 5 - 6PM",    "resolve"
 )
 
 node_meta <- tribble(
@@ -348,7 +351,7 @@ edges_js <- causal_edges |>
   toJSON(dataframe = "rows", auto_unbox = TRUE)
 
 # ── 9. Causal Graph Builder ───────────────────────────────────────────────────
-make_causal_graph <- function(height = 2300) {
+make_causal_graph <- function(height = 760) {
   glue('
 <!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.26.0/cytoscape.min.js"></script>
@@ -604,12 +607,9 @@ var cy=cytoscape({{
   userZoomingEnabled:true,userPanningEnabled:true
 }});
 window.tenantThreadCy=cy;
-var defaultZoom=1.0598749301444024;
-var defaultPan={{x:9.744922021684893,y:-19.62088827593794}};
 function resizeAndFit(){{
   cy.resize();
-  cy.zoom(defaultZoom);
-  cy.pan(defaultPan);
+  cy.fit(cy.elements(),30);
 }}
 
 var selectedNodeId = null;
@@ -817,8 +817,7 @@ document.getElementById("cy-zoom-out").addEventListener("click",function(){{zoom
 document.getElementById("cy-reset").addEventListener("click",function(){{
   clearSelection();
   hideTip();
-  cy.zoom(defaultZoom);
-  cy.pan(defaultPan);
+  cy.fit(cy.elements(),30);
 }});
 var tip=document.getElementById("cy-tip");
 function showTip(x,y,h){{tip.innerHTML=h;tip.style.display="block";moveTip(x,y);}}
@@ -2523,7 +2522,7 @@ task1_server <- function(input, output, session) {
 
   # ── T1.1 Causal Graph ──────────────────────────────────────────────────────
   output$causal_graph_ui <- renderUI({
-    html_content <- make_causal_graph(height = 2300)
+    html_content <- make_causal_graph(height = 760)
     tags$iframe(
       srcdoc = html_content,
       style  = "width:100%; height:2300px; border:0; overflow:hidden;",
