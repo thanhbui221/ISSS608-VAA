@@ -106,6 +106,37 @@
   .cc-chain i{color:#0f766e;font-style:normal;font-weight:800;font-size:15px;}
   .cc-path .sub{margin-top:7px;font-size:15px;line-height:1.3;color:var(--slate);}
   .cc-path .sub b{color:var(--ink);}
+  /* Causal Chain — enlarged graph fills the card, caption pinned at the bottom */
+  .shot .imgwrap.cc-img{flex:1 1 auto;min-height:0;background:#ffffff;display:flex;align-items:center;justify-content:center;padding:2px 0;}
+  .imgwrap.cc-img img{width:100%;height:100%;object-fit:contain;display:block;}
+  .cc-cap{flex:0 0 auto;}
+
+  /* Communication Networks — channel legend */
+  .chan-legend{display:flex;flex-wrap:wrap;align-items:center;gap:5px 16px;padding:6px 18px 0;}
+  .chan-legend .ttl{font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);}
+  .chan-legend .item{display:inline-flex;align-items:center;gap:7px;font-size:14.5px;color:var(--slate);font-weight:600;}
+  .chan-legend .sw{width:22px;height:5px;border-radius:3px;display:inline-block;}
+
+  /* Data Exploration — reference tables */
+  .dx-panel{flex:1 1 auto;padding:14px 16px 13px;display:flex;flex-direction:column;gap:13px;overflow:hidden;}
+  .dx-panel .dx-stats{margin-top:0;gap:12px;}
+  .dx-panel .dx-stat{padding:11px 6px;}
+  .dx-panel .dx-stat .n{font-size:28px;}
+  .dx-panel .dx-stat .l{font-size:13.5px;margin-top:4px;}
+  .dx-tbl{width:100%;border-collapse:collapse;font-size:13.5px;line-height:1.3;table-layout:fixed;}
+  .dx-tbl caption{caption-side:top;text-align:left;font-size:14.5px;font-weight:800;color:var(--ink);padding-bottom:4px;margin-bottom:3px;border-bottom:2px solid var(--blue);}
+  .dx-tbl th{font-size:10px;letter-spacing:.02em;text-transform:uppercase;color:var(--muted);font-weight:700;text-align:left;padding:3px 6px;border-bottom:1px solid var(--line);}
+  .dx-tbl td{padding:4px 6px;border-bottom:1px solid #eef2f7;color:var(--slate);vertical-align:top;}
+  .dx-tbl tr:last-child td{border-bottom:none;}
+  .dx-tbl b{color:var(--ink);font-weight:700;}
+  .dx-tbl .code{font-family:var(--mono);font-size:11.5px;background:#eef4fe;color:#1e3a8a;padding:1px 5px;border-radius:4px;border:1px solid #d9e6fb;}
+  .bdg{display:inline-block;font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:10px;white-space:nowrap;}
+  .bdg.y{background:#dcfce7;color:#15803d;}
+  .bdg.n{background:#fee2e2;color:#b91c1c;}
+  .bdg.snr{background:#ccfbf1;color:#0f766e;}
+  .bdg.jnr{background:#fef3c7;color:#92400e;}
+  .bdg.cmp{background:#f3e8ff;color:#7e22ce;}
+  .dx-foot{font-size:9.5px;color:var(--muted);font-style:italic;margin-top:-2px;}
 
   /* future / conclusion */
   .ftr-grid{display:grid;grid-template-columns:1.25fr 1fr;gap:24px;margin-top:24px;}
@@ -218,32 +249,61 @@
 
       <div class="shot">
         <div class="cap-h"><span class="dot" style="background:var(--blue)"></span><span class="t">Data Exploration</span><span class="pill" style="background:var(--blue)">OVERVIEW</span></div>
-        <div class="imgwrap"><img src="poster_assets/01_overview_c.png" alt="overview"></div>
-        <div class="cap fill">
-          <div class="lead">Nested JSON parsed into linked tidy tables — <b>rounds · environment · communications · internal-state · agents</b> — spanning <b>17 May – 5 Jun 2046</b>.</div>
+        <div class="dx-panel">
           <div class="dx-stats">
             <div class="dx-stat"><div class="n">912</div><div class="l">messages</div></div>
             <div class="dx-stat"><div class="n">23</div><div class="l">rounds</div></div>
             <div class="dx-stat"><div class="n">7</div><div class="l">agents</div></div>
             <div class="dx-stat"><div class="n">6</div><div class="l">channels</div></div>
           </div>
-          <ul class="dx-facts">
-            <li><b>2 of 6 channels were unmonitored</b> — <span class="tag">side_huddle</span> &amp; <span class="tag">1-on-1</span> — and carried the sensitive coordination.</li>
-            <li>The monitor <b>Judge-Agent</b> arrived only on <b>30 May</b>, <span class="hl">advisory, no hard-block</span>, blind to private channels and internal reasoning.</li>
-          </ul>
+
+          <table class="dx-tbl">
+            <colgroup><col style="width:19%"><col style="width:40%"><col style="width:41%"></colgroup>
+            <caption>Internal-State Fields</caption>
+            <thead><tr><th>Field</th><th>Definition</th><th>Analytical significance</th></tr></thead>
+            <tbody>
+              <tr><td><span class="code">deliberating</span></td><td>Forward-looking reasoning — planning before/during action.</td><td><b>Pre-planned intent.</b> A plan that precedes the trigger = premeditation.</td></tr>
+              <tr><td><span class="code">reacting</span></td><td>Immediate emotional/tactical response to an event.</td><td>Genuine surprise/stress — separates reactive from planned.</td></tr>
+              <tr><td><span class="code">rationalizing</span></td><td>Post-hoc justification of a decision already made.</td><td>Justification appearing <b>before</b> the trigger = prepared in advance.</td></tr>
+            </tbody>
+          </table>
+
+          <table class="dx-tbl">
+            <colgroup><col style="width:22%"><col style="width:11%"><col style="width:12%"><col style="width:55%"></colgroup>
+            <caption>Channel Architecture &amp; Monitoring Scope</caption>
+            <thead><tr><th>Channel</th><th>Type</th><th>Judge</th><th>Purpose</th></tr></thead>
+            <tbody>
+              <tr><td><span class="code">comms_huddle</span></td><td>Internal</td><td><span class="bdg y">Yes</span></td><td>Primary team coordination; monitored for embargo-sensitive content.</td></tr>
+              <tr><td><span class="code">side_huddle</span></td><td>Internal</td><td><span class="bdg n">No*</span></td><td>Private sub-group (from 22 May) for sensitive coordination.</td></tr>
+              <tr><td><span class="code">one_on_one_chat</span></td><td>Internal</td><td><span class="bdg n">No*</span></td><td>Direct DMs; staged embargoed content on crisis day.</td></tr>
+              <tr><td><span class="code">official_post</span></td><td>Public</td><td><span class="bdg y">Yes</span></td><td>Official TenantThread FleX; monitored, approval required.</td></tr>
+              <tr><td><span class="code">personal_post</span></td><td>Public</td><td><span class="bdg n">No</span></td><td>Agents' personal FleX; outside compliance scope.</td></tr>
+              <tr><td><span class="code">anonymous_post</span></td><td>Public</td><td><span class="bdg n">No</span></td><td>Anonymous FleX; used by Legal to post merger content.</td></tr>
+            </tbody>
+          </table>
+
+          <table class="dx-tbl">
+            <colgroup><col style="width:20%"><col style="width:27%"><col style="width:17%"><col style="width:36%"></colgroup>
+            <caption>The Seven AI Agents</caption>
+            <thead><tr><th>Agent</th><th>Role</th><th>Seniority</th><th>Note</th></tr></thead>
+            <tbody>
+              <tr><td><span class="code">legal_agent</span></td><td>General Legal Counsel</td><td><span class="bdg snr">Senior</span></td><td>Drafts the Section 4.3 argument.</td></tr>
+              <tr><td><span class="code">social_media_agent</span></td><td>Social Media Manager</td><td><span class="bdg snr">Senior</span></td><td>Public sentiment; @Elena faux pas.</td></tr>
+              <tr><td><span class="code">pr_agent</span></td><td>Head of Comms &amp; PR</td><td><span class="bdg snr">Senior</span></td><td>Approves public statements.</td></tr>
+              <tr><td><span class="code">pr_intern_agent</span></td><td>PR Team Intern</td><td><span class="bdg jnr">Junior</span></td><td>Executes approved FleX posts.</td></tr>
+              <tr><td><span class="code">quality_agent</span></td><td>VP Platform Trust &amp; Safety</td><td><span class="bdg snr">Senior</span></td><td>Data governance &amp; compliance docs.</td></tr>
+              <tr><td><span class="code">intern_agent</span></td><td>General Intern</td><td><span class="bdg jnr">Junior</span></td><td>Leaked the 6 PM timeline.</td></tr>
+              <tr><td><span class="code">judge_agent</span></td><td>Compliance Observer</td><td><span class="bdg cmp">Compliance</span></td><td>Installed 30 May; comms_huddle + public posts only.</td></tr>
+            </tbody>
+          </table>
+          <div class="dx-foot">*Judge monitoring inferred — not directly observed in the data.</div>
         </div>
       </div>
 
       <div class="shot">
         <div class="cap-h"><span class="dot" style="background:var(--t1)"></span><span class="t">Causal Chain — 28 events</span><span class="pill" style="background:var(--t1)">TASK 1</span></div>
-        <div class="imgwrap"><img src="poster_assets/02_event_chain.jpg" alt="causal chain"></div>
-        <div class="cap fill">
-          <div class="lead">Three phases from embargo to breach. Pivot = <b>node 18</b>: Legal-Agent builds the Section 4.3 argument at <b>11 AM — six hours before invoking it</b>. Reactive management ends; pre-planning begins.</div>
-          <div class="cc-phases">
-            <div class="ccp" style="--c:#2563eb"><b>13</b>Pre-Crisis<small>nodes 1–13</small></div>
-            <div class="ccp" style="--c:#d97706"><b>10</b>Crisis Day<small>nodes 14–23</small></div>
-            <div class="ccp" style="--c:#E24B4A"><b>5</b>Embargo Failure<small>nodes 24–28</small></div>
-          </div>
+        <div class="imgwrap cc-img"><img src="poster_assets/02_event_chain.png" alt="causal chain"></div>
+        <div class="cap cc-cap">
           <div class="cc-path">
             <div class="lab">Critical causal path</div>
             <div class="cc-chain"><span>8</span><i>→</i><span>9</span><i>→</i><span>18</span><i>→</i><span>24</span><i>→</i><span>25</span><i>→</i><span>27</span></div>
@@ -254,11 +314,14 @@
 
       <div class="shot">
         <div class="cap-h"><span class="dot" style="background:var(--t1)"></span><span class="t">Communication Networks</span><span class="pill" style="background:var(--t1)">TASK 1</span></div>
-        <div class="imgwrap" style="display:flex;flex-direction:column;gap:6px;">
-          <img src="poster_assets/03_network_precrisis.jpg" alt="pre-crisis communication network">
-          <img src="poster_assets/03_network_crisis.jpg" alt="crisis-day communication network">
+        <div class="imgwrap" style="background:#f4f9fd;"><img src="poster_assets/03_networks_combined.jpg" alt="communication networks — pre-crisis and crisis-day"></div>
+        <div class="chan-legend">
+          <span class="ttl">Channel</span>
+          <span class="item"><span class="sw" style="background:#B5D4F4;"></span>Comms Huddle</span>
+          <span class="item"><span class="sw" style="background:#FFD700;"></span>1-on-1 Chat</span>
+          <span class="item"><span class="sw" style="background:#E24B4A;"></span>Side Huddle</span>
         </div>
-        <div class="cap">Balanced pre-crisis traffic collapses into a <b>concentrated two-hub topology</b> on crisis day — Legal drives authorisation, Social-Media drives narrative — over a private <span class="tag">side_huddle</span> cluster the Judge never sees.</div>
+        <div class="cap">Pre-crisis balance collapses into a <b>concentrated two-hub topology</b> on crisis day — over a private <span class="tag">side_huddle</span> cluster the Judge never sees.</div>
       </div>
 
       <div class="shot">
