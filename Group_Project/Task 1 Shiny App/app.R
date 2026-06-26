@@ -1693,6 +1693,19 @@ body { background: var(--surface); color: var(--text); font-size: 0.9rem; }
   font-size: 0.85rem !important;
   vertical-align: middle !important;
 }
+#message_browser,
+#message_browser_wrapper,
+#message_browser .dataTable {
+  width: 100% !important;
+}
+#message_browser th,
+#message_browser td {
+  box-sizing: border-box !important;
+}
+#message_browser td:nth-child(5) {
+  white-space: normal !important;
+  word-break: normal !important;
+}
 
 /* DT Badges */
 .table-mc1 .badge-legal, .badge-legal {
@@ -2447,10 +2460,17 @@ task1_server <- function(input, output, session) {
   # ── Message Browser ────────────────────────────────────────────────────────
   output$message_browser <- renderDT({
     tbl_data <- df |>
-      left_join(rs |> select(hour, label, period), by = "hour") |>
+      left_join(rs |> select(hour, label), by = "hour") |>
+      mutate(
+        period_browser = factor(case_when(
+          date < as.Date("2046-05-22") ~ "Normal",
+          date < as.Date("2046-06-05") ~ "Escalation",
+          TRUE                         ~ "Crisis"
+        ), levels = c("Normal", "Escalation", "Crisis"))
+      ) |>
       select(
         Round   = label,
-        Period  = period,
+        Period  = period_browser,
         Agent   = agent_id,
         Channel = channel,
         Content = content
@@ -2478,23 +2498,27 @@ task1_server <- function(input, output, session) {
         Channel = as.factor(Channel)
       )
 
-    datatable(
+    DT::datatable(
       tbl_data,
       filter     = "top",
       rownames   = FALSE,
       escape     = FALSE,
+      selection  = "none",
       options    = list(
-        searchHighlight = TRUE,
-        pageLength      = 25,
-        scrollY         = "calc(100vh - 418px)",
-        scrollCollapse  = TRUE,
-        scrollX         = TRUE,
+        searchHighlight = FALSE,
+        pageLength      = 15,
+        lengthMenu      = c(10, 15, 25, 50),
+        scrollY         = "52vh",
+        scrollCollapse  = FALSE,
+        scrollX         = FALSE,
         autoWidth       = FALSE,
+        deferRender     = TRUE,
+        processing      = TRUE,
         dom             = "lrtip",
         columnDefs = list(
-          list(width = "90px",  targets = 0, className = "dt-center"),
+          list(width = "8%",  targets = 0, className = "dt-center"),
           list(
-            width = "90px",
+            width = "8%",
             targets = 1,
             className = "dt-center",
             render = JS("
@@ -2513,7 +2537,7 @@ task1_server <- function(input, output, session) {
             ")
           ),
           list(
-            width = "110px",
+            width = "10%",
             targets = 2,
             className = "dt-center",
             render = JS("
@@ -2536,7 +2560,7 @@ task1_server <- function(input, output, session) {
             ")
           ),
           list(
-            width = "120px",
+            width = "12%",
             targets = 3,
             className = "dt-center",
             render = JS("
@@ -2548,12 +2572,12 @@ task1_server <- function(input, output, session) {
               }
             ")
           ),
-          list(width = "auto",  targets = 4, className = "dt-left")
+          list(width = "62%", targets = 4, className = "dt-left")
         )
       ),
       class = "table table-sm table-hover"
     )
-  })
+  }, server = TRUE)
 
   observeEvent(input$dt_reset, {
     proxy <- dataTableProxy("message_browser")
@@ -2565,7 +2589,7 @@ task1_server <- function(input, output, session) {
     html_content <- make_causal_graph(height = 760)
     tags$iframe(
       srcdoc = html_content,
-      style  = "width:100%; height:2300px; border:0; overflow:hidden;",
+      style  = "width:100%; height:820px; border:0; overflow:hidden; display:block;",
       title  = "Events Causal Chain"
     )
   })
