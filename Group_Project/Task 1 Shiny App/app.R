@@ -232,21 +232,21 @@ nodes <- tribble(
   "n12", 680,   330,  "12. Damage Control\n+ ResidentIQ Attacks",          "Jun 1 - 9AM",    "pre",
   "n10", 400,   960,  "10. Judge-Agent\nDeployed",                         "May 30 - 9AM",   "pre",
   "n13", 680,   540,  "13. SaltWind\nPiece #2",                            "Jun 4 - 9AM",    "pre",
-  "n14", 680,   750,  "14. SaltWind Expose\n#AlgorithmicEviction",         "Jun 5 - 9AM",    "crisis",
-  "n15", 680,   960,  "15. 7 Governance\nReforms Published",               "Jun 5 - 9AM",    "crisis",
-  "n16", 960,   120,  "16. #AlgorithmicEviction\nTrends + Intern Slip",    "Jun 5 - 10AM",   "crisis",
-  "n17", 960,   330,  "17. SaltWind Wrong\nStory: ResidentIQ",             "Jun 5 - 11AM",   "crisis",
-  "n18", 960,   540,  "18. Legal Begins\nSection 4.3 Argument",            "Jun 5 - 11AM",   "crisis",
-  "n19", 960,   750,  "19. SaltWind\nThreatens Update",                    "Jun 5 - 12PM",   "crisis",
-  "n20", 960,   960,  "20. CivicLoom\nFormal Notice",                      "Jun 5 - 1PM",    "crisis",
-  "n21", 1240,  120,  "21. Stock $18\nAjay Signals Delay",                 "Jun 5 - 2PM",    "crisis",
-  "n22", 1240,  330,  "22. OceanCrunch\nCrisis of Silence\n+ Horizon MAC", "Jun 5 - 3PM",    "crisis",
-  "n23", 1240,  540,  "23. COMPLIANCE_WARNING\nJudge Leaves",              "Jun 5 - 3PM",    "crisis",
-  "n24", 1240,  750,  "24. Section 4.3(c)\nIdentified + Press\nRelease Staged","Jun 5 - 4PM","breach",
-  "n25", 1240,  960,  "25. Early Release\nPre-Positioned",                 "Jun 5 - 4-5PM",  "breach",
-  "n26", 1520,  120,  "26. SaltWind Publishes\nCorrect Merger Story",      "Jun 5 - 5PM",    "breach",
-  "n27", 1520,  330,  "27. GO Signal\nCompany Release",                    "Jun 5 - 5PM round","breach",
-  "n28", 1520,  540,  "28. Formal\nEmbargo Lift",                          "Jun 5 - 6PM",    "resolve"
+  "n14", 960,   120,  "14. SaltWind Expose\n#AlgorithmicEviction",         "Jun 5 - 9AM",    "crisis",
+  "n15", 960,   330,  "15. 7 Governance\nReforms Published",               "Jun 5 - 9AM",    "crisis",
+  "n16", 960,   540,  "16. #AlgorithmicEviction\nTrends + Intern Slip",    "Jun 5 - 10AM",   "crisis",
+  "n17", 960,   750,  "17. SaltWind Wrong\nStory: ResidentIQ",             "Jun 5 - 11AM",   "crisis",
+  "n18", 960,   960,  "18. Legal Begins\nSection 4.3 Argument",            "Jun 5 - 11AM",   "crisis",
+  "n19", 1240,  120,  "19. SaltWind\nThreatens Update",                    "Jun 5 - 12PM",   "crisis",
+  "n20", 1240,  330,  "20. CivicLoom\nFormal Notice",                      "Jun 5 - 1PM",    "crisis",
+  "n21", 1240,  540,  "21. Stock $18\nAjay Signals Delay",                 "Jun 5 - 2PM",    "crisis",
+  "n22", 1240,  750,  "22. OceanCrunch\nCrisis of Silence\n+ Horizon MAC", "Jun 5 - 3PM",    "crisis",
+  "n23", 1240,  960,  "23. COMPLIANCE_WARNING\nJudge Leaves",              "Jun 5 - 3PM",    "crisis",
+  "n24", 1520,  120,  "24. Section 4.3(c)\nIdentified + Press\nRelease Staged","Jun 5 - 4PM","breach",
+  "n25", 1520,  330,  "25. Early Release\nPre-Positioned",                 "Jun 5 - 4-5PM",  "breach",
+  "n26", 1520,  540,  "26. SaltWind Publishes\nCorrect Merger Story",      "Jun 5 - 5PM",    "breach",
+  "n27", 1520,  750,  "27. GO Signal\nCompany Release",                    "Jun 5 - 5PM round","breach",
+  "n28", 1800,  330,  "28. Formal\nEmbargo Lift",                          "Jun 5 - 6PM",    "resolve"
 )
 
 node_meta <- tribble(
@@ -369,8 +369,22 @@ body{{font-family:"Segoe UI",Arial,sans-serif;background:#f4f7fb;height:100vh;ov
 .cyb{{width:15px;height:11px;border-radius:3px;border:1.5px solid rgba(0,0,0,.18);}}
 
 #cy-main{{flex:1;position:relative;background:#f9fbfd;display:flex;flex-direction:row;height:100%;overflow:hidden;}}
-#cy-container{{flex:3;position:relative;height:100%;min-width:0;}}
+#cy-container{{flex:7;position:relative;height:100%;min-width:0;transition:flex 0.25s ease;}}
 #cy{{width:100%;height:100%;}}
+
+/* Collapsible events panel */
+#cy-main.collapsed #events-panel{{flex:0 0 0;width:0;min-width:0;border-left:none;overflow:hidden;}}
+#cy-main.collapsed #cy-container{{flex:1 1 100%;}}
+.btn-collapse-panel{{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);
+  color:#fff;width:24px;height:24px;border-radius:4px;font-size:11px;line-height:1;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:all 0.2s;padding:0;flex-shrink:0;}}
+.btn-collapse-panel:hover{{background:rgba(255,255,255,0.28);}}
+#panel-reopen{{position:absolute;top:50%;right:0;transform:translateY(-50%);z-index:60;display:none;
+  align-items:center;justify-content:center;width:22px;height:72px;
+  background:#1a3a5c;color:#fff;border:none;border-radius:6px 0 0 6px;cursor:pointer;
+  font-size:12px;box-shadow:-2px 0 8px rgba(0,0,0,0.15);}}
+#panel-reopen:hover{{background:#2b5c8f;}}
+#cy-main.collapsed #panel-reopen{{display:flex;}}
 
 #cy-controls{{position:absolute;right:12px;top:12px;z-index:50;display:flex;gap:6px;
   background:rgba(255,255,255,.90);border:1px solid #cfd8e3;border-radius:6px;
@@ -390,13 +404,14 @@ body{{font-family:"Segoe UI",Arial,sans-serif;background:#f4f7fb;height:100vh;ov
 
 /* Side Panel styling */
 #events-panel {{
-  flex: 2;
+  flex: 3;
   min-width: 0;
   background: #ffffff;
   border-left: 1px solid #d0dce8;
   display: flex;
   flex-direction: column;
   height: 100%;
+  transition: flex 0.25s ease, width 0.25s ease;
   box-shadow: -2px 0 10px rgba(0, 0, 0, 0.03);
 }}
 .panel-header {{
@@ -571,6 +586,7 @@ Drag to pan &nbsp;|&nbsp; Click node to highlight subgraph</span></div>
     <div id="cy-tip"></div>
   </div>
   <div id="events-panel"></div>
+  <button type="button" id="panel-reopen" title="Show Events Sequence" onclick="togglePanel()">&#9664;</button>
 </div>
 </div>
 <script>
@@ -684,6 +700,7 @@ function renderPanel() {{
   if (!selectedNodeId) {{
     var html = \'<div class="panel-header">\' +
       \'<span>Events Sequence</span>\' +
+      \'<button class="btn-collapse-panel" onclick="togglePanel()" title="Collapse panel">&#9654;</button>\' +
       \'</div>\' +
       \'<div class="panel-scrollable">\';
     
@@ -704,7 +721,10 @@ function renderPanel() {{
     
     var html = \'<div class="panel-header">\' +
       \'<span>Event Inspector</span>\' +
-      \'<button class="btn-reset-selection" onclick="clearSelection()">Show All</button>\' +
+      \'<div style="display:flex; gap:8px; align-items:center;">\' +
+        \'<button class="btn-reset-selection" onclick="clearSelection()">Show All</button>\' +
+        \'<button class="btn-collapse-panel" onclick="togglePanel()" title="Collapse panel">&#9654;</button>\' +
+      \'</div>\' +
       \'</div>\' +
       \'<div class="panel-scrollable">\';
     
@@ -793,9 +813,29 @@ function clearSelection() {{
   updateHighlights(null);
 }}
 
+function togglePanel() {{
+  var main = document.getElementById("cy-main");
+  if (!main) return;
+  main.classList.toggle("collapsed");
+  // Keep the graph canvas in sync with the animating flex layout, then fit.
+  var startTs = null;
+  function step(ts) {{
+    if (startTs === null) startTs = ts;
+    if (window.tenantThreadCy) window.tenantThreadCy.resize();
+    if (ts - startTs < 300) {{
+      requestAnimationFrame(step);
+    }} else if (window.tenantThreadCy) {{
+      window.tenantThreadCy.resize();
+      window.tenantThreadCy.fit(window.tenantThreadCy.elements(), 30);
+    }}
+  }}
+  requestAnimationFrame(step);
+}}
+
 window.toggleExpand = toggleExpand;
 window.selectNodeId = selectNodeId;
 window.clearSelection = clearSelection;
+window.togglePanel = togglePanel;
 
 cy.ready(function(){{
   resizeAndFit();
