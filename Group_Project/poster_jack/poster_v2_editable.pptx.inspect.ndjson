@@ -1,0 +1,344 @@
+{"kind":"deck","id":"pr/7jrfdf","name":"Deck"}
+{"kind":"layout","layoutId":"a5e54b0a-a430-4e55-b13a-15c6204eefa2","name":"Master","type":"master"}
+{"kind":"layout","layoutId":"81550f84-dbd2-4658-8289-cb0c51964b06","name":"Title Slide","type":"title"}
+{"kind":"slide","id":"sl/jjeb5o","slide":1,"title":"MC1","textShapes":177}
+{"kind":"shape","id":"sh/32lszqtc","slide":1,"bbox":[0,0,2339,250]}
+{"kind":"shape","id":"sh/sneloj2t","slide":1,"bbox":[2009,-130,480,480]}
+{"kind":"shape","id":"sh/l87ed8ba","slide":1,"bbox":[56,34,74,41]}
+{"kind":"textbox","id":"sh/at47y1kr","slide":1,"text":"MC1","textPreview":"MC1","textChars":3,"textLines":1,"bbox":[56,35,74,39]}
+{"kind":"textbox","id":"sh/3ex0nuxc","slide":1,"text":"VAST Challenge 2026 · Mini-Challenge 1","textPreview":"VAST Challenge 2026 · Mini-Challenge 1","textChars":38,"textLines":1,"bbox":[146,42,430,26]}
+{"kind":"textbox","id":"sh/szqtcj6t","slide":1,"text":"ISSS608 Visual Analytics & Applications  ·  Singapore Management University\nGroup: BUI Tien Thanh  ·  HU Yue  ·  WU Jiayan  ·  2026","textPreview":"ISSS608 Visual Analytics & Applications  ·  Singapore Management University | Group: BUI Tien Thanh  ·  HU Yue  ·  WU Jiayan  ·  2026","textChars":131,"textLines":2,"bbox":[1645,36,638,58]}
+{"kind":"textbox","id":"sh/lkjm1cfa","slide":1,"text":"Investigation of an Embargo Breach","textPreview":"Investigation of an Embargo Breach","textChars":34,"textLines":1,"bbox":[56,101,1500,70]}
+{"kind":"textbox","id":"sh/ex0nuxc3","slide":1,"text":"Visual analytics on a seven-agent AI organisation — distinguishing a deliberate merger leak from a compliance system that broke down under pressure.","textPreview":"Visual analytics on a seven-agent AI organisation — distinguishing a deliberate merger leak from a compliance system that broke down unde...","textChars":148,"textLines":1,"bbox":[56,177,1765,44]}
+{"kind":"shape","id":"sh/3itgfmlk","slide":1,"bbox":[56,278,1075,166]}
+{"kind":"textbox","id":"sh/bm58z25k","slide":1,"text":"THE CENTRAL QUESTION","textPreview":"THE CENTRAL QUESTION","textChars":20,"textLines":1,"bbox":[84,304,310,26]}
+{"kind":"textbox","id":"sh/m1cfa9w3","slide":1,"text":"On 5 June 2046, the confidential TenantThread–CivicLoom merger (\"Project HarborCrest\") surfaced publicly at 5:00 PM — one hour before the contractual 6:00 PM embargo lift. Was it a deliberate leak, or did the AI compliance system simply fail under pressure?","textPreview":"On 5 June 2046, the confidential TenantThread–CivicLoom merger (\"Project HarborCrest\") surfaced publicly at 5:00 PM — one hour before the...","textChars":257,"textLines":1,"bbox":[84,338,1008,82]}
+{"kind":"shape","id":"sh/tsvu9kni","slide":1,"bbox":[1155,278,1128,166]}
+{"kind":"textbox","id":"sh/47y1kre1","slide":1,"text":"VERDICT","textPreview":"VERDICT","textChars":7,"textLines":1,"bbox":[1183,304,180,26]}
+{"kind":"textbox","id":"sh/bat47y1k","slide":1,"text":"System breakdown enabled a deliberate early announcement.","textPreview":"System breakdown enabled a deliberate early announcement.","textChars":57,"textLines":1,"bbox":[1183,338,1010,34]}
+{"kind":"textbox","id":"sh/mp0bi9s3","slide":1,"text":"The compliance architecture failed first — then senior agents engineered a pre-planned release under Section 4.3(c) with bilateral consent, an hour early. Not either/or: the explanations are sequential.","textPreview":"The compliance architecture failed first — then senior agents engineered a pre-planned release under Section 4.3(c) with bilateral consen...","textChars":202,"textLines":1,"bbox":[1183,382,1040,44]}
+{"kind":"shape","id":"sh/tgfmlkjm","slide":1,"bbox":[56,473,42,42]}
+{"kind":"textbox","id":"sh/4vmtwra5","slide":1,"text":"1","textPreview":"1","textChars":1,"textLines":1,"bbox":[56,474,42,40]}
+{"kind":"textbox","id":"sh/b2hwfyxo","slide":1,"text":"Issues & Problems","textPreview":"Issues & Problems","textChars":17,"textLines":1,"bbox":[112,476,500,40]}
+{"kind":"shape","id":"sh/mhk3q5o7","slide":1,"bbox":[56,527,1100,240]}
+{"kind":"shape","id":"sh/udg7adsj","slide":1,"bbox":[56,527,1100,6]}
+{"kind":"shape","id":"sh/nyd0z610","slide":1,"bbox":[88,570,11,11]}
+{"kind":"textbox","id":"sh/cj6tovah","slide":1,"text":"Attribute an information breach inside a multi-agent AI org — who acted, when, on which channel, and with what intent.","textPreview":"Attribute an information breach inside a multi-agent AI org — who acted, when, on which channel, and with what intent.","textChars":118,"textLines":1,"bbox":[116,560,1002,35]}
+{"kind":"shape","id":"sh/54zidony","slide":1,"bbox":[88,615,11,11]}
+{"kind":"textbox","id":"sh/upwb2hwf","slide":1,"text":"Separate two look-alike explanations: a deliberate leak vs. a system overwhelmed by crisis.","textPreview":"Separate two look-alike explanations: a deliberate leak vs. a system overwhelmed by crisis.","textChars":91,"textLines":1,"bbox":[116,605,1002,35]}
+{"kind":"shape","id":"sh/nap4r65w","slide":1,"bbox":[88,660,11,11]}
+{"kind":"textbox","id":"sh/cvixczed","slide":1,"text":"Evidence is nested, unstructured & sparse — 912 messages, 23 rounds, 7 agents, 6 channels; private reasoning logged for only 86 messages.","textPreview":"Evidence is nested, unstructured & sparse — 912 messages, 23 rounds, 7 agents, 6 channels; private reasoning logged for only 86 messages.","textChars":137,"textLines":1,"bbox":[116,650,1002,35]}
+{"kind":"shape","id":"sh/5gbq1ory","slide":1,"bbox":[88,705,11,11]}
+{"kind":"textbox","id":"sh/u18jqh0f","slide":1,"text":"Explain why prior warning signals never triggered action from the compliance monitor.","textPreview":"Explain why prior warning signals never triggered action from the compliance monitor.","textChars":85,"textLines":1,"bbox":[116,695,1002,35]}
+{"kind":"shape","id":"sh/jm1cfa9w","slide":1,"bbox":[1183,473,42,42]}
+{"kind":"textbox","id":"sh/9knih4by","slide":1,"text":"2","textPreview":"2","textChars":1,"textLines":1,"bbox":[1183,474,42,40]}
+{"kind":"textbox","id":"sh/kzupwb2h","slide":1,"text":"Motivation","textPreview":"Motivation","textChars":10,"textLines":1,"bbox":[1239,476,500,40]}
+{"kind":"shape","id":"sh/re1w7mp0","slide":1,"bbox":[1183,527,1100,240]}
+{"kind":"shape","id":"sh/2t83itgf","slide":1,"bbox":[1183,527,1100,6]}
+{"kind":"shape","id":"sh/9w3m94fu","slide":1,"bbox":[1215,570,11,11]}
+{"kind":"textbox","id":"sh/kb6xkf6d","slide":1,"text":"AI accountability: as organisations delegate compliance to AI agents, how they fail under pressure is a governance & regulatory priority.","textPreview":"AI accountability: as organisations delegate compliance to AI agents, how they fail under pressure is a governance & regulatory priority.","textChars":137,"textLines":1,"bbox":[1243,560,997,35]}
+{"kind":"shape","id":"sh/rqd4vmtw","slide":1,"bbox":[1215,615,11,11]}
+{"kind":"textbox","id":"sh/25kb6xkf","slide":1,"text":"The answer changes the remedy — discipline vs. process redesign — with real legal consequences.","textPreview":"The answer changes the remedy — discipline vs. process redesign — with real legal consequences.","textChars":95,"textLines":1,"bbox":[1243,605,997,35]}
+{"kind":"shape","id":"sh/94fu18jq","slide":1,"bbox":[1215,660,11,11]}
+{"kind":"textbox","id":"sh/kjm1cfa9","slide":1,"text":"Intent is hidden: the same surface signals (more messages, more private channels) fit both stories — only sequence + private reasoning tell them apart.","textPreview":"Intent is hidden: the same surface signals (more messages, more private channels) fit both stories — only sequence + private reasoning te...","textChars":151,"textLines":1,"bbox":[1243,650,997,35]}
+{"kind":"shape","id":"sh/87ed8bat","slide":1,"bbox":[1215,705,11,11]}
+{"kind":"textbox","id":"sh/xs72x4na","slide":1,"text":"Signal hides in unmonitored channels, invisible to the very control meant to catch it.","textPreview":"Signal hides in unmonitored channels, invisible to the very control meant to catch it.","textChars":86,"textLines":1,"bbox":[1243,695,997,35]}
+{"kind":"shape","id":"sh/q1orytsv","slide":1,"bbox":[56,792,42,42]}
+{"kind":"textbox","id":"sh/fmlkjm1c","slide":1,"text":"3","textPreview":"3","textChars":1,"textLines":1,"bbox":[56,793,42,40]}
+{"kind":"textbox","id":"sh/8z25kb6x","slide":1,"text":"Approach — Techniques & Algorithms","textPreview":"Approach — Techniques & Algorithms","textChars":34,"textLines":1,"bbox":[112,795,1000,40]}
+{"kind":"shape","id":"sh/1gvy90je","slide":1,"bbox":[56,850,2227,300]}
+{"kind":"shape","id":"sh/qtcj6tov","slide":1,"bbox":[82,872,516,143]}
+{"kind":"shape","id":"sh/je9cvixc","slide":1,"bbox":[82,872,516,52]}
+{"kind":"shape","id":"sh/8v6psfil","slide":1,"bbox":[96,885,26,26]}
+{"kind":"textbox","id":"sh/xczed8v6","slide":1,"text":"0","textPreview":"0","textChars":1,"textLines":1,"bbox":[96,887,26,22]}
+{"kind":"textbox","id":"sh/neloj2t8","slide":1,"text":"Data Preparation","textPreview":"Data Preparation","textChars":16,"textLines":1,"bbox":[134,884,450,28]}
+{"kind":"textbox","id":"sh/ytsvu9kn","slide":1,"text":"jsonlite parses nested JSON → 4 tidy tables (rounds/env, communications, internal_state, agents). Periods: Normal · Escalation · Crisis.","textPreview":"jsonlite parses nested JSON → 4 tidy tables (rounds/env, communications, internal_state, agents). Periods: Normal · Escalation · Crisis.","textChars":136,"textLines":1,"bbox":[96,940,488,65]}
+{"kind":"shape","id":"sh/5kb6xkf6","slide":1,"bbox":[626,872,516,143]}
+{"kind":"shape","id":"sh/czed8v6p","slide":1,"bbox":[626,872,516,52]}
+{"kind":"shape","id":"sh/nqxs72x4","slide":1,"bbox":[640,885,26,26]}
+{"kind":"textbox","id":"sh/u54zidon","slide":1,"text":"1","textPreview":"1","textChars":1,"textLines":1,"bbox":[640,887,26,22]}
+{"kind":"textbox","id":"sh/5sneloj2","slide":1,"text":"Events & Causal Chain","textPreview":"Events & Causal Chain","textChars":21,"textLines":1,"bbox":[678,884,450,28]}
+{"kind":"textbox","id":"sh/cbulwval","slide":1,"text":"28-node directed causal graph (Cytoscape.js, preset layout) + period communication networks (plotly; edges by channel & volume).","textPreview":"28-node directed causal graph (Cytoscape.js, preset layout) + period communication networks (plotly; edges by channel & volume).","textChars":128,"textLines":1,"bbox":[640,940,488,65]}
+{"kind":"shape","id":"sh/nuxc3ylc","slide":1,"bbox":[1170,872,516,143]}
+{"kind":"shape","id":"sh/y90je9cv","slide":1,"bbox":[1170,872,516,52]}
+{"kind":"shape","id":"sh/2lszqtcj","slide":1,"bbox":[1184,885,26,26]}
+{"kind":"textbox","id":"sh/v6psfil0","slide":1,"text":"2","textPreview":"2","textChars":1,"textLines":1,"bbox":[1184,887,26,22]}
+{"kind":"textbox","id":"sh/knih4byh","slide":1,"text":"Behavioural Deviation","textPreview":"Behavioural Deviation","textChars":21,"textLines":1,"bbox":[1222,884,450,28]}
+{"kind":"textbox","id":"sh/d8bat47y","slide":1,"text":"Volume/length, channel-share trends, a private-channel sensitivity score, & internal-state typing (deliberating / reacting / rationalizing).","textPreview":"Volume/length, channel-share trends, a private-channel sensitivity score, & internal-state typing (deliberating / reacting / rationalizing).","textChars":140,"textLines":1,"bbox":[1184,940,488,65]}
+{"kind":"shape","id":"sh/29gr2p8n","slide":1,"bbox":[1714,872,516,143]}
+{"kind":"shape","id":"sh/vu9knih4","slide":1,"bbox":[1714,872,516,52]}
+{"kind":"shape","id":"sh/kf6dcbul","slide":1,"bbox":[1728,885,26,26]}
+{"kind":"textbox","id":"sh/d0z61032","slide":1,"text":"3","textPreview":"3","textChars":1,"textLines":1,"bbox":[1728,887,26,22]}
+{"kind":"textbox","id":"sh/2x4nap4r","slide":1,"text":"Leading Indicators","textPreview":"Leading Indicators","textChars":18,"textLines":1,"bbox":[1766,884,450,28]}
+{"kind":"textbox","id":"sh/vixczed8","slide":1,"text":"Jensen–Shannon divergence of each agent's channel mix vs. baseline; rationalisation detection; Judge coverage matrix.","textPreview":"Jensen–Shannon divergence of each agent's channel mix vs. baseline; rationalisation detection; Judge coverage matrix.","textChars":117,"textLines":1,"bbox":[1728,940,488,65]}
+{"kind":"textbox","id":"sh/hoza1gvy","slide":1,"text":"Two signature methods.  (a) Temporal inversion — compare the timestamp of a plan (an agent's deliberating field) against the event it claims to react to; a plan that precedes its trigger is evidence of premeditation.  (b) Behavioural drift — JSD measures how far each agent's channel repertoire moves from its Normal baseline, period by period. Delivered as an integrated R Shiny + bslib dashboard with linked plotly / DT / Cytoscape views and reactive period · agent · channel filters.","textPreview":"Two signature methods.  (a) Temporal inversion — compare the timestamp of a plan (an agent's deliberating field) against the event it cla...","textChars":486,"textLines":1,"bbox":[82,1036,2140,54]}
+{"kind":"shape","id":"sh/s36hcrmh","slide":1,"bbox":[82,1104,31,26]}
+{"kind":"textbox","id":"sh/zidonyd0","slide":1,"text":"R","textPreview":"R","textChars":1,"textLines":1,"bbox":[82,1106,31,20]}
+{"kind":"shape","id":"sh/a1gvy90j","slide":1,"bbox":[121,1104,83,26]}
+{"kind":"textbox","id":"sh/hgn29gr2","slide":1,"text":"Shiny","textPreview":"Shiny","textChars":5,"textLines":1,"bbox":[121,1106,83,20]}
+{"kind":"shape","id":"sh/svu9knih","slide":1,"bbox":[212,1104,83,26]}
+{"kind":"textbox","id":"sh/za1gvy90","slide":1,"text":"bslib","textPreview":"bslib","textChars":5,"textLines":1,"bbox":[212,1106,83,20]}
+{"kind":"shape","id":"sh/ap4r65wj","slide":1,"bbox":[303,1104,135,26]}
+{"kind":"textbox","id":"sh/h4byhgn2","slide":1,"text":"tidyverse","textPreview":"tidyverse","textChars":9,"textLines":1,"bbox":[303,1106,135,20]}
+{"kind":"shape","id":"sh/sji5snel","slide":1,"bbox":[446,1104,96,26]}
+{"kind":"textbox","id":"sh/cj6tovah","slide":1,"text":"plotly","textPreview":"plotly","textChars":6,"textLines":1,"bbox":[446,1106,96,20]}
+{"kind":"shape","id":"sh/54zidony","slide":1,"bbox":[550,1104,174,26]}
+{"kind":"textbox","id":"sh/udg7adsj","slide":1,"text":"Cytoscape.js","textPreview":"Cytoscape.js","textChars":12,"textLines":1,"bbox":[550,1106,174,20]}
+{"kind":"shape","id":"sh/nyd0z610","slide":1,"bbox":[732,1104,44,26]}
+{"kind":"textbox","id":"sh/cvixczed","slide":1,"text":"DT","textPreview":"DT","textChars":2,"textLines":1,"bbox":[732,1106,44,20]}
+{"kind":"shape","id":"sh/5gbq1ory","slide":1,"bbox":[784,1104,122,26]}
+{"kind":"textbox","id":"sh/upwb2hwf","slide":1,"text":"jsonlite","textPreview":"jsonlite","textChars":8,"textLines":1,"bbox":[784,1106,122,20]}
+{"kind":"shape","id":"sh/nap4r65w","slide":1,"bbox":[914,1104,135,26]}
+{"kind":"textbox","id":"sh/c7u54zid","slide":1,"text":"lubridate","textPreview":"lubridate","textChars":9,"textLines":1,"bbox":[914,1106,135,20]}
+{"kind":"shape","id":"sh/1orytsvu","slide":1,"bbox":[1057,1104,109,26]}
+{"kind":"textbox","id":"sh/rqd4vmtw","slide":1,"text":"stringr","textPreview":"stringr","textChars":7,"textLines":1,"bbox":[1057,1106,109,20]}
+{"kind":"shape","id":"sh/25kb6xkf","slide":1,"bbox":[56,1180,42,42]}
+{"kind":"textbox","id":"sh/9w3m94fu","slide":1,"text":"4","textPreview":"4","textChars":1,"textLines":1,"bbox":[56,1181,42,40]}
+{"kind":"textbox","id":"sh/kb6xkf6d","slide":1,"text":"Results — Interactive Shiny Dashboard","textPreview":"Results — Interactive Shiny Dashboard","textChars":37,"textLines":1,"bbox":[112,1183,630,40]}
+{"kind":"textbox","id":"sh/re1w7mp0","slide":1,"text":"live demo · ttbui2025.shinyapps.io/Group_Project","textPreview":"live demo · ttbui2025.shinyapps.io/Group_Project","textChars":48,"textLines":1,"bbox":[672,1192,520,24]}
+{"kind":"shape","id":"sh/2t83itgf","slide":1,"bbox":[56,1238,2227,322]}
+{"kind":"shape","id":"sh/9knih4by","slide":1,"bbox":[56,1294,2227,1]}
+{"kind":"shape","id":"sh/kzupwb2h","slide":1,"bbox":[75,1259,13,13]}
+{"kind":"textbox","id":"sh/ra5gbq1o","slide":1,"text":"Data Exploration — Dataset & Dashboard Foundation","textPreview":"Data Exploration — Dataset & Dashboard Foundation","textChars":49,"textLines":1,"bbox":[102,1251,780,28]}
+{"kind":"shape","id":"sh/2p8nqxs7","slide":1,"bbox":[2200,1250,63,24]}
+{"kind":"textbox","id":"sh/f6dcbulw","slide":1,"text":"OVERVIEW","textPreview":"OVERVIEW","textChars":8,"textLines":1,"bbox":[2200,1251,63,22]}
+{"kind":"shape","id":"sh/mlkjm1cf","slide":1,"bbox":[82,1304,102,82]}
+{"kind":"textbox","id":"sh/xc3ylc7u","slide":1,"text":"912","textPreview":"912","textChars":3,"textLines":1,"bbox":[82,1318,102,34]}
+{"kind":"textbox","id":"sh/4r65wjud","slide":1,"text":"messages","textPreview":"messages","textChars":8,"textLines":1,"bbox":[82,1356,102,20]}
+{"kind":"shape","id":"sh/fepkzupw","slide":1,"bbox":[194,1304,102,82]}
+{"kind":"textbox","id":"sh/mtwra5gb","slide":1,"text":"23","textPreview":"23","textChars":2,"textLines":1,"bbox":[194,1318,102,34]}
+{"kind":"textbox","id":"sh/xkf6dcbu","slide":1,"text":"rounds","textPreview":"rounds","textChars":6,"textLines":1,"bbox":[194,1356,102,20]}
+{"kind":"shape","id":"sh/4zidonyd","slide":1,"bbox":[82,1396,102,82]}
+{"kind":"textbox","id":"sh/fil0rqd4","slide":1,"text":"7","textPreview":"7","textChars":1,"textLines":1,"bbox":[82,1410,102,34]}
+{"kind":"textbox","id":"sh/qxs72x4n","slide":1,"text":"agents","textPreview":"agents","textChars":6,"textLines":1,"bbox":[82,1448,102,20]}
+{"kind":"shape","id":"sh/0z61032l","slide":1,"bbox":[194,1396,102,82]}
+{"kind":"textbox","id":"sh/pkzupwb2","slide":1,"text":"6","textPreview":"6","textChars":1,"textLines":1,"bbox":[194,1410,102,34]}
+{"kind":"textbox","id":"sh/itgfmlkj","slide":1,"text":"channels","textPreview":"channels","textChars":8,"textLines":1,"bbox":[194,1448,102,20]}
+{"kind":"textbox","id":"sh/7ed8bat4","slide":1,"text":"Channel Architecture & Monitoring Scope","textPreview":"Channel Architecture & Monitoring Scope","textChars":39,"textLines":1,"bbox":[302,1301,904,24]}
+{"kind":"shape","id":"sh/0nuxc3yl","slide":1,"bbox":[302,1332,904,2]}
+{"kind":"textbox","id":"sh/p8nqxs72","slide":1,"text":"CHANNEL","textPreview":"CHANNEL","textChars":7,"textLines":1,"bbox":[304,1340,194.88,18]}
+{"kind":"textbox","id":"sh/ih4byhgn","slide":1,"text":"TYPE","textPreview":"TYPE","textChars":4,"textLines":1,"bbox":[502.88,1340,95.44,18]}
+{"kind":"textbox","id":"sh/72x4nap4","slide":1,"text":"JUDGE","textPreview":"JUDGE","textChars":5,"textLines":1,"bbox":[602.32,1340,104.48,18]}
+{"kind":"textbox","id":"sh/wjudg7ad","slide":1,"text":"PURPOSE","textPreview":"PURPOSE","textChars":7,"textLines":1,"bbox":[710.8,1340,493.2,18]}
+{"kind":"shape","id":"sh/p4r65wju","slide":1,"bbox":[302,1361,904,1]}
+{"kind":"shape","id":"sh/9gr2p8nq","slide":1,"bbox":[304,1367,104,18]}
+{"kind":"textbox","id":"sh/gvy90je9","slide":1,"text":"comms_huddle","textPreview":"comms_huddle","textChars":12,"textLines":1,"bbox":[307,1369,104,14]}
+{"kind":"textbox","id":"sh/ra5gbq1o","slide":1,"text":"Internal","textPreview":"Internal","textChars":8,"textLines":1,"bbox":[502.88,1365,93.44,24]}
+{"kind":"shape","id":"sh/2p8nqxs7","slide":1,"bbox":[602.32,1367,42,18]}
+{"kind":"textbox","id":"sh/94fu18jq","slide":1,"text":"Yes","textPreview":"Yes","textChars":3,"textLines":1,"bbox":[602.32,1368,42,16]}
+{"kind":"textbox","id":"sh/kjm1cfa9","slide":1,"text":"Primary team coordination; monitored for embargo-sensitive content.","textPreview":"Primary team coordination; monitored for embargo-sensitive content.","textChars":67,"textLines":1,"bbox":[710.8,1365,491.2,24]}
+{"kind":"shape","id":"sh/r2p8nqxs","slide":1,"bbox":[302,1388,904,1]}
+{"kind":"shape","id":"sh/2hwfyxob","slide":1,"bbox":[304,1391,91,18]}
+{"kind":"textbox","id":"sh/9w3m94fu","slide":1,"text":"side_huddle","textPreview":"side_huddle","textChars":11,"textLines":1,"bbox":[307,1393,91,14]}
+{"kind":"textbox","id":"sh/kb6xkf6d","slide":1,"text":"Internal","textPreview":"Internal","textChars":8,"textLines":1,"bbox":[502.88,1389,93.44,24]}
+{"kind":"shape","id":"sh/u9knih4b","slide":1,"bbox":[602.32,1391,42,18]}
+{"kind":"textbox","id":"sh/judg7ads","slide":1,"text":"No*","textPreview":"No*","textChars":3,"textLines":1,"bbox":[602.32,1392,42,16]}
+{"kind":"textbox","id":"sh/cfa9w3m9","slide":1,"text":"Private sub-group (from 22 May) for sensitive coordination.","textPreview":"Private sub-group (from 22 May) for sensitive coordination.","textChars":59,"textLines":1,"bbox":[710.8,1389,491.2,24]}
+{"kind":"shape","id":"sh/1032lszq","slide":1,"bbox":[302,1412,904,1]}
+{"kind":"shape","id":"sh/u18jqh0f","slide":1,"bbox":[304,1415,122,18]}
+{"kind":"textbox","id":"sh/jm1cfa9w","slide":1,"text":"one_on_one_chat","textPreview":"one_on_one_chat","textChars":15,"textLines":1,"bbox":[307,1417,122,14]}
+{"kind":"textbox","id":"sh/c7u54zid","slide":1,"text":"Internal","textPreview":"Internal","textChars":8,"textLines":1,"bbox":[502.88,1413,93.44,24]}
+{"kind":"shape","id":"sh/1orytsvu","slide":1,"bbox":[602.32,1415,42,18]}
+{"kind":"textbox","id":"sh/upwb2hwf","slide":1,"text":"No*","textPreview":"No*","textChars":3,"textLines":1,"bbox":[602.32,1416,42,16]}
+{"kind":"textbox","id":"sh/nap4r65w","slide":1,"text":"Direct DMs; staged embargoed content on crisis day.","textPreview":"Direct DMs; staged embargoed content on crisis day.","textChars":51,"textLines":1,"bbox":[710.8,1413,491.2,24]}
+{"kind":"shape","id":"sh/3ex0nuxc","slide":1,"bbox":[302,1436,904,1]}
+{"kind":"shape","id":"sh/at47y1kr","slide":1,"bbox":[304,1439,97,18]}
+{"kind":"textbox","id":"sh/lkjm1cfa","slide":1,"text":"official_post","textPreview":"official_post","textChars":13,"textLines":1,"bbox":[307,1441,97,14]}
+{"kind":"textbox","id":"sh/szqtcj6t","slide":1,"text":"Public","textPreview":"Public","textChars":6,"textLines":1,"bbox":[502.88,1437,93.44,24]}
+{"kind":"shape","id":"sh/32lszqtc","slide":1,"bbox":[602.32,1439,42,18]}
+{"kind":"textbox","id":"sh/ahoza1gv","slide":1,"text":"Yes","textPreview":"Yes","textChars":3,"textLines":1,"bbox":[602.32,1440,42,16]}
+{"kind":"textbox","id":"sh/l87ed8ba","slide":1,"text":"Official TenantThread FleX; monitored, approval required.","textPreview":"Official TenantThread FleX; monitored, approval required.","textChars":57,"textLines":1,"bbox":[710.8,1437,491.2,24]}
+{"kind":"shape","id":"sh/sneloj2t","slide":1,"bbox":[302,1460,904,1]}
+{"kind":"shape","id":"sh/3q5o7qpg","slide":1,"bbox":[304,1463,105,18]}
+{"kind":"textbox","id":"sh/e9cvixcz","slide":1,"text":"personal_post","textPreview":"personal_post","textChars":13,"textLines":1,"bbox":[307,1465,105,14]}
+{"kind":"textbox","id":"sh/o7qpg3ex","slide":1,"text":"Public","textPreview":"Public","textChars":6,"textLines":1,"bbox":[502.88,1461,93.44,24]}
+{"kind":"shape","id":"sh/dsji5sne","slide":1,"bbox":[602.32,1463,38,18]}
+{"kind":"textbox","id":"sh/61032lsz","slide":1,"text":"No","textPreview":"No","textChars":2,"textLines":1,"bbox":[602.32,1464,38,16]}
+{"kind":"textbox","id":"sh/vmtwra5g","slide":1,"text":"Agents' personal FleX; outside compliance scope.","textPreview":"Agents' personal FleX; outside compliance scope.","textChars":48,"textLines":1,"bbox":[710.8,1461,491.2,24]}
+{"kind":"shape","id":"sh/oj2t83it","slide":1,"bbox":[302,1484,904,1]}
+{"kind":"shape","id":"sh/d4vmtwra","slide":1,"bbox":[304,1487,118,18]}
+{"kind":"textbox","id":"sh/6dcbulwv","slide":1,"text":"anonymous_post","textPreview":"anonymous_post","textChars":14,"textLines":1,"bbox":[307,1489,118,14]}
+{"kind":"textbox","id":"sh/vy90je9c","slide":1,"text":"Public","textPreview":"Public","textChars":6,"textLines":1,"bbox":[502.88,1485,93.44,24]}
+{"kind":"shape","id":"sh/onyd0z61","slide":1,"bbox":[602.32,1487,38,18]}
+{"kind":"textbox","id":"sh/d8v6psfi","slide":1,"text":"No","textPreview":"No","textChars":2,"textLines":1,"bbox":[602.32,1488,38,16]}
+{"kind":"textbox","id":"sh/1cfa9w3m","slide":1,"text":"Anonymous FleX; used by Legal to post merger content.","textPreview":"Anonymous FleX; used by Legal to post merger content.","textChars":53,"textLines":1,"bbox":[710.8,1485,491.2,24]}
+{"kind":"textbox","id":"sh/crmhk3q5","slide":1,"text":"The Seven AI Agents","textPreview":"The Seven AI Agents","textChars":19,"textLines":1,"bbox":[1240,1301,1000,24]}
+{"kind":"shape","id":"sh/j6tovaho","slide":1,"bbox":[1240,1332,1000,2]}
+{"kind":"textbox","id":"sh/ulwval87","slide":1,"text":"AGENT","textPreview":"AGENT","textChars":5,"textLines":1,"bbox":[1242,1340,196,18]}
+{"kind":"textbox","id":"sh/1kre1w7m","slide":1,"text":"ROLE","textPreview":"ROLE","textChars":4,"textLines":1,"bbox":[1442,1340,266,18]}
+{"kind":"textbox","id":"sh/c3ylc7u5","slide":1,"text":"SENIORITY","textPreview":"SENIORITY","textChars":9,"textLines":1,"bbox":[1712,1340,166,18]}
+{"kind":"textbox","id":"sh/ji5snelo","slide":1,"text":"NOTE","textPreview":"NOTE","textChars":4,"textLines":1,"bbox":[1882,1340,356,18]}
+{"kind":"shape","id":"sh/uxc3ylc7","slide":1,"bbox":[1240,1361,1000,1]}
+{"kind":"shape","id":"sh/1w7mp0bi","slide":1,"bbox":[1242,1367,87,18]}
+{"kind":"textbox","id":"sh/8bat47y1","slide":1,"text":"legal_agent","textPreview":"legal_agent","textChars":11,"textLines":1,"bbox":[1245,1369,87,14]}
+{"kind":"textbox","id":"sh/m58z25kb","slide":1,"text":"General Legal Counsel","textPreview":"General Legal Counsel","textChars":21,"textLines":1,"bbox":[1442,1365,264,24]}
+{"kind":"shape","id":"sh/bq1oryts","slide":1,"bbox":[1712,1367,54,18]}
+{"kind":"textbox","id":"sh/4byhgn29","slide":1,"text":"Senior","textPreview":"Senior","textChars":6,"textLines":1,"bbox":[1712,1368,54,16]}
+{"kind":"textbox","id":"sh/twra5gbq","slide":1,"text":"Drafts the Section 4.3 argument.","textPreview":"Drafts the Section 4.3 argument.","textChars":32,"textLines":1,"bbox":[1882,1365,354,24]}
+{"kind":"shape","id":"sh/mhk3q5o7","slide":1,"bbox":[1240,1388,1000,1]}
+{"kind":"shape","id":"sh/b2hwfyxo","slide":1,"bbox":[1242,1391,135,18]}
+{"kind":"textbox","id":"sh/4nap4r65","slide":1,"text":"social_media_agent","textPreview":"social_media_agent","textChars":18,"textLines":1,"bbox":[1245,1393,135,14]}
+{"kind":"textbox","id":"sh/t83itgfm","slide":1,"text":"Social Media Manager","textPreview":"Social Media Manager","textChars":20,"textLines":1,"bbox":[1442,1389,264,24]}
+{"kind":"shape","id":"sh/mp0bi9s3","slide":1,"bbox":[1712,1391,54,18]}
+{"kind":"textbox","id":"sh/bat47y1k","slide":1,"text":"Senior","textPreview":"Senior","textChars":6,"textLines":1,"bbox":[1712,1392,54,16]}
+{"kind":"textbox","id":"sh/val87ed8","slide":1,"text":"Public sentiment; @Elena faux pas.","textPreview":"Public sentiment; @Elena faux pas.","textChars":34,"textLines":1,"bbox":[1882,1389,354,24]}
+{"kind":"shape","id":"sh/6psfil0r","slide":1,"bbox":[1240,1412,1000,1]}
+{"kind":"shape","id":"sh/dcbulwva","slide":1,"bbox":[1242,1415,67,18]}
+{"kind":"textbox","id":"sh/kre1w7mp","slide":1,"text":"pr_agent","textPreview":"pr_agent","textChars":8,"textLines":1,"bbox":[1245,1417,67,14]}
+{"kind":"textbox","id":"sh/vixczed8","slide":1,"text":"Head of Comms & PR","textPreview":"Head of Comms & PR","textChars":18,"textLines":1,"bbox":[1442,1413,264,24]}
+{"kind":"shape","id":"sh/2x4nap4r","slide":1,"bbox":[1712,1415,54,18]}
+{"kind":"textbox","id":"sh/donyd0z6","slide":1,"text":"Senior","textPreview":"Senior","textChars":6,"textLines":1,"bbox":[1712,1416,54,16]}
+{"kind":"textbox","id":"sh/k3q5o7qp","slide":1,"text":"Approves public statements.","textPreview":"Approves public statements.","textChars":27,"textLines":1,"bbox":[1882,1413,354,24]}
+{"kind":"shape","id":"sh/vu9knih4","slide":1,"bbox":[1240,1436,1000,1]}
+{"kind":"shape","id":"sh/29gr2p8n","slide":1,"bbox":[1242,1439,112,18]}
+{"kind":"textbox","id":"sh/cfa9w3m9","slide":1,"text":"pr_intern_agent","textPreview":"pr_intern_agent","textChars":15,"textLines":1,"bbox":[1245,1441,112,14]}
+{"kind":"textbox","id":"sh/1032lszq","slide":1,"text":"PR Team Intern","textPreview":"PR Team Intern","textChars":14,"textLines":1,"bbox":[1442,1437,264,24]}
+{"kind":"shape","id":"sh/u9knih4b","slide":1,"bbox":[1712,1439,52,18]}
+{"kind":"textbox","id":"sh/judg7ads","slide":1,"text":"Junior","textPreview":"Junior","textChars":6,"textLines":1,"bbox":[1712,1440,52,16]}
+{"kind":"textbox","id":"sh/c7u54zid","slide":1,"text":"Executes approved FleX posts.","textPreview":"Executes approved FleX posts.","textChars":29,"textLines":1,"bbox":[1882,1437,354,24]}
+{"kind":"shape","id":"sh/1orytsvu","slide":1,"bbox":[1240,1460,1000,1]}
+{"kind":"shape","id":"sh/u18jqh0f","slide":1,"bbox":[1242,1463,106,18]}
+{"kind":"textbox","id":"sh/jm1cfa9w","slide":1,"text":"quality_agent","textPreview":"quality_agent","textChars":13,"textLines":1,"bbox":[1245,1465,106,14]}
+{"kind":"textbox","id":"sh/cvixczed","slide":1,"text":"VP Platform Trust & Safety","textPreview":"VP Platform Trust & Safety","textChars":26,"textLines":1,"bbox":[1442,1461,264,24]}
+{"kind":"shape","id":"sh/5gbq1ory","slide":1,"bbox":[1712,1463,54,18]}
+{"kind":"textbox","id":"sh/w3m94fu1","slide":1,"text":"Senior","textPreview":"Senior","textChars":6,"textLines":1,"bbox":[1712,1464,54,16]}
+{"kind":"textbox","id":"sh/loj2t83i","slide":1,"text":"Data governance & compliance docs.","textPreview":"Data governance & compliance docs.","textChars":34,"textLines":1,"bbox":[1882,1461,354,24]}
+{"kind":"shape","id":"sh/ex0nuxc3","slide":1,"bbox":[1240,1484,1000,1]}
+{"kind":"shape","id":"sh/3itgfmlk","slide":1,"bbox":[1242,1487,90,18]}
+{"kind":"textbox","id":"sh/wb2hwfyx","slide":1,"text":"intern_agent","textPreview":"intern_agent","textChars":12,"textLines":1,"bbox":[1245,1489,90,14]}
+{"kind":"textbox","id":"sh/lwval87e","slide":1,"text":"General Intern","textPreview":"General Intern","textChars":14,"textLines":1,"bbox":[1442,1485,264,24]}
+{"kind":"shape","id":"sh/e9cvixcz","slide":1,"bbox":[1712,1487,52,18]}
+{"kind":"textbox","id":"sh/3q5o7qpg","slide":1,"text":"Junior","textPreview":"Junior","textChars":6,"textLines":1,"bbox":[1712,1488,52,16]}
+{"kind":"textbox","id":"sh/sneloj2t","slide":1,"text":"Leaked the 6 PM timeline.","textPreview":"Leaked the 6 PM timeline.","textChars":25,"textLines":1,"bbox":[1882,1485,354,24]}
+{"kind":"shape","id":"sh/l87ed8ba","slide":1,"bbox":[1240,1508,1000,1]}
+{"kind":"shape","id":"sh/b6xkf6dc","slide":1,"bbox":[1242,1511,91,18]}
+{"kind":"textbox","id":"sh/il0rqd4v","slide":1,"text":"judge_agent","textPreview":"judge_agent","textChars":11,"textLines":1,"bbox":[1245,1513,91,14]}
+{"kind":"textbox","id":"sh/tcj6tova","slide":1,"text":"Compliance Observer","textPreview":"Compliance Observer","textChars":19,"textLines":1,"bbox":[1442,1509,264,24]}
+{"kind":"shape","id":"sh/0rqd4vmt","slide":1,"bbox":[1712,1511,80,18]}
+{"kind":"textbox","id":"sh/byhgn29g","slide":1,"text":"Compliance","textPreview":"Compliance","textChars":10,"textLines":1,"bbox":[1712,1512,80,16]}
+{"kind":"textbox","id":"sh/idonyd0z","slide":1,"text":"Installed 30 May; comms_huddle + public posts only.","textPreview":"Installed 30 May; comms_huddle + public posts only.","textChars":51,"textLines":1,"bbox":[1882,1509,354,24]}
+{"kind":"shape","id":"sh/t47y1kre","slide":1,"bbox":[56,1584,728,61]}
+{"kind":"shape","id":"sh/0je9cvix","slide":1,"bbox":[72,1599,30,30]}
+{"kind":"textbox","id":"sh/bulwval8","slide":1,"text":"1","textPreview":"1","textChars":1,"textLines":1,"bbox":[72,1603,30,22]}
+{"kind":"textbox","id":"sh/i9s36hcr","slide":1,"text":"Task 1 · Events & Causal Chain","textPreview":"Task 1 · Events & Causal Chain","textChars":30,"textLines":1,"bbox":[114,1596,620,24]}
+{"kind":"textbox","id":"sh/6xkf6dcb","slide":1,"text":"Reconstructing who acted, when & on which channel","textPreview":"Reconstructing who acted, when & on which channel","textChars":49,"textLines":1,"bbox":[114,1620,620,18]}
+{"kind":"shape","id":"sh/zed8v6ps","slide":1,"bbox":[807,1584,728,61]}
+{"kind":"shape","id":"sh/oza1gvy9","slide":1,"bbox":[823,1599,30,30]}
+{"kind":"textbox","id":"sh/hk3q5o7q","slide":1,"text":"2","textPreview":"2","textChars":1,"textLines":1,"bbox":[823,1603,30,22]}
+{"kind":"textbox","id":"sh/65wjudg7","slide":1,"text":"Task 2 · Typical vs Evasive Behaviour","textPreview":"Task 2 · Typical vs Evasive Behaviour","textChars":37,"textLines":1,"bbox":[865,1596,620,24]}
+{"kind":"textbox","id":"sh/zqtcj6to","slide":1,"text":"How agent behaviour deviated from baseline","textPreview":"How agent behaviour deviated from baseline","textChars":42,"textLines":1,"bbox":[865,1620,620,18]}
+{"kind":"shape","id":"sh/obm58z25","slide":1,"bbox":[1558,1584,728,61]}
+{"kind":"shape","id":"sh/hwfyxobm","slide":1,"bbox":[1574,1599,30,30]}
+{"kind":"textbox","id":"sh/a9w3m94f","slide":1,"text":"3","textPreview":"3","textChars":1,"textLines":1,"bbox":[1574,1603,30,22]}
+{"kind":"textbox","id":"sh/zupwb2hw","slide":1,"text":"Task 3 · Leading Indicators & Control Gaps","textPreview":"Task 3 · Leading Indicators & Control Gaps","textChars":42,"textLines":1,"bbox":[1616,1596,620,24]}
+{"kind":"textbox","id":"sh/l0rqd4vm","slide":1,"text":"Early warnings & why none triggered action","textPreview":"Early warnings & why none triggered action","textChars":42,"textLines":1,"bbox":[1616,1620,620,18]}
+{"kind":"shape","id":"sh/wfyxobm5","slide":1,"bbox":[56,1662,728,516]}
+{"kind":"shape","id":"sh/7u54zido","slide":1,"bbox":[56,1662,728,55]}
+{"kind":"shape","id":"sh/ed8bat47","slide":1,"bbox":[56,1717,728,1]}
+{"kind":"shape","id":"sh/lc7u54zi","slide":1,"bbox":[74,1683,13,13]}
+{"kind":"textbox","id":"sh/wra5gbq1","slide":1,"text":"Causal Chain — 28 events","textPreview":"Causal Chain — 28 events","textChars":24,"textLines":1,"bbox":[98,1677,548,28]}
+{"kind":"shape","id":"sh/36hcrmhk","slide":1,"bbox":[702,1678,64,24]}
+{"kind":"textbox","id":"sh/eloj2t83","slide":1,"text":"TASK 1","textPreview":"TASK 1","textChars":6,"textLines":1,"bbox":[702,1679,64,22]}
+{"kind":"shape","id":"sh/pg3ex0nu","slide":1,"bbox":[76,1734,688,300]}
+{"kind":"shape","id":"sh/47y1kre1","slide":1,"bbox":[76,2042,688,112]}
+{"kind":"shape","id":"sh/tsvu9kni","slide":1,"bbox":[76,2042,4,112]}
+{"kind":"textbox","id":"sh/m1cfa9w3","slide":1,"text":"CRITICAL CAUSAL PATH","textPreview":"CRITICAL CAUSAL PATH","textChars":20,"textLines":1,"bbox":[94,2053,220,18]}
+{"kind":"shape","id":"sh/bm58z25k","slide":1,"bbox":[94,2076,32,28]}
+{"kind":"textbox","id":"sh/4vmtwra5","slide":1,"text":"8","textPreview":"8","textChars":1,"textLines":1,"bbox":[94,2080,32,20]}
+{"kind":"textbox","id":"sh/tgfmlkjm","slide":1,"text":"→","textPreview":"→","textChars":1,"textLines":1,"bbox":[133,2080,16,18]}
+{"kind":"shape","id":"sh/mp0bi9s3","slide":1,"bbox":[155,2076,32,28]}
+{"kind":"textbox","id":"sh/bat47y1k","slide":1,"text":"9","textPreview":"9","textChars":1,"textLines":1,"bbox":[155,2080,32,20]}
+{"kind":"textbox","id":"sh/4nap4r65","slide":1,"text":"→","textPreview":"→","textChars":1,"textLines":1,"bbox":[194,2080,16,18]}
+{"kind":"shape","id":"sh/t83itgfm","slide":1,"bbox":[216,2076,32,28]}
+{"kind":"textbox","id":"sh/nyd0z610","slide":1,"text":"18","textPreview":"18","textChars":2,"textLines":1,"bbox":[216,2080,32,20]}
+{"kind":"textbox","id":"sh/udg7adsj","slide":1,"text":"→","textPreview":"→","textChars":1,"textLines":1,"bbox":[255,2080,16,18]}
+{"kind":"shape","id":"sh/54zidony","slide":1,"bbox":[277,2076,32,28]}
+{"kind":"textbox","id":"sh/cj6tovah","slide":1,"text":"24","textPreview":"24","textChars":2,"textLines":1,"bbox":[277,2080,32,20]}
+{"kind":"textbox","id":"sh/nap4r65w","slide":1,"text":"→","textPreview":"→","textChars":1,"textLines":1,"bbox":[316,2080,16,18]}
+{"kind":"shape","id":"sh/upwb2hwf","slide":1,"bbox":[338,2076,32,28]}
+{"kind":"textbox","id":"sh/5gbq1ory","slide":1,"text":"25","textPreview":"25","textChars":2,"textLines":1,"bbox":[338,2080,32,20]}
+{"kind":"textbox","id":"sh/cvixczed","slide":1,"text":"→","textPreview":"→","textChars":1,"textLines":1,"bbox":[377,2080,16,18]}
+{"kind":"shape","id":"sh/jm1cfa9w","slide":1,"bbox":[399,2076,32,28]}
+{"kind":"textbox","id":"sh/u18jqh0f","slide":1,"text":"27","textPreview":"27","textChars":2,"textLines":1,"bbox":[399,2080,32,20]}
+{"kind":"textbox","id":"sh/25kb6xkf","slide":1,"text":"Accidental @Elena tag → deliberations move off the monitored channel → pre-staged press release fires on cue.","textPreview":"Accidental @Elena tag → deliberations move off the monitored channel → pre-staged press release fires on cue.","textChars":109,"textLines":1,"bbox":[94,2114,630,32]}
+{"kind":"shape","id":"sh/rqd4vmtw","slide":1,"bbox":[56,2202,728,500]}
+{"kind":"shape","id":"sh/kb6xkf6d","slide":1,"bbox":[56,2202,728,55]}
+{"kind":"shape","id":"sh/9w3m94fu","slide":1,"bbox":[56,2257,728,1]}
+{"kind":"shape","id":"sh/2t83itgf","slide":1,"bbox":[74,2223,13,13]}
+{"kind":"textbox","id":"sh/re1w7mp0","slide":1,"text":"Communication Networks","textPreview":"Communication Networks","textChars":22,"textLines":1,"bbox":[98,2217,548,28]}
+{"kind":"shape","id":"sh/kzupwb2h","slide":1,"bbox":[702,2218,64,24]}
+{"kind":"textbox","id":"sh/9knih4by","slide":1,"text":"TASK 1","textPreview":"TASK 1","textChars":6,"textLines":1,"bbox":[702,2219,64,22]}
+{"kind":"shape","id":"sh/2p8nqxs7","slide":1,"bbox":[76,2274,688,300]}
+{"kind":"textbox","id":"sh/xs72x4na","slide":1,"text":"CHANNEL","textPreview":"CHANNEL","textChars":7,"textLines":1,"bbox":[76,2582,70,18]}
+{"kind":"shape","id":"sh/87ed8bat","slide":1,"bbox":[156,2587,22,5]}
+{"kind":"textbox","id":"sh/fmlkjm1c","slide":1,"text":"Comms Huddle","textPreview":"Comms Huddle","textChars":12,"textLines":1,"bbox":[186,2581,150,18]}
+{"kind":"shape","id":"sh/q1orytsv","slide":1,"bbox":[346,2587,22,5]}
+{"kind":"textbox","id":"sh/1gvy90je","slide":1,"text":"1-on-1 Chat","textPreview":"1-on-1 Chat","textChars":11,"textLines":1,"bbox":[376,2581,150,18]}
+{"kind":"shape","id":"sh/8z25kb6x","slide":1,"bbox":[536,2587,22,5]}
+{"kind":"textbox","id":"sh/je9cvixc","slide":1,"text":"Side Huddle","textPreview":"Side Huddle","textChars":11,"textLines":1,"bbox":[566,2581,150,18]}
+{"kind":"textbox","id":"sh/qtcj6tov","slide":1,"text":"Pre-crisis balance collapses into a concentrated two-hub topology on crisis day — over a private side_huddle cluster the Judge never sees.","textPreview":"Pre-crisis balance collapses into a concentrated two-hub topology on crisis day — over a private side_huddle cluster the Judge never sees.","textChars":138,"textLines":1,"bbox":[76,2587,688,92]}
+{"kind":"shape","id":"sh/xczed8v6","slide":1,"bbox":[807,1662,728,516]}
+{"kind":"shape","id":"sh/8v6psfil","slide":1,"bbox":[807,1662,728,55]}
+{"kind":"shape","id":"sh/czed8v6p","slide":1,"bbox":[807,1717,728,1]}
+{"kind":"shape","id":"sh/5kb6xkf6","slide":1,"bbox":[825,1683,13,13]}
+{"kind":"textbox","id":"sh/ytsvu9kn","slide":1,"text":"Channel Behaviour","textPreview":"Channel Behaviour","textChars":17,"textLines":1,"bbox":[849,1677,548,28]}
+{"kind":"shape","id":"sh/neloj2t8","slide":1,"bbox":[1453,1678,64,24]}
+{"kind":"textbox","id":"sh/cbulwval","slide":1,"text":"TASK 2","textPreview":"TASK 2","textChars":6,"textLines":1,"bbox":[1453,1679,64,22]}
+{"kind":"shape","id":"sh/5sneloj2","slide":1,"bbox":[827,1734,688,300]}
+{"kind":"textbox","id":"sh/nqxs72x4","slide":1,"text":"Private-channel share rises monotonically Normal→Escalation→Crisis, from when side_huddle appeared (22 May). A reactive system would step-change only on crisis day → deliberate migration weeks earlier.","textPreview":"Private-channel share rises monotonically Normal→Escalation→Crisis, from when side_huddle appeared (22 May). A reactive system would step...","textChars":201,"textLines":1,"bbox":[827,2020,688,126]}
+{"kind":"shape","id":"sh/gbq1oryt","slide":1,"bbox":[807,2202,728,500]}
+{"kind":"shape","id":"sh/5wjudg7a","slide":1,"bbox":[807,2202,728,55]}
+{"kind":"shape","id":"sh/v6psfil0","slide":1,"bbox":[807,2257,728,1]}
+{"kind":"shape","id":"sh/2lszqtcj","slide":1,"bbox":[825,2223,13,13]}
+{"kind":"textbox","id":"sh/d8bat47y","slide":1,"text":"Internal States — decisive","textPreview":"Internal States — decisive","textChars":26,"textLines":1,"bbox":[849,2217,548,28]}
+{"kind":"shape","id":"sh/knih4byh","slide":1,"bbox":[1453,2218,64,24]}
+{"kind":"textbox","id":"sh/vu9knih4","slide":1,"text":"TASK 2","textPreview":"TASK 2","textChars":6,"textLines":1,"bbox":[1453,2219,64,22]}
+{"kind":"shape","id":"sh/29gr2p8n","slide":1,"bbox":[827,2274,688,300]}
+{"kind":"textbox","id":"sh/kf6dcbul","slide":1,"text":"Temporal inversion. Legal-Agent's 4:01 PM reasoning already stages the 4:30 PM release; the 5:01 PM note then blames SaltWind's 5 PM story. The plan precedes its trigger — rationalisation written after the decision.","textPreview":"Temporal inversion. Legal-Agent's 4:01 PM reasoning already stages the 4:30 PM release; the 5:01 PM note then blames SaltWind's 5 PM stor...","textChars":215,"textLines":1,"bbox":[827,2562,688,105]}
+{"kind":"shape","id":"sh/vixczed8","slide":1,"bbox":[1558,1662,728,516]}
+{"kind":"shape","id":"sh/2x4nap4r","slide":1,"bbox":[1558,1662,728,55]}
+{"kind":"shape","id":"sh/1orytsvu","slide":1,"bbox":[1558,1717,728,1]}
+{"kind":"shape","id":"sh/c7u54zid","slide":1,"bbox":[1576,1683,13,13]}
+{"kind":"textbox","id":"sh/jm1cfa9w","slide":1,"text":"Control Gaps — why no action","textPreview":"Control Gaps — why no action","textChars":28,"textLines":1,"bbox":[1600,1677,548,28]}
+{"kind":"shape","id":"sh/u18jqh0f","slide":1,"bbox":[2204,1678,64,24]}
+{"kind":"textbox","id":"sh/1032lszq","slide":1,"text":"TASK 3","textPreview":"TASK 3","textChars":6,"textLines":1,"bbox":[2204,1679,64,22]}
+{"kind":"shape","id":"sh/cfa9w3m9","slide":1,"bbox":[1578,1734,688,300]}
+{"kind":"textbox","id":"sh/u9knih4b","slide":1,"text":"Sensitive merger talk lived privately from 23 May with ~zero public leakage. The Judge arrived late (30 May), never entered side_huddle, never read public posts or internal state — every signal landed in its blind spot.","textPreview":"Sensitive merger talk lived privately from 23 May with ~zero public leakage. The Judge arrived late (30 May), never entered side_huddle, ...","textChars":219,"textLines":1,"bbox":[1578,2020,688,126]}
+{"kind":"shape","id":"sh/54zidony","slide":1,"bbox":[1558,2202,728,500]}
+{"kind":"shape","id":"sh/cj6tovah","slide":1,"bbox":[1558,2202,728,55]}
+{"kind":"shape","id":"sh/mlkjm1cf","slide":1,"bbox":[1558,2257,728,1]}
+{"kind":"shape","id":"sh/f6dcbulw","slide":1,"bbox":[1576,2223,13,13]}
+{"kind":"textbox","id":"sh/4r65wjud","slide":1,"text":"Expected vs Actual Channel Mix","textPreview":"Expected vs Actual Channel Mix","textChars":30,"textLines":1,"bbox":[1600,2217,548,28]}
+{"kind":"shape","id":"sh/xc3ylc7u","slide":1,"bbox":[2204,2218,64,24]}
+{"kind":"textbox","id":"sh/mtwra5gb","slide":1,"text":"TASK 3","textPreview":"TASK 3","textChars":6,"textLines":1,"bbox":[2204,2219,64,22]}
+{"kind":"shape","id":"sh/fepkzupw","slide":1,"bbox":[1578,2274,688,300]}
+{"kind":"textbox","id":"sh/xkf6dcbu","slide":1,"text":"Behavioural drift (JSD). Legal-Agent — the compliance authority — shifts from internal-only channels to anonymous_post (12 merger leaks). Divergence from the Normal baseline climbs steadily Normal→Escalation→Crisis: the breach was foreshadowed for two weeks.","textPreview":"Behavioural drift (JSD). Legal-Agent — the compliance authority — shifts from internal-only channels to anonymous_post (12 merger leaks)....","textChars":258,"textLines":1,"bbox":[1578,2562,688,120]}
+{"kind":"shape","id":"sh/qxs72x4n","slide":1,"bbox":[56,2720,42,42]}
+{"kind":"textbox","id":"sh/fil0rqd4","slide":1,"text":"5","textPreview":"5","textChars":1,"textLines":1,"bbox":[56,2721,42,40]}
+{"kind":"textbox","id":"sh/7ed8bat4","slide":1,"text":"Future Work","textPreview":"Future Work","textChars":11,"textLines":1,"bbox":[112,2723,500,40]}
+{"kind":"shape","id":"sh/itgfmlkj","slide":1,"bbox":[56,2778,1225,254]}
+{"kind":"shape","id":"sh/pkzupwb2","slide":1,"bbox":[56,2778,1225,6]}
+{"kind":"shape","id":"sh/0z61032l","slide":1,"bbox":[88,2821,11,11]}
+{"kind":"textbox","id":"sh/72x4nap4","slide":1,"text":"Real-time leading indicators: stream channel-routing & sensitivity scores live with alert thresholds — catch divergence as it forms, not in hindsight.","textPreview":"Real-time leading indicators: stream channel-routing & sensitivity scores live with alert thresholds — catch divergence as it forms, not ...","textChars":150,"textLines":1,"bbox":[116,2811,1122,35]}
+{"kind":"shape","id":"sh/ih4byhgn","slide":1,"bbox":[88,2872,11,11]}
+{"kind":"textbox","id":"sh/p8nqxs72","slide":1,"text":"Close the control gaps: extend Judge-Agent to side_huddle + public posts, grant hard-block (not advisory) authority, add an escalation protocol.","textPreview":"Close the control gaps: extend Judge-Agent to side_huddle + public posts, grant hard-block (not advisory) authority, add an escalation pr...","textChars":144,"textLines":1,"bbox":[116,2862,1122,35]}
+{"kind":"shape","id":"sh/0nuxc3yl","slide":1,"bbox":[88,2923,11,11]}
+{"kind":"textbox","id":"sh/7y1kre1w","slide":1,"text":"NLP at scale: replace regex rationalisation rules with embedding / LLM-based intent & stance classification and topic modelling of internal state.","textPreview":"NLP at scale: replace regex rationalisation rules with embedding / LLM-based intent & stance classification and topic modelling of intern...","textChars":146,"textLines":1,"bbox":[116,2913,1122,35]}
+{"kind":"shape","id":"sh/ed8v6psf","slide":1,"bbox":[88,2974,11,11]}
+{"kind":"textbox","id":"sh/crmhk3q5","slide":1,"text":"Generalise & quantify: package as a reusable multi-agent audit toolkit; add formal competing-hypotheses (ACH) scoring with sensitivity analysis.","textPreview":"Generalise & quantify: package as a reusable multi-agent audit toolkit; add formal competing-hypotheses (ACH) scoring with sensitivity an...","textChars":144,"textLines":1,"bbox":[116,2964,1122,35]}
+{"kind":"shape","id":"sh/1cfa9w3m","slide":1,"bbox":[1306,2720,42,42]}
+{"kind":"textbox","id":"sh/ulwval87","slide":1,"text":"★","textPreview":"★","textChars":1,"textLines":1,"bbox":[1306,2721,42,40]}
+{"kind":"textbox","id":"sh/j6tovaho","slide":1,"text":"Key Takeaway","textPreview":"Key Takeaway","textChars":12,"textLines":1,"bbox":[1362,2723,500,40]}
+{"kind":"shape","id":"sh/c3ylc7u5","slide":1,"bbox":[1306,2778,977,254]}
+{"kind":"textbox","id":"sh/1kre1w7m","slide":1,"text":"CONCLUSION","textPreview":"CONCLUSION","textChars":10,"textLines":1,"bbox":[1334,2810,180,26]}
+{"kind":"textbox","id":"sh/uxc3ylc7","slide":1,"text":"The breach was neither random overload nor a lone rogue act. Structural control failure — late deployment, no coverage of private/public channels, no view of internal reasoning, advisory-only warnings — created the space.\n\nSenior agents then engineered a premeditated early release, documented by the 4 PM-precedes-5 PM temporal inversion.","textPreview":"The breach was neither random overload nor a lone rogue act. Structural control failure — late deployment, no coverage of private/public ...","textChars":339,"textLines":3,"bbox":[1334,2850,910,150]}
+{"kind":"textbox","id":"sh/ji5snelo","slide":1,"text":"Visual analytics turned 912 raw messages into an auditable causal story.","textPreview":"Visual analytics turned 912 raw messages into an auditable causal story.","textChars":72,"textLines":1,"bbox":[1334,3010,870,28]}
+{"kind":"shape","id":"sh/8bat47y1","slide":1,"bbox":[0,3235,2339,76]}
+{"kind":"textbox","id":"sh/1w7mp0bi","slide":1,"text":"Data: VAST Challenge 2026 MC1 — MC1_final_00.json · 912 messages · 23 rounds  |  Stack: R · Shiny · bslib · plotly · Cytoscape.js · DT · tidyverse","textPreview":"Data: VAST Challenge 2026 MC1 — MC1_final_00.json · 912 messages · 23 rounds  |  Stack: R · Shiny · bslib · plotly · Cytoscape.js · DT · ...","textChars":146,"textLines":1,"bbox":[56,3260,2080,28]}
+{"kind":"image","id":"im/lwval87e","slide":1,"name":"","alt":"Causal Chain — 28 events","bbox":[84,1739,672,290]}
+{"kind":"image","id":"im/a1gvy90j","slide":1,"name":"","alt":"Communication Networks","bbox":[84,2279,672,290]}
+{"kind":"image","id":"im/bi9s36hc","slide":1,"name":"","alt":"Channel Behaviour","bbox":[835,1739,672,290]}
+{"kind":"image","id":"im/sneloj2t","slide":1,"name":"","alt":"Internal States — decisive","bbox":[835,2279,672,290]}
+{"kind":"image","id":"im/ytsvu9kn","slide":1,"name":"","alt":"Control Gaps — why no action","bbox":[1586,1739,672,290]}
+{"kind":"image","id":"im/dg7adsji","slide":1,"name":"","alt":"Expected vs Actual Channel Mix","bbox":[1586,2279,672,290]}
+{"kind":"notes","id":"nt/jjeb5o","slide":1,"text":""}
