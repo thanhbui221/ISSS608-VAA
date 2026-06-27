@@ -1,0 +1,578 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:  #0d1b2a;
+  --ink:   #1e293b;
+  --slate: #475569;
+  --muted: #64748b;
+  --line:  #dbe3ec;
+  --bg:    #eef2f7;
+  --card:  #ffffff;
+  --t1:    #0d9488;
+  --t2:    #d97706;
+  --t3:    #9333ea;
+  --t1l:   #e6f7f5;
+  --t2l:   #fdf3e0;
+  --t3l:   #f3e8ff;
+  --sans:  "DM Sans", system-ui, sans-serif;
+  --mono:  "DM Mono", monospace;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:#9aa6b4; font-family:var(--sans); -webkit-font-smoothing:antialiased; }
+
+/* ── frame / poster shell ──────────────────────────────── */
+.frame  { width:2339px; min-height:3311px; background:var(--bg); }
+.poster { width:2339px; min-height:3311px; display:flex; flex-direction:column; }
+
+/* ── HEADER ─────────────────────────────────────────────── */
+.hdr {
+  background: linear-gradient(110deg, #0b1622 0%, #13263c 55%, #1c3a5e 100%);
+  color:#eaf1f8; padding:32px 56px 30px; flex:0 0 auto; position:relative; overflow:hidden;
+}
+.hdr::after {
+  content:""; position:absolute; right:-80px; top:-100px; width:480px; height:480px;
+  background:radial-gradient(circle,rgba(59,130,246,.28),transparent 70%);
+}
+.hdr-top { display:flex; justify-content:space-between; align-items:flex-start; gap:24px; position:relative; z-index:2; }
+.badge { display:inline-flex; align-items:center; gap:12px; }
+.badge .chip     { background:#2f6fed; color:#fff; font-weight:800; font-size:19px; letter-spacing:.06em; padding:6px 14px; border-radius:8px; }
+.badge .chip-sub { font-size:17px; color:#9fc1f0; font-weight:600; }
+.meta { text-align:right; font-size:16px; line-height:1.55; color:#bcd0e6; }
+.meta b { color:#eaf1f8; font-weight:700; }
+h1 { font-size:64px; line-height:1.0; font-weight:800; letter-spacing:-.02em; color:#fff; margin:18px 0 9px; position:relative; z-index:2; }
+.sub { font-size:23px; line-height:1.38; font-weight:500; color:#cfe0f2; max-width:1800px; position:relative; z-index:2; }
+
+/* ── DATASET OVERVIEW ───────────────────────────────────── */
+.overview { padding:26px 56px 0; flex:0 0 auto; }
+
+.ov-stats { display:grid; grid-template-columns:repeat(6,1fr); gap:14px; margin-bottom:16px; }
+.ov-stat {
+  background:var(--card); border:1px solid var(--line); border-radius:12px;
+  padding:16px 10px; text-align:center; box-shadow:0 2px 8px rgba(15,23,42,.05);
+}
+.ov-stat .n { font-size:36px; font-weight:800; color:#2563eb; line-height:1; }
+.ov-stat .l { font-size:14px; color:var(--muted); margin-top:5px; font-weight:600; }
+
+.ov-desc {
+  background:var(--card); border:1px solid var(--line); border-radius:12px;
+  padding:18px 26px; margin-bottom:18px; font-size:19px; line-height:1.55; color:var(--slate);
+  box-shadow:0 2px 8px rgba(15,23,42,.05);
+}
+.ov-desc b { color:var(--ink); }
+
+/* app navbar screenshot strip */
+.app-nav-wrap {
+  border-radius:14px; overflow:hidden;
+  border:2px solid var(--line);
+  box-shadow:0 6px 24px rgba(15,23,42,.14);
+}
+.app-nav-wrap img {
+  width:100%; display:block;
+  height:230px; object-fit:cover; object-position:top;
+}
+
+/* ── ARROW CONNECTOR ────────────────────────────────────── */
+.arrow-zone { flex:0 0 100px; position:relative; }
+.arrow-zone svg { position:absolute; top:0; left:0; width:100%; height:100%; overflow:visible; }
+
+/* ── TASK ROW ───────────────────────────────────────────── */
+.task-row {
+  display:grid; grid-template-columns:1fr 1fr 1fr; gap:18px;
+  padding:0 56px; flex:1 1 auto;
+}
+
+/* shared task column */
+.tcol {
+  border-radius:16px; overflow:hidden; display:flex; flex-direction:column;
+  box-shadow:0 4px 18px rgba(15,23,42,.10);
+}
+.tcol.t1 { background:var(--t1l); border:2px solid var(--t1); }
+.tcol.t2 { background:var(--t2l); border:2px solid var(--t2); }
+.tcol.t3 { background:var(--t3l); border:2px solid var(--t3); }
+.tcol.t1 .t-hdr { background:var(--t1); }
+.tcol.t2 .t-hdr { background:var(--t2); }
+.tcol.t3 .t-hdr { background:var(--t3); }
+.tcol.t1 .kf-item::before { background:var(--t1); }
+.tcol.t2 .kf-item::before { background:var(--t2); }
+.tcol.t3 .kf-item::before { background:var(--t3); }
+
+/* column header */
+.t-hdr {
+  padding:18px 22px; color:#fff; flex:0 0 auto;
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+}
+.t-hdr-left { display:flex; align-items:center; gap:14px; }
+.t-num {
+  width:48px; height:48px; border-radius:50%;
+  background:rgba(255,255,255,.22); display:flex; align-items:center; justify-content:center;
+  font-size:25px; font-weight:800; color:#fff; flex:0 0 auto;
+}
+.t-title    { font-size:22px; font-weight:800; line-height:1.15; color:#fff; }
+.t-subtitle { font-size:15px; color:rgba(255,255,255,.75); margin-top:3px; font-weight:500; }
+.t-badge {
+  border-radius:9px; padding:7px 13px; font-size:13px; font-weight:700;
+  color:#fff; letter-spacing:.05em; white-space:nowrap; flex:0 0 auto;
+  background:rgba(255,255,255,.22);
+}
+
+/* column body */
+.t-body { padding:16px 18px; display:flex; flex-direction:column; gap:14px; flex:1 1 auto; }
+
+/* screenshot slots */
+.shot-slot {
+  border-radius:12px; overflow:hidden;
+  border:1.5px solid rgba(0,0,0,.08);
+  box-shadow:0 2px 10px rgba(0,0,0,.08);
+  background:#fff; flex:0 0 auto;
+}
+.shot-slot img { width:100%; display:block; }
+.shot-slot .ph {
+  width:100%; height:340px; background:#dde5ee;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;
+}
+.shot-slot .ph .ph-icon  { font-size:36px; }
+.shot-slot .ph .ph-label { font-size:15px; font-weight:700; color:#6b8099; font-family:var(--mono); }
+.shot-slot .ph .ph-sub   { font-size:12px; color:#8fa4b8; }
+.shot-slot .cap {
+  padding:8px 14px 10px; font-size:14px; font-weight:600;
+  color:var(--ink); border-top:1px solid var(--line); background:#fff;
+}
+
+/* key findings */
+.kf-box {
+  background:#fff; border:1px solid rgba(0,0,0,.07);
+  border-radius:12px; padding:14px 16px; flex:1 1 auto;
+  box-shadow:0 1px 6px rgba(0,0,0,.04);
+}
+.kf-title {
+  font-size:12px; font-weight:800; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--muted); margin-bottom:10px;
+}
+.kf-item {
+  position:relative; padding-left:20px; font-size:16px; line-height:1.40;
+  color:var(--slate); margin-bottom:9px;
+}
+.kf-item:last-child { margin-bottom:0; }
+.kf-item::before {
+  content:""; position:absolute; left:3px; top:8px; width:10px; height:10px; border-radius:50%;
+}
+.kf-item b { color:var(--ink); }
+
+/* verdict strip */
+.t-verdict {
+  background:rgba(0,0,0,.07); border-radius:10px; padding:12px 16px;
+  font-size:16px; line-height:1.40; color:rgba(0,0,0,.65);
+  border-left:4px solid rgba(0,0,0,.2); flex:0 0 auto;
+}
+.t-verdict b { color:rgba(0,0,0,.8); }
+
+/* ── CONCLUSION ─────────────────────────────────────────── */
+.conclusion {
+  margin:20px 56px 0; flex:0 0 auto;
+  background:linear-gradient(135deg,#0f1f33,#1b3a5e);
+  border-radius:16px; padding:26px 38px; color:#eaf1f8;
+}
+.conc-label  { font-size:13px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:#7fb0ef; margin-bottom:12px; }
+.conc-verdict{ font-size:30px; font-weight:800; color:#fff; margin-bottom:10px; line-height:1.2; }
+.conc-body   { font-size:19px; line-height:1.54; color:#cfe0f2; }
+.conc-body b { color:#fff; }
+
+/* ── ISSUES / MOTIVATION / APPROACH ────────────────────── */
+.mid-band {
+  padding:20px 56px 0; display:grid; grid-template-columns:1fr 1.5fr; gap:20px; flex:0 0 auto;
+}
+.mid-left { display:grid; grid-template-rows:1fr 1fr; gap:16px; }
+.sec-h  { display:flex; align-items:center; gap:12px; margin-bottom:12px; }
+.sec-n  { width:38px; height:38px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:20px; color:#fff; flex:0 0 auto; }
+.sec-t  { font-size:24px; font-weight:800; color:var(--ink); letter-spacing:-.01em; }
+.card   { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:18px 22px; box-shadow:0 2px 9px rgba(15,23,42,.05); }
+.acc-r  { border-top:5px solid #E24B4A; }
+.acc-b  { border-top:5px solid #2563eb; }
+ul.clean    { list-style:none; }
+ul.clean li { position:relative; padding-left:22px; font-size:17px; line-height:1.42; color:var(--slate); margin-bottom:10px; }
+ul.clean li:last-child { margin-bottom:0; }
+ul.clean li::before { content:""; position:absolute; left:4px; top:8px; width:10px; height:10px; border-radius:50%; }
+ul.clean.r li::before { background:#E24B4A; }
+ul.clean.b li::before { background:#2563eb; }
+ul.clean li b { color:var(--ink); font-weight:700; }
+.pipe  { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:14px; }
+.stage { border-radius:11px; border:1.5px solid; overflow:hidden; background:#fff; }
+.stage .sh { padding:10px 12px; font-weight:800; font-size:16px; color:#fff; display:flex; align-items:center; gap:9px; }
+.stage .sn { width:24px; height:24px; border-radius:50%; background:rgba(255,255,255,.28); display:flex; align-items:center; justify-content:center; font-size:13px; }
+.stage .sb { padding:10px 12px; font-size:15px; line-height:1.38; color:var(--slate); }
+.stage .sb b { color:var(--ink); }
+.methnote { font-size:16px; line-height:1.45; color:var(--slate); }
+.methnote b { color:var(--ink); }
+.tag { display:inline-block; font-family:var(--mono); font-size:13px; background:#eef4fe; color:#1e3a8a; padding:2px 8px; border-radius:5px; margin:2px 4px 0 0; border:1px solid #d9e6fb; }
+
+/* ── FOOTER ─────────────────────────────────────────────── */
+.ftr {
+  background:var(--navy); color:#aebfd2; padding:18px 56px;
+  display:flex; justify-content:space-between; align-items:center;
+  gap:24px; font-size:16px; margin-top:20px; flex:0 0 auto;
+}
+.ftr b     { color:#eaf1f8; }
+.ftr .stack{ font-family:var(--mono); font-size:14px; color:#7a94aa; }
+.ftr .url  { font-family:var(--mono); font-size:15px; color:#6fa3d8; font-weight:600; }
+</style>
+</head>
+<body>
+<div class="frame">
+<div class="poster">
+
+<!-- ═══════════════════════════════════════════ HEADER ═══ -->
+<header class="hdr">
+  <div class="hdr-top">
+    <div class="badge">
+      <span class="chip">MC1</span>
+      <span class="chip-sub">VAST Challenge 2026 · Mini-Challenge 1</span>
+    </div>
+    <div class="meta">
+      <b>ISSS608</b> Visual Analytics &amp; Applications &nbsp;·&nbsp; <b>Singapore Management University</b><br>
+      <b>BUI Tien Thanh</b> &nbsp;·&nbsp; <b>HU Yue</b> &nbsp;·&nbsp; <b>WU Jiayan</b> &nbsp;·&nbsp; 2026
+    </div>
+  </div>
+  <h1>Anatomy of an Embargo Breach</h1>
+  <div class="sub">Visual analytics on a seven-agent AI organisation — distinguishing a <b>deliberate merger leak</b> from a <b>compliance system that broke down under pressure</b>.</div>
+</header>
+
+<!-- ══════════════════════════════════ DATASET OVERVIEW ═══ -->
+<div class="overview">
+
+  <!-- stat chips -->
+  <div class="ov-stats">
+    <div class="ov-stat"><div class="n">912</div><div class="l">Messages</div></div>
+    <div class="ov-stat"><div class="n">7</div><div class="l">AI Agents</div></div>
+    <div class="ov-stat"><div class="n">23</div><div class="l">Rounds</div></div>
+    <div class="ov-stat"><div class="n">6</div><div class="l">Channels</div></div>
+    <div class="ov-stat"><div class="n">14</div><div class="l">Days</div></div>
+    <div class="ov-stat"><div class="n">86</div><div class="l">Internal States</div></div>
+  </div>
+
+  <!-- one-liner context -->
+  <div class="ov-desc">
+    On <b>5 June 2046</b>, confidential merger information (TenantThread × CivicLoom, codenamed <b>"Project HarborCrest"</b>) leaked publicly at <b>5:00 PM</b> — exactly <b>one hour before</b> the contractual 6:00 PM embargo lift.
+    Seven AI agents managed communications, compliance, and social media across <b>23 hourly rounds</b> during the critical two-week window.
+    The dataset spans <b>912 messages</b> across 6 channels (3 monitored · 3 unmonitored) and 86 sparse internal-state records capturing private agent reasoning.
+  </div>
+
+  <!-- Actual app navbar screenshot, cropped to show only the top nav strip -->
+  <div class="app-nav-wrap">
+    <img src="poster_assets/v2/t1_explore_thumb.png" alt="App navbar">
+  </div>
+</div>
+
+<!-- ══════════════════ ISSUES / MOTIVATION / APPROACH ═══ -->
+<div class="mid-band">
+
+  <div class="mid-left">
+    <!-- Issues & Problems -->
+    <div>
+      <div class="sec-h">
+        <div class="sec-n" style="background:#E24B4A">1</div>
+        <div class="sec-t">Issues &amp; Problems</div>
+      </div>
+      <div class="card acc-r">
+        <ul class="clean r">
+          <li><b>Attribute an information breach</b> inside a multi-agent AI org — who acted, when, on which channel, and with what <i>intent</i>.</li>
+          <li><b>Separate two look-alike explanations:</b> a deliberate leak vs. a system overwhelmed by crisis.</li>
+          <li>Evidence is <b>nested, unstructured &amp; sparse</b> — 912 messages, 23 rounds, 7 agents, 6 channels; private reasoning logged for only 86 messages.</li>
+          <li>Explain <b>why prior warning signals never triggered action</b> from the compliance monitor.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Motivation -->
+    <div>
+      <div class="sec-h">
+        <div class="sec-n" style="background:#2563eb">2</div>
+        <div class="sec-t">Motivation</div>
+      </div>
+      <div class="card acc-b">
+        <ul class="clean b">
+          <li><b>AI accountability:</b> as organisations delegate compliance to AI agents, how they fail under pressure is a governance &amp; regulatory priority.</li>
+          <li><b>The answer changes the remedy</b> — discipline vs. process redesign — with real legal consequences.</li>
+          <li><b>Intent is hidden:</b> the same surface signals (more messages, more private channels) fit <i>both</i> stories — only sequence + private reasoning tell them apart.</li>
+          <li>Signal hides in <b>unmonitored channels</b>, invisible to the very control meant to catch it.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Approach -->
+  <div>
+    <div class="sec-h">
+      <div class="sec-n" style="background:#0d9e6e">3</div>
+      <div class="sec-t">Approach — Techniques &amp; Algorithms</div>
+    </div>
+    <div class="card">
+      <div class="pipe">
+        <div class="stage" style="border-color:#2563eb">
+          <div class="sh" style="background:#2563eb"><span class="sn">0</span>Data Preparation</div>
+          <div class="sb"><b>jsonlite</b> parses nested JSON → 4 tidy tables (rounds/env, communications, internal_state, agents). Periods: <b>Normal · Escalation · Crisis</b>.</div>
+        </div>
+        <div class="stage" style="border-color:#0d9488">
+          <div class="sh" style="background:#0d9488"><span class="sn">1</span>Events &amp; Causal Chain</div>
+          <div class="sb"><b>28-node directed causal graph</b> (Cytoscape.js, preset layout) + period <b>communication networks</b> (plotly; edges by channel &amp; volume).</div>
+        </div>
+        <div class="stage" style="border-color:#d97706">
+          <div class="sh" style="background:#d97706"><span class="sn">2</span>Behavioural Deviation</div>
+          <div class="sb">Volume/length, channel-share trends, a <b>private-channel sensitivity score</b>, &amp; <b>internal-state</b> typing (deliberating / reacting / rationalizing).</div>
+        </div>
+        <div class="stage" style="border-color:#9333ea">
+          <div class="sh" style="background:#9333ea"><span class="sn">3</span>Leading Indicators</div>
+          <div class="sb"><b>Jensen–Shannon divergence</b> of each agent's channel mix vs. baseline; rationalisation detection; <b>Judge coverage matrix</b>.</div>
+        </div>
+      </div>
+      <div class="methnote">
+        <b>Two signature methods.</b>&nbsp; (a) <b>Temporal inversion</b> — compare the timestamp of a <i>plan</i> (an agent's <span class="tag">deliberating</span> field) against the event it claims to react to; a plan that <i>precedes</i> its trigger is evidence of premeditation.&nbsp; (b) <b>Behavioural drift</b> — JSD measures how far each agent's channel repertoire moves from its Normal baseline, period by period. Delivered as an integrated <b>R Shiny + bslib</b> dashboard with linked plotly / DT / Cytoscape views and reactive period · agent · channel filters.
+        <div style="margin-top:8px;">
+          <span class="tag">R</span><span class="tag">Shiny</span><span class="tag">bslib</span><span class="tag">tidyverse</span><span class="tag">plotly</span><span class="tag">Cytoscape.js</span><span class="tag">DT</span><span class="tag">jsonlite</span><span class="tag">lubridate</span><span class="tag">stringr</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═════════════════════════════════════════ ARROW ZONE ═══
+     Screenshot 1400px native → displayed 2227px (×1.591 scale).
+     Tab centers in screenshot (native px → scaled → +56 poster pad):
+       T1 "Task 1":  589 → 937 → 993px
+       T2 "Task 2":  835 → 1328 → 1384px
+       T3 "Task 3":  1058 → 1683 → 1739px
+     Column centers (poster px): T1=421  T2=1169  T3=1917
+-->
+<div class="arrow-zone">
+  <svg viewBox="0 0 2339 100" preserveAspectRatio="none"
+       xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="ah-t1" markerWidth="12" markerHeight="8" refX="10" refY="4" orient="auto">
+        <polygon points="0 0, 12 4, 0 8" fill="#0d9488"/>
+      </marker>
+      <marker id="ah-t2" markerWidth="12" markerHeight="8" refX="10" refY="4" orient="auto">
+        <polygon points="0 0, 12 4, 0 8" fill="#d97706"/>
+      </marker>
+      <marker id="ah-t3" markerWidth="12" markerHeight="8" refX="10" refY="4" orient="auto">
+        <polygon points="0 0, 12 4, 0 8" fill="#9333ea"/>
+      </marker>
+    </defs>
+    <!-- T1: 993 → 421, fans left -->
+    <path d="M 993,0 C 993,50 421,50 421,100"
+          stroke="#0d9488" stroke-width="6" fill="none" stroke-linecap="round"
+          marker-end="url(#ah-t1)"/>
+    <!-- T2: 1384 → 1169, slight left -->
+    <path d="M 1384,0 C 1384,50 1169,50 1169,100"
+          stroke="#d97706" stroke-width="6" fill="none" stroke-linecap="round"
+          marker-end="url(#ah-t2)"/>
+    <!-- T3: 1739 → 1917, fans right -->
+    <path d="M 1739,0 C 1739,50 1917,50 1917,100"
+          stroke="#9333ea" stroke-width="6" fill="none" stroke-linecap="round"
+          marker-end="url(#ah-t3)"/>
+  </svg>
+</div>
+
+<!-- ═════════════════════════════════════════ TASK COLUMNS ═══ -->
+<div class="task-row">
+
+  <!-- ─────────────── TASK 1 : teal ──────────────────────── -->
+  <div class="tcol t1">
+    <div class="t-hdr">
+      <div class="t-hdr-left">
+        <div class="t-num">1</div>
+        <div>
+          <div class="t-title">Key Events &amp; Causal Chain</div>
+          <div class="t-subtitle">Reconstruct · Network · Timeline</div>
+        </div>
+      </div>
+      <div class="t-badge">TASK 1</div>
+    </div>
+
+    <div class="t-body">
+
+      <!-- screenshot 1: causal chain -->
+      <div class="shot-slot">
+        <img src="poster_assets/v2/t1_causal_chain.png"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
+             alt="Causal Chain Graph">
+        <div class="ph" style="display:none;">
+          <div class="ph-icon">🕸️</div>
+          <div class="ph-label">28-node Causal Chain Graph</div>
+          <div class="ph-sub">t1_causal_chain.png</div>
+        </div>
+        <div class="cap">28-node directed causal graph · Cytoscape.js</div>
+      </div>
+
+      <!-- screenshot 2: communication networks -->
+      <div class="shot-slot">
+        <img src="poster_assets/v2/t1_networks.png"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
+             alt="Communication Networks">
+        <div class="ph" style="display:none;">
+          <div class="ph-icon">🔗</div>
+          <div class="ph-label">Pre-crisis vs Crisis-day Networks</div>
+          <div class="ph-sub">t1_networks.png</div>
+        </div>
+        <div class="cap">Agent communication networks · Pre-crisis vs Crisis day</div>
+      </div>
+
+      <!-- key findings -->
+      <div class="kf-box">
+        <div class="kf-title">Key Findings</div>
+        <div class="kf-item"><b>Temporal inversion:</b> Legal-Agent's 4 PM <code style="font-size:13px;background:#e0f2f0;padding:1px 5px;border-radius:4px;">deliberating</code> field shows the 5 PM plan <em>fully formed before the trigger event</em>.</div>
+        <div class="kf-item"><b>19× surge</b> in <code style="font-size:13px;background:#e0f2f0;padding:1px 5px;border-radius:4px;">side_huddle</code> messages on crisis day, all outside compliance scope.</div>
+        <div class="kf-item"><b>45 evidence items</b> classified — shift from mixed-blue to dense-red after 4 PM marks the sequential breach.</div>
+      </div>
+
+      <div class="t-verdict">
+        <b>Finding:</b> Section 4.3(c) invoked with bilateral consent — a <b>pre-planned early release</b>, not a spontaneous leak.
+      </div>
+
+    </div>
+  </div><!-- /t1 -->
+
+  <!-- ─────────────── TASK 2 : amber ─────────────────────── -->
+  <div class="tcol t2">
+    <div class="t-hdr">
+      <div class="t-hdr-left">
+        <div class="t-num">2</div>
+        <div>
+          <div class="t-title">Typical vs. Evasive Behaviour</div>
+          <div class="t-subtitle">Channel drift · Sensitivity · Internal states</div>
+        </div>
+      </div>
+      <div class="t-badge">TASK 2</div>
+    </div>
+
+    <div class="t-body">
+
+      <!-- screenshot 1: channel behaviour -->
+      <div class="shot-slot">
+        <img src="poster_assets/v2/t2_channel.png"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
+             alt="Channel Behaviour">
+        <div class="ph" style="display:none;">
+          <div class="ph-icon">📊</div>
+          <div class="ph-label">Channel Behaviour &amp; Sensitivity</div>
+          <div class="ph-sub">t2_channel.png</div>
+        </div>
+        <div class="cap">Channel usage by period · private sensitivity score timeline</div>
+      </div>
+
+      <!-- screenshot 2: internal states -->
+      <div class="shot-slot">
+        <img src="poster_assets/v2/t2_internal.png"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
+             alt="Internal States">
+        <div class="ph" style="display:none;">
+          <div class="ph-icon">🧠</div>
+          <div class="ph-label">Internal State Analysis</div>
+          <div class="ph-sub">t2_internal.png</div>
+        </div>
+        <div class="cap">6-phase private reasoning · deliberating / reacting / rationalizing</div>
+      </div>
+
+      <!-- key findings -->
+      <div class="kf-box">
+        <div class="kf-title">Key Findings</div>
+        <div class="kf-item"><b>All 4 behavioural metrics rise monotonically</b> Normal → Escalation → Crisis, ruling out reactive stress as primary driver.</div>
+        <div class="kf-item">Private-channel sensitivity score <b>peaked at 0.93</b> at 11 AM on crisis day — 6 hours before the breach.</div>
+        <div class="kf-item"><code style="font-size:13px;background:#fef3cd;padding:1px 5px;border-radius:4px;">rationalizing</code> appears <em>before</em> its claimed trigger at 5 PM — a prepared justification, not a genuine reaction.</div>
+      </div>
+
+      <div class="t-verdict">
+        <b>Finding:</b> Behaviour escalated <b>gradually over 14 days</b>, not in a sudden crisis spike — consistent with coordinated preparation.
+      </div>
+
+    </div>
+  </div><!-- /t2 -->
+
+  <!-- ─────────────── TASK 3 : purple ────────────────────── -->
+  <div class="tcol t3">
+    <div class="t-hdr">
+      <div class="t-hdr-left">
+        <div class="t-num">3</div>
+        <div>
+          <div class="t-title">Leading Indicators &amp; Control Gaps</div>
+          <div class="t-subtitle">Near-misses · Root causes · Coverage</div>
+        </div>
+      </div>
+      <div class="t-badge">TASK 3</div>
+    </div>
+
+    <div class="t-body">
+
+      <!-- screenshot 1: coverage / Q3.1 -->
+      <div class="shot-slot">
+        <img src="poster_assets/v2/t3_q31.png"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
+             alt="Expected vs Actual">
+        <div class="ph" style="display:none;">
+          <div class="ph-icon">📡</div>
+          <div class="ph-label">Q3.1 Expected vs Actual Coverage</div>
+          <div class="ph-sub">t3_q31.png</div>
+        </div>
+        <div class="cap">Judge-Agent monitoring coverage · expected vs actual</div>
+      </div>
+
+      <!-- screenshot 2: why no action / Q3.3 -->
+      <div class="shot-slot">
+        <img src="poster_assets/v2/t3_q33.png"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
+             alt="Why No Action">
+        <div class="ph" style="display:none;">
+          <div class="ph-icon">🚧</div>
+          <div class="ph-label">Near-miss Classification &amp; Root Causes</div>
+          <div class="ph-sub">t3_q33.png</div>
+        </div>
+        <div class="cap">Why no action was taken · 4 structural root causes</div>
+      </div>
+
+      <!-- key findings -->
+      <div class="kf-box">
+        <div class="kf-title">Key Findings</div>
+        <div class="kf-item"><b>Judge-Agent blind to 5 of 6 channels</b> — side_huddle &amp; one_on_one_chat invisible since 22 May, 2 weeks before the breach.</div>
+        <div class="kf-item"><b>First leading signal appeared on 23 May</b> — 13 days of unheeded warnings before the breach.</div>
+        <div class="kf-item"><b>COMPLIANCE_WARNINGs were advisory only</b> — no escalation protocol, no enforcement, no alert to CivicLoom.</div>
+      </div>
+
+      <div class="t-verdict">
+        <b>Finding:</b> The compliance architecture had <b>4 structural gaps</b> (scope · enforcement · escalation · timing) — any one would have been sufficient to prevent detection.
+      </div>
+
+    </div>
+  </div><!-- /t3 -->
+
+</div><!-- /task-row -->
+
+<!-- ═══════════════════════════════════════ CONCLUSION ═══ -->
+<div class="conclusion">
+  <div class="conc-label">Verdict &amp; Conclusion</div>
+  <div class="conc-verdict">System breakdown enabled a deliberate early announcement.</div>
+  <div class="conc-body">
+    The compliance architecture failed first — <b>Judge-Agent's scope was limited to 1 of 6 channels</b>, COMPLIANCE_WARNINGs were advisory-only, and no escalation protocol existed.
+    Into that gap, <b>senior agents engineered a pre-planned release</b> under Section 4.3(c) with bilateral consent, one hour before the contractual 6 PM embargo lift.
+    The two explanations are not competing — they are <b>sequential</b>: system failure created the opportunity; deliberate action exploited it.
+    Future work should extend this framework to multi-organisation AI systems, real-time anomaly detection on private channels, and automated intent classification from internal-state fields.
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ FOOTER ═══ -->
+<footer class="ftr">
+  <div>
+    <b>VAST Challenge 2026 MC1</b> &nbsp;·&nbsp; ISSS608 Visual Analytics &amp; Applications &nbsp;·&nbsp; Singapore Management University
+  </div>
+  <div class="stack">R · Shiny · bslib · plotly · Cytoscape.js · tidyverse · DT</div>
+  <div class="url">ttbui2025.shinyapps.io/Group_Project</div>
+</footer>
+
+</div><!-- /poster -->
+</div><!-- /frame -->
+</body>
+</html>

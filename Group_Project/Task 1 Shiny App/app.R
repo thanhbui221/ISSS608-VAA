@@ -2505,15 +2505,12 @@ task1_server <- function(input, output, session) {
       escape     = FALSE,
       selection  = "none",
       options    = list(
-        searchHighlight = FALSE,
         pageLength      = 15,
         lengthMenu      = c(10, 15, 25, 50),
         scrollY         = "52vh",
         scrollCollapse  = FALSE,
         scrollX         = FALSE,
         autoWidth       = FALSE,
-        deferRender     = TRUE,
-        processing      = TRUE,
         dom             = "lrtip",
         columnDefs = list(
           list(width = "8%",  targets = 0, className = "dt-center"),
@@ -2577,11 +2574,11 @@ task1_server <- function(input, output, session) {
       ),
       class = "table table-sm table-hover"
     )
-  }, server = TRUE)
+  }, server = FALSE)
 
   observeEvent(input$dt_reset, {
     proxy <- dataTableProxy("message_browser")
-    clearSearch(proxy)
+    DT::updateSearch(proxy, keywords = list(global = "", columns = rep("", 5)))
   })
 
   # ── T1.1 Causal Graph ──────────────────────────────────────────────────────

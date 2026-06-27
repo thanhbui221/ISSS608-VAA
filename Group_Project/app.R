@@ -20,6 +20,9 @@ source("Task 2 Shiny App/app.R", chdir = TRUE)
 source("Task 3 Shiny App/app.R", chdir = TRUE)
 # Exports: task3_ui, task3_server
 
+source("summary_tab.R")
+# Exports: summary_ui, summary_server
+
 # ── Combined UI ───────────────────────────────────────────────────────────────
 ui <- page_navbar(
   title          = mc1_title,
@@ -37,6 +40,9 @@ ui <- page_navbar(
   # Task 3: Leading Indicators
   task3_ui,
 
+  # Summary & Conclusions
+  summary_ui,
+
   nav_spacer(),
   nav_item(
     tags$span(
@@ -51,6 +57,7 @@ server <- function(input, output, session) {
   task1_server(input, output, session)
   task2_server(input, output, session)
   task3_server(input, output, session)
+  summary_server(input, output, session)
 }
 
 shinyApp(ui = ui, server = server)
