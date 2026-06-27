@@ -268,6 +268,79 @@ ul.clean li b { color:var(--ink); font-weight:700; }
   </div>
 </div>
 
+<!-- ══════════════════ ISSUES / MOTIVATION / APPROACH ═══ -->
+<div class="mid-band">
+
+  <div class="mid-left">
+    <!-- Issues & Problems -->
+    <div>
+      <div class="sec-h">
+        <div class="sec-n" style="background:#E24B4A">1</div>
+        <div class="sec-t">Issues &amp; Problems</div>
+      </div>
+      <div class="card acc-r">
+        <ul class="clean r">
+          <li><b>Attribute an information breach</b> inside a multi-agent AI org — who acted, when, on which channel, and with what <i>intent</i>.</li>
+          <li><b>Separate two look-alike explanations:</b> a deliberate leak vs. a system overwhelmed by crisis.</li>
+          <li>Evidence is <b>nested, unstructured &amp; sparse</b> — 912 messages, 23 rounds, 7 agents, 6 channels; private reasoning logged for only 86 messages.</li>
+          <li>Explain <b>why prior warning signals never triggered action</b> from the compliance monitor.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Motivation -->
+    <div>
+      <div class="sec-h">
+        <div class="sec-n" style="background:#2563eb">2</div>
+        <div class="sec-t">Motivation</div>
+      </div>
+      <div class="card acc-b">
+        <ul class="clean b">
+          <li><b>AI accountability:</b> as organisations delegate compliance to AI agents, how they fail under pressure is a governance &amp; regulatory priority.</li>
+          <li><b>The answer changes the remedy</b> — discipline vs. process redesign — with real legal consequences.</li>
+          <li><b>Intent is hidden:</b> the same surface signals (more messages, more private channels) fit <i>both</i> stories — only sequence + private reasoning tell them apart.</li>
+          <li>Signal hides in <b>unmonitored channels</b>, invisible to the very control meant to catch it.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Approach -->
+  <div>
+    <div class="sec-h">
+      <div class="sec-n" style="background:#0d9e6e">3</div>
+      <div class="sec-t">Approach — Techniques &amp; Algorithms</div>
+    </div>
+    <div class="card">
+      <div class="pipe">
+        <div class="stage" style="border-color:#2563eb">
+          <div class="sh" style="background:#2563eb"><span class="sn">0</span>Data Preparation</div>
+          <div class="sb"><b>jsonlite</b> parses nested JSON → 4 tidy tables (rounds/env, communications, internal_state, agents). Periods: <b>Normal · Escalation · Crisis</b>.</div>
+        </div>
+        <div class="stage" style="border-color:#0d9488">
+          <div class="sh" style="background:#0d9488"><span class="sn">1</span>Events &amp; Causal Chain</div>
+          <div class="sb"><b>28-node directed causal graph</b> (Cytoscape.js, preset layout) + period <b>communication networks</b> (plotly; edges by channel &amp; volume).</div>
+        </div>
+        <div class="stage" style="border-color:#d97706">
+          <div class="sh" style="background:#d97706"><span class="sn">2</span>Behavioural Deviation</div>
+          <div class="sb">Volume/length, channel-share trends, a <b>private-channel sensitivity score</b>, &amp; <b>internal-state</b> typing (deliberating / reacting / rationalizing).</div>
+        </div>
+        <div class="stage" style="border-color:#9333ea">
+          <div class="sh" style="background:#9333ea"><span class="sn">3</span>Leading Indicators</div>
+          <div class="sb"><b>Jensen–Shannon divergence</b> of each agent's channel mix vs. baseline; rationalisation detection; <b>Judge coverage matrix</b>.</div>
+        </div>
+      </div>
+      <div class="methnote">
+        <b>Two signature methods.</b>&nbsp; (a) <b>Temporal inversion</b> — compare the timestamp of a <i>plan</i> (an agent's <span class="tag">deliberating</span> field) against the event it claims to react to; a plan that <i>precedes</i> its trigger is evidence of premeditation.&nbsp; (b) <b>Behavioural drift</b> — JSD measures how far each agent's channel repertoire moves from its Normal baseline, period by period. Delivered as an integrated <b>R Shiny + bslib</b> dashboard with linked plotly / DT / Cytoscape views and reactive period · agent · channel filters.
+        <div style="margin-top:8px;">
+          <span class="tag">R</span><span class="tag">Shiny</span><span class="tag">bslib</span><span class="tag">tidyverse</span><span class="tag">plotly</span><span class="tag">Cytoscape.js</span><span class="tag">DT</span><span class="tag">jsonlite</span><span class="tag">lubridate</span><span class="tag">stringr</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
 <!-- ═════════════════════════════════════════ ARROW ZONE ═══
      Screenshot 1400px native → displayed 2227px (×1.591 scale).
      Tab centers in screenshot (native px → scaled → +56 poster pad):
